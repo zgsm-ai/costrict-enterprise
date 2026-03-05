@@ -1,16 +1,16 @@
 FROM golang:1.24.0 AS builder
 WORKDIR /app
-COPY . .
+
+COPY go.mod go.sum ./
 
 RUN go env -w CGO_ENABLED=0 && \
     go env -w GO111MODULE=on && \
-    go env -w GOPROXY=https://goproxy.cn,https://mirrors.aliyun.com/goproxy/,direct  
+    go env -w GOPROXY=https://goproxy.cn,https://mirrors.aliyun.com/goproxy,direct
+RUN go mod download && go mod verify
 
-#
-#go env -w GOPROXY=http://mirrors.sangfor.org/nexus/repository/go-proxy-group
-#
+COPY . .
 ARG VERSION=v1.0.0
-RUN go mod tidy 
+
 RUN go build -ldflags="-s -w -X 'main.SoftwareVer=$VERSION'" -o client-manager *.go
 RUN chmod 755 client-manager
 

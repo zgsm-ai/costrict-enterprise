@@ -85,8 +85,6 @@ func InitDB() (*gorm.DB, error) {
  */
 func autoMigrate(db *gorm.DB) error {
 	return db.AutoMigrate(
-		&models.Configuration{},
-		&models.Feedback{},
 		&models.Log{},
 	)
 }

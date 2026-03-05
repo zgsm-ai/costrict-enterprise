@@ -192,3 +192,62 @@ func (dao *LogDAO) DeleteOldLogs(ctx context.Context, beforeDate string) (int64,
 
 	return deletedCount, nil
 }
+
+/**
+* Delete deletes a log record by ID from database
+* @param {context.Context} ctx - Context for request cancellation
+* @param {uint} id - Log record ID to delete
+* @returns {error} Error if any
+* @description
+* - Deletes a single log record by ID from database only
+* - Does not delete the physical file (handled by service layer)
+* - Logs deletion operation
+* @throws
+* - Database delete errors
+* - Record not found errors
+ */
+func (dao *LogDAO) Delete(ctx context.Context, id uint) error {
+	if dao.db == nil {
+		return fmt.Errorf("Database is not initialized")
+	}
+
+	// Delete from database
+	err := dao.db.Delete(&models.Log{}, id).Error
+	if err != nil {
+		dao.log.WithError(err).WithField("id", id).Error("Failed to delete log record")
+		return err
+	}
+
+	dao.log.WithField("id", id).Info("Successfully deleted log record from database")
+
+	return nil
+}
+
+/**
+* GetByID retrieves a log record by ID
+* @param {context.Context} ctx - Context for request cancellation
+* @param {uint} id - Log record ID
+* @returns {models.Log, error} Log record and error if any
+* @description
+* - Retrieves a single log record by ID
+* @throws
+* - Database query errors
+* - Record not found errors
+ */
+func (dao *LogDAO) GetByID(ctx context.Context, id uint) (models.Log, error) {
+	if dao.db == nil {
+		return models.Log{}, fmt.Errorf("Database is not initialized")
+	}
+
+	var log models.Log
+	err := dao.db.Where("id = ?", id).First(&log).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return log, fmt.Errorf("log record not found")
+		}
+		dao.log.WithError(err).WithField("id", id).Error("Failed to get log record")
+		return log, err
+	}
+
+	return log, nil
+}

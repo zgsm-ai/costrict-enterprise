@@ -16,8 +16,6 @@ import (
 /**
  * Setup all routes for the application
  * @param {*gin.Engine} r - Gin engine
- * @param {*controllers.ConfigController} configController - Configuration controller
- * @param {*controllers.FeedbackController} feedbackController - Feedback controller
  * @param {*controllers.LogController} logController - Log controller
  * @param {*logrus.Logger} logger - Application logger
  * @description
@@ -74,8 +72,6 @@ func setupHealthCheckRoutes(r *gin.Engine, logger *logrus.Logger) {
 /**
  * Setup API routes for the application
  * @param {*gin.Engine} r - Gin engine
- * @param {*controllers.ConfigController} configController - Configuration controller
- * @param {*controllers.FeedbackController} feedbackController - Feedback controller
  * @param {*controllers.LogController} logController - Log controller
  * @description
  * - Sets up configuration API routes

@@ -2,6 +2,9 @@ package services
 
 import (
 	"context"
+	"fmt"
+	"io"
+	"os"
 	"path/filepath"
 	"time"
 
@@ -19,8 +22,9 @@ import (
  * - Handles different log types
  */
 type LogService struct {
-	logDAO *dao.LogDAO
-	log    *logrus.Logger
+	logDAO     *dao.LogDAO
+	log        *logrus.Logger
+	maxLogSize int64
 }
 
 type UploadLogArgs struct {
@@ -63,27 +67,43 @@ type Paginated struct {
  * @param {logrus.Logger} log - Logger instance
  * @returns {*LogService} New LogService instance
  */
+/**
+ * NewLogService creates a new LogService instance
+ * @param {dao.LogDAO} logDAO - Log data access object
+ * @param {logrus.Logger} log - Logger instance
+ * @returns {*LogService} New LogService instance
+ * @description
+ * - Initializes LogService with default maxLogSize of 100MB (100 * 1024 * 1024 bytes)
+ * - Can be configured by setting the maxLogSize field after creation
+ */
 func NewLogService(logDAO *dao.LogDAO, log *logrus.Logger) *LogService {
+	// Default max log size: 50MB
+	defaultMaxLogSize := int64(50 * 1024 * 1024)
+
 	return &LogService{
-		logDAO: logDAO,
-		log:    log,
+		logDAO:     logDAO,
+		log:        log,
+		maxLogSize: defaultMaxLogSize,
 	}
 }
 
 /**
- * CreateLog creates a new log record
+ * UploadLog creates a new log record and saves file
  * @param {context.Context} ctx - Context for request cancellation
- * @param {map[string]interface{}} data - Log data
- * @returns {*models.Log, error} Created log and error if any
+ * @param {UploadLogArgs} args - Log metadata arguments
+ * @param {io.Reader} file - File content reader
+ * @returns {string, error} File path and error if any
  * @description
  * - Validates log data
- * - Creates log record
+ * - Creates log record in database
+ * - Creates directory and saves file to storage
  * - Logs creation operation
  * @throws
  * - Validation errors for invalid data
  * - Database creation errors
+ * - File system errors for directory/file creation
  */
-func (s *LogService) CreateLog(ctx context.Context, args *UploadLogArgs) (*models.Log, error) {
+func (s *LogService) UploadLog(ctx context.Context, args *UploadLogArgs, file io.Reader) (string, error) {
 	// Validate and extract log data
 	err := s.validate(args)
 	if err != nil {
@@ -92,18 +112,47 @@ func (s *LogService) CreateLog(ctx context.Context, args *UploadLogArgs) (*model
 			"user_id":   args.UserID,
 			"file_name": args.FileName,
 		}).Error("Invalid arguments")
-		return nil, err
+		return "", err
+	}
+
+	// Create file destination path
+	destPath := filepath.Join("/data", args.ClientID, args.FileName)
+
+	// Create directory if not exists
+	destDir := filepath.Join("/data", args.ClientID)
+	if err := os.MkdirAll(destDir, 0755); err != nil {
+		s.log.WithError(err).WithField("path", destDir).Error("Failed to create directory")
+		return "", fmt.Errorf("failed to create directory: %w", err)
+	}
+
+	// Create file and save content
+	destFile, err := os.Create(destPath)
+	if err != nil {
+		s.log.WithError(err).WithField("path", destPath).Error("Failed to create file")
+		return "", fmt.Errorf("failed to create file: %w", err)
+	}
+	defer destFile.Close()
+
+	// Copy file content
+	size, err := io.Copy(destFile, file)
+	if err != nil {
+		s.log.WithError(err).WithField("path", destPath).Error("Failed to save file content")
+		return "", fmt.Errorf("failed to save file: %w", err)
 	}
 
 	// Create log
 	log := &models.Log{
-		ClientID:  args.ClientID,
-		UserID:    args.UserID,
-		FileName:  args.FileName,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+		ClientID:    args.ClientID,
+		UserID:      args.UserID,
+		FileName:    args.FileName,
+		FirstLineNo: args.FirstLineNo,
+		LastLineNo:  args.LastLineNo,
+		Size:        size,
+		CreatedAt:   time.Now(),
+		UpdatedAt:   time.Now(),
 	}
-	// Create log
+
+	// Create log in database first
 	err = s.logDAO.Upsert(ctx, log)
 	if err != nil {
 		s.log.WithError(err).WithFields(logrus.Fields{
@@ -111,16 +160,121 @@ func (s *LogService) CreateLog(ctx context.Context, args *UploadLogArgs) (*model
 			"user_id":   log.UserID,
 			"file_name": log.FileName,
 		}).Error("Failed to create log")
-		return nil, err
+		return "", err
 	}
-
 	s.log.WithFields(logrus.Fields{
 		"client_id": log.ClientID,
 		"user_id":   log.UserID,
 		"file_name": log.FileName,
-	}).Info("Log created successfully")
+		"path":      destPath,
+	}).Info("Log and file created successfully")
 
-	return log, nil
+	// Perform rollout cleanup to remove old log files if size exceeds limit
+	s.rollout(ctx, args)
+
+	return destPath, nil
+}
+
+/**
+ * rollout handles log file cleanup based on size limit
+ * @param {context.Context} ctx - Context for request cancellation
+ * @param {UploadLogArgs} args - Log metadata arguments
+ * @description
+ * - Retrieves all logs for the same client and user
+ * - Sorts logs by updated_at DESC to keep newest records
+ * - Deletes old log records and their physical files when total size exceeds maxLogSize
+ * - Always preserves the current file being saved (args.FileName)
+ * - Prioritizes keeping recently saved records and their log files
+ * - Errors are logged but do not affect the cleanup process
+ */
+func (s *LogService) rollout(ctx context.Context, args *UploadLogArgs) {
+	// Retrieve all logs for the same client and user
+	logs, _, err := s.logDAO.ListLogs(ctx, args.ClientID, args.UserID, "", 1, 1000)
+	if err != nil {
+		s.log.WithError(err).WithFields(logrus.Fields{
+			"client_id": args.ClientID,
+			"user_id":   args.UserID,
+		}).Error("Failed to retrieve logs for rollout")
+		return
+	}
+
+	// Calculate total size of all logs
+	var totalSize int64
+	for i := range logs {
+		// Get actual file size if Size is 0
+		if logs[i].Size == 0 {
+			filePath := filepath.Join("/data", logs[i].ClientID, logs[i].FileName)
+			if info, err := os.Stat(filePath); err == nil {
+				logs[i].Size = info.Size()
+				s.log.WithFields(logrus.Fields{
+					"file_path": filePath,
+					"size":      info.Size(),
+				}).Debug("Updated log size from actual file")
+			}
+		}
+		totalSize += logs[i].Size
+	}
+
+	// If total size is within limit, no cleanup needed
+	if totalSize <= s.maxLogSize {
+		s.log.WithFields(logrus.Fields{
+			"client_id":  args.ClientID,
+			"user_id":    args.UserID,
+			"total_size": totalSize,
+			"max_size":   s.maxLogSize,
+		}).Debug("Total log size within limit, no cleanup needed")
+		return
+	}
+
+	// Delete old logs starting from the oldest (end of the list)
+	// Note: logs are already sorted by updated_at DESC from DAO
+	for i := len(logs) - 1; i >= 0; i-- {
+		log := logs[i]
+
+		// Always preserve the current file being saved
+		if log.FileName == args.FileName {
+			continue
+		}
+
+		// Check if total size is still over limit
+		if totalSize <= s.maxLogSize {
+			break
+		}
+
+		// Delete physical file
+		filePath := filepath.Join("/data", log.ClientID, log.FileName)
+		if err := os.Remove(filePath); err != nil && !os.IsNotExist(err) {
+			s.log.WithError(err).WithField("path", filePath).Error("Failed to delete log file during rollout")
+		} else if err == nil {
+			s.log.WithField("path", filePath).Info("Successfully deleted log file during rollout")
+		}
+
+		// Delete from database
+		err = s.logDAO.Delete(ctx, log.ID)
+		if err != nil {
+			s.log.WithError(err).WithField("id", log.ID).Error("Failed to delete log record during rollout")
+			continue
+		}
+
+		// Update total size
+		totalSize -= log.Size
+
+		s.log.WithFields(logrus.Fields{
+			"log_id":     log.ID,
+			"client_id":  log.ClientID,
+			"user_id":    log.UserID,
+			"file_name":  log.FileName,
+			"file_size":  log.Size,
+			"total_size": totalSize,
+		}).Info("Successfully deleted old log during rollout")
+	}
+
+	s.log.WithFields(logrus.Fields{
+		"client_id":  args.ClientID,
+		"user_id":    args.UserID,
+		"total_size": totalSize,
+		"max_size":   s.maxLogSize,
+	}).Info("Rollout completed successfully")
 }
 
 /**

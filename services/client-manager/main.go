@@ -66,8 +66,7 @@ var rootCmd = &cobra.Command{
 		}
 
 		// Initialize controllers
-		logController := controllers.NewLogController(app.Logger)
-		logController.SetLogService(app.LogService)
+		logController := controllers.NewLogController(app.Logger, app.LogService)
 
 		// Create Gin engine
 		r := gin.Default()

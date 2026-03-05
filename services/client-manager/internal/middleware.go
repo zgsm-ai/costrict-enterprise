@@ -9,8 +9,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
-
-	"github.com/zgsm-ai/client-manager/utils"
 )
 
 /**
@@ -141,12 +139,13 @@ func LoggerMiddleware() gin.HandlerFunc {
  * - Records request duration
  * - Tracks response status codes
  * - Updates global metrics counters
+ * - Records active connections
  * @returns {gin.HandlerFunc} Gin middleware function
  */
 func PrometheusMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// Increment request counter
-		utils.IncrementRequestCount()
+		// Increment request counter and active connections
+		IncrementRequestCount()
 
 		// Start timer
 		start := time.Now()
@@ -162,13 +161,12 @@ func PrometheusMiddleware() gin.HandlerFunc {
 		method := c.Request.Method
 		path := c.Request.URL.Path
 
-		// Record request duration
-		utils.RecordRequestDuration(method, path, statusCode, duration)
+		// Record HTTP request metrics
+		RecordHTTPRequest(method, path, statusCode, duration)
 
-		// Check if it's an error response
-		if statusCode >= 400 {
-			utils.IncrementErrorCount()
-		}
+		// Decrement active connections
+		DecrementActiveConnections()
+
 	}
 }
 
