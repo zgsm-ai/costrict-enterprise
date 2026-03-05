@@ -1,0 +1,436 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a code completion service API.",
+        "title": "Code Completions API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.swagger.io/support",
+            "email": "support@swagger.io"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/api/completions": {
+            "post": {
+                "description": "根据提供的代码上下文生成代码补全建议",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "completions"
+                ],
+                "summary": "代码补全",
+                "parameters": [
+                    {
+                        "description": "补全请求",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/completions.CompletionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/completions.CompletionResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/example": {
+            "get": {
+                "description": "返回示例数据",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "example"
+                ],
+                "summary": "示例接口",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/logs": {
+            "post": {
+                "description": "设置应用程序的日志级别",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "logs"
+                ],
+                "summary": "设置日志级别",
+                "parameters": [
+                    {
+                        "description": "日志级别设置",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/server.LogSettings"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/completion-agent/api/v1/completions": {
+            "post": {
+                "description": "根据提供的代码上下文生成代码补全建议",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "completions"
+                ],
+                "summary": "代码补全",
+                "parameters": [
+                    {
+                        "description": "补全请求",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/completions.CompletionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/completions.CompletionResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "description": "检查服务是否正常运行",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "health"
+                ],
+                "summary": "健康检查",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "completions.CalculateHideScore": {
+            "type": "object",
+            "properties": {
+                "document_length": {
+                    "type": "integer"
+                },
+                "is_whitespace_after_cursor": {
+                    "type": "boolean"
+                },
+                "prefix": {
+                    "type": "string"
+                },
+                "previous_label": {
+                    "type": "integer"
+                },
+                "previous_label_timestamp": {
+                    "type": "integer"
+                },
+                "prompt_end_pos": {
+                    "type": "integer"
+                }
+            }
+        },
+        "completions.CompletionChoice": {
+            "type": "object",
+            "properties": {
+                "text": {
+                    "type": "string"
+                }
+            }
+        },
+        "completions.CompletionRequest": {
+            "type": "object",
+            "properties": {
+                "beta_mode": {
+                    "type": "boolean"
+                },
+                "calculate_hide_score": {
+                    "$ref": "#/definitions/completions.CalculateHideScore"
+                },
+                "client_id": {
+                    "type": "string"
+                },
+                "code_path": {
+                    "type": "string"
+                },
+                "completion_id": {
+                    "type": "string"
+                },
+                "extra": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "file_project_path": {
+                    "type": "string"
+                },
+                "git_path": {
+                    "type": "string"
+                },
+                "import_content": {
+                    "type": "string"
+                },
+                "language_id": {
+                    "type": "string"
+                },
+                "model": {
+                    "type": "string"
+                },
+                "parent_id": {
+                    "type": "string"
+                },
+                "project_path": {
+                    "type": "string"
+                },
+                "prompt": {
+                    "type": "string"
+                },
+                "prompt_options": {
+                    "$ref": "#/definitions/completions.PromptOptions"
+                },
+                "repo": {
+                    "type": "string"
+                },
+                "stop": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "temperature": {
+                    "type": "number"
+                },
+                "trigger_mode": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "completions.CompletionResponse": {
+            "type": "object",
+            "properties": {
+                "choices": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/completions.CompletionChoice"
+                    }
+                },
+                "completion_tokens": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "model": {
+                    "type": "string"
+                },
+                "model_choices": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/completions.CompletionChoice"
+                    }
+                },
+                "model_cost_time": {
+                    "description": "ms",
+                    "type": "integer"
+                },
+                "model_end_time": {
+                    "type": "string"
+                },
+                "model_start_time": {
+                    "description": "may null",
+                    "type": "string"
+                },
+                "object": {
+                    "type": "string"
+                },
+                "prompt": {
+                    "type": "string"
+                },
+                "prompt_tokens": {
+                    "type": "integer"
+                },
+                "request_time": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/model.CompletionStatus"
+                }
+            }
+        },
+        "completions.PromptOptions": {
+            "type": "object",
+            "properties": {
+                "code_context": {
+                    "type": "string"
+                },
+                "cursor_line_prefix": {
+                    "type": "string"
+                },
+                "cursor_line_suffix": {
+                    "type": "string"
+                },
+                "prefix": {
+                    "type": "string"
+                },
+                "suffix": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.CompletionStatus": {
+            "type": "string",
+            "enum": [
+                "sucess",
+                "modelError",
+                "reqError",
+                "empty",
+                "processEmpty",
+                "serverError",
+                "reject",
+                "timeout"
+            ],
+            "x-enum-comments": {
+                "StatusModelError": "模型响应错误",
+                "StatusRejected": "根据规则拒绝补全",
+                "StatusReqError": "请求存在错误",
+                "StatusServerError": "服务端错误"
+            },
+            "x-enum-descriptions": [
+                "",
+                "模型响应错误",
+                "请求存在错误",
+                "",
+                "",
+                "服务端错误",
+                "根据规则拒绝补全",
+                ""
+            ],
+            "x-enum-varnames": [
+                "StatusSuccess",
+                "StatusModelError",
+                "StatusReqError",
+                "StatusEmpty",
+                "CompletionProcessEmpty",
+                "StatusServerError",
+                "StatusRejected",
+                "StatusTimeout"
+            ]
+        },
+        "server.LogSettings": {
+            "type": "object",
+            "properties": {
+                "level": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

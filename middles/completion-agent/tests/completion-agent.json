@@ -1,0 +1,59 @@
+{
+  "models": [
+    {
+      "provider": "sangfor",
+      "completionsUrl": "{{ .Auth.BaseUrl }}/code-completion/api/v2/completions",
+      "modelTitle": "sangfor-ds",
+      "modelName": "DeepSeek-Coder-V2-Lite-Base",
+      "authorization": "Bearer {{ .Auth.AccessToken }}",
+      "tags": [
+        "fastertransformer",
+        "deepseek"
+      ],
+      "timeout": "2000ms",
+      "maxPrefix": 512,
+      "maxSuffix": 50,
+      "maxOutput": 50
+    }
+  ],
+  "context": {
+    "definition": {
+      "disabled": true,
+      "url": "{{ .Env.CodebaseUrl }}/codebase-indexer/api/v1/search/definition"
+    },
+    "semantic": {
+      "disabled": true,
+      "url": "{{ .Auth.BaseUrl }}/codebase-embedder/api/v1/search/semantic",
+      "topK": 5,
+      "scoreThreshold": 0.5
+    },
+    "relation": {
+      "disabled": true,
+      "url": "{{ .Env.CodebaseUrl }}/codebase-indexer/api/v1/search/relation",
+      "layer": 3,
+      "includeContent": false
+    },
+    "requestTimeout": "500ms",
+    "totalTimeout": "600ms"
+  },
+  "wrapper": {
+    "score": {
+      "disabled": false,
+      "threshold": 0.3
+    },
+    "syntax": {
+      "disabled": false,
+      "strPattern": "import +.*|from +.*|from +.* import *.*",
+      "treePattern": "\\(comment.*|\\(string.*|\\(set \\(string.*|\\(dictionary.*|\\(integer.*|\\(list.*|\\(tuple.*",
+      "minPromptLine": 5,
+      "endTag": "('>',';','}',')')"
+    },
+    "prune": {
+      "disabled": false,
+      "pruners": ["cut-single-line", "cut-repetitive-text", "cut-prefix-overlap", "cut-suffix-overlap", "cut-syntax-error"]
+    },
+    "tokenizer": {
+      "path": "{{ .Env.CostrictDir }}/config/tokenizer.json"
+    }
+  }
+}

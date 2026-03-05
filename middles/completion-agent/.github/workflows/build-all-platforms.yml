@@ -1,0 +1,173 @@
+name: Build and Package All Platforms
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+    # 使用矩阵策略来定义不同的操作系统和架构组合
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Linux amd64
+          - os: ubuntu-latest
+            goos: linux
+            goarch: amd64
+            artifact_name: completion-agent-linux-amd64
+          # Linux arm64
+          - os: ubuntu-latest
+            goos: linux
+            goarch: arm64
+            artifact_name: completion-agent-linux-arm64
+          # Windows amd64
+          - os: windows-latest
+            goos: windows
+            goarch: amd64
+            artifact_name: completion-agent-windows-amd64
+          # Windows arm64 - temporarily disabled
+          - os: windows-latest
+            goos: windows
+            goarch: arm64
+            artifact_name: completion-agent-windows-arm64
+          # macOS amd64
+          - os: macos-latest
+            goos: darwin
+            goarch: amd64
+            artifact_name: completion-agent-darwin-amd64
+          # macOS ARM64 (Apple Silicon)
+          - os: macos-latest
+            goos: darwin
+            goarch: arm64
+            artifact_name: completion-agent-darwin-arm64
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.24.4'
+
+    - name: Build for ${{ matrix.goos }} ${{ matrix.goarch }}
+      shell: bash
+      run: |
+        echo "Starting build for ${{ matrix.goos }} ${{ matrix.goarch }} version ${{ github.ref_name }}"
+        echo "Current directory: $(pwd)"
+        echo "Directory contents:"
+        ls -la
+
+        OUTPUT_DIR="bin/${{ github.ref_name }}" # Output directory relative to project root
+        mkdir -p "$OUTPUT_DIR"
+        OUTPUT_FILE="$OUTPUT_DIR/completion-agent-${{ matrix.goos }}-${{ matrix.goarch }}-${{ github.ref_name }}"
+        if [ "${{ matrix.goos }}" = "windows" ]; then
+          OUTPUT_FILE="${OUTPUT_FILE}.exe"
+        fi
+        
+        if ! python ./build.py --software "${{ github.ref_name }}" --os "${{ matrix.goos }}" --arch "${{ matrix.goarch }}" --output "${OUTPUT_FILE}"; then
+          echo "Build failed with exit code $?"
+          exit 1
+        fi
+        
+        echo "Build script completed successfully"
+        
+    - name: Check build output
+      shell: bash
+      run: |
+        echo "Checking if build directory exists..."
+        echo "Current directory: $(pwd)"
+        
+        if [ -d "bin" ]; then
+          echo "bin directory exists, contents:"
+          ls -la bin/
+          
+          if [ -d "bin/${{ github.ref_name }}" ]; then
+            echo "Build directory exists, contents:"
+            ls -la "bin/${{ github.ref_name }}/"
+            
+            # Check if the expected executable file exists
+            EXPECTED_FILE="completion-agent-${{ matrix.goos }}-${{ matrix.goarch }}-${{ github.ref_name }}"
+            if [ "${{ matrix.goos }}" = "windows" ]; then
+              EXPECTED_FILE="${EXPECTED_FILE}.exe"
+            fi
+            
+            if [ -f "bin/${{ github.ref_name }}/$EXPECTED_FILE" ]; then
+              echo "Expected executable file exists: $EXPECTED_FILE"
+              echo "File details:"
+              ls -la "bin/${{ github.ref_name }}/$EXPECTED_FILE"
+            else
+              echo "Expected executable file does not exist: $EXPECTED_FILE"
+              echo "Available files in build directory:"
+              ls -la "bin/${{ github.ref_name }}/"
+              exit 1
+            fi
+          else
+            echo "Build directory does not exist: bin/${{ github.ref_name }}"
+            exit 1
+          fi
+        else
+          echo "bin directory does not exist"
+          echo "Current directory contents:"
+          ls -la
+          exit 1
+        fi
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.artifact_name }}-${{ github.ref_name }}
+        path: |
+          bin/${{ github.ref_name }}/completion-agent-${{ matrix.goos }}-${{ matrix.goarch }}-${{ github.ref_name }}*
+        retention-days: 30
+
+  upload-release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: artifacts
+        
+    - name: Prepare release assets
+      run: |
+        mkdir -p release-assets
+        find artifacts -name "completion-agent-*" -type f | while read file; do
+          cp "$file" release-assets/
+        done
+        ls -la release-assets/
+        
+    - name: Create Release and Upload Assets
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ github.ref_name }}
+        name: Release ${{ github.ref_name }}
+        body: |
+          Costrict ${{ github.ref_name }}
+          
+          ## Build Information
+          - Version: ${{ github.ref_name }}
+          
+          ## Download Instructions
+          Please select the appropriate binary file based on your operating system and architecture:
+          
+          - Linux: `completion-agent-linux-*`
+          - Windows: `completion-agent-windows-*.exe`
+          - macOS: `completion-agent-darwin-*`
+          
+          ## Supported Platforms and Architectures
+          - Linux amd64, arm64
+          - Windows amd64, arm64
+          - macOS amd64, arm64
+        files: release-assets/*
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
