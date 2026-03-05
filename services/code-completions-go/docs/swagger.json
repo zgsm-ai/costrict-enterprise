@@ -1,0 +1,588 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a code completion service API.",
+        "title": "Code Completions API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.swagger.io/support",
+            "email": "support@swagger.io"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/api/completions": {
+            "post": {
+                "description": "根据提供的代码上下文生成代码补全建议（OPENAI协议的请求格式）",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "completions"
+                ],
+                "summary": "openai/completions接口的代码补全",
+                "parameters": [
+                    {
+                        "description": "补全请求",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CompletionParameter"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/completions.CompletionResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/completions.CompletionResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/completions.CompletionResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/details": {
+            "get": {
+                "description": "获取代码补全服务的详细信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "debug"
+                ],
+                "summary": "获取详细信息",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/logs": {
+            "post": {
+                "description": "设置应用程序的日志级别",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "debug"
+                ],
+                "summary": "设置日志级别",
+                "parameters": [
+                    {
+                        "description": "日志级别设置",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/server.LogSettings"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/stats": {
+            "get": {
+                "description": "获取代码补全服务的统计信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "debug"
+                ],
+                "summary": "获取统计信息",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/code-completion/api/v1/completions": {
+            "post": {
+                "description": "根据提供的代码上下文生成代码补全建议",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "completions"
+                ],
+                "summary": "兼容千流补全接口的代码补全",
+                "parameters": [
+                    {
+                        "description": "补全请求",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/completions.CompletionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/completions.CompletionResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/completions.CompletionResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/completions.CompletionResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/code-completion/api/v2/completions": {
+            "post": {
+                "description": "根据提供的代码上下文生成代码补全建议，该接口使用sangfor/completions接口，请求参数在客户端已经被预处理过了",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "completions"
+                ],
+                "summary": "sangfor/completions接口的代码补全",
+                "parameters": [
+                    {
+                        "description": "补全请求",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CompletionParameter"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/completions.CompletionResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/completions.CompletionResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/completions.CompletionResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/healthz": {
+            "get": {
+                "description": "检查服务是否正常运行",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "health"
+                ],
+                "summary": "健康检查",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "completions.CalculateHideScore": {
+            "type": "object",
+            "properties": {
+                "document_length": {
+                    "description": "文档长度",
+                    "type": "integer"
+                },
+                "is_whitespace_after_cursor": {
+                    "description": "光标之后该行是否没有内容(空白除外)",
+                    "type": "boolean"
+                },
+                "prefix": {
+                    "description": "光标前的所有内容",
+                    "type": "string"
+                },
+                "previous_label": {
+                    "description": "上个请求是否被接受",
+                    "type": "integer"
+                },
+                "previous_label_timestamp": {
+                    "description": "上个请求被接受的时间戳",
+                    "type": "integer"
+                },
+                "prompt_end_pos": {
+                    "description": "光标在文档中的偏移",
+                    "type": "integer"
+                }
+            }
+        },
+        "completions.CompletionChoice": {
+            "type": "object",
+            "properties": {
+                "text": {
+                    "type": "string"
+                }
+            }
+        },
+        "completions.CompletionPerformance": {
+            "type": "object",
+            "properties": {
+                "completion_tokens": {
+                    "type": "integer"
+                },
+                "context_duration": {
+                    "description": "获取上下文的时长(毫秒)",
+                    "type": "integer"
+                },
+                "llm_duration": {
+                    "description": "调用大语言模型耗用的时长(毫秒)",
+                    "type": "integer"
+                },
+                "prompt_tokens": {
+                    "type": "integer"
+                },
+                "queue_duration": {
+                    "description": "排队时长(毫秒)",
+                    "type": "integer"
+                },
+                "receive_time": {
+                    "description": "收到请求的时间",
+                    "type": "string"
+                },
+                "total_duration": {
+                    "description": "总时长(毫秒)",
+                    "type": "integer"
+                },
+                "total_tokens": {
+                    "type": "integer"
+                }
+            }
+        },
+        "completions.CompletionRequest": {
+            "type": "object",
+            "properties": {
+                "beta_mode": {
+                    "type": "boolean"
+                },
+                "calculate_hide_score": {
+                    "$ref": "#/definitions/completions.CalculateHideScore"
+                },
+                "client_id": {
+                    "type": "string"
+                },
+                "completion_id": {
+                    "type": "string"
+                },
+                "extra": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "file_project_path": {
+                    "type": "string"
+                },
+                "import_content": {
+                    "type": "string"
+                },
+                "language_id": {
+                    "type": "string"
+                },
+                "model": {
+                    "type": "string"
+                },
+                "parent_id": {
+                    "type": "string"
+                },
+                "project_path": {
+                    "type": "string"
+                },
+                "prompt": {
+                    "type": "string"
+                },
+                "prompt_options": {
+                    "$ref": "#/definitions/completions.PromptOptions"
+                },
+                "stop": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "temperature": {
+                    "type": "number"
+                },
+                "trigger_mode": {
+                    "type": "string"
+                },
+                "verbose": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "completions.CompletionResponse": {
+            "type": "object",
+            "properties": {
+                "choices": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/completions.CompletionChoice"
+                    }
+                },
+                "created": {
+                    "type": "integer"
+                },
+                "error": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "model": {
+                    "type": "string"
+                },
+                "object": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/model.CompletionStatus"
+                },
+                "usage": {
+                    "$ref": "#/definitions/completions.CompletionPerformance"
+                },
+                "verbose": {
+                    "$ref": "#/definitions/model.CompletionVerbose"
+                }
+            }
+        },
+        "completions.PromptOptions": {
+            "type": "object",
+            "properties": {
+                "code_context": {
+                    "type": "string"
+                },
+                "cursor_line_prefix": {
+                    "type": "string"
+                },
+                "cursor_line_suffix": {
+                    "type": "string"
+                },
+                "prefix": {
+                    "type": "string"
+                },
+                "suffix": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.CompletionParameter": {
+            "type": "object",
+            "properties": {
+                "clientID": {
+                    "description": "用户ID，唯一标识发起补全请求的用户",
+                    "type": "string"
+                },
+                "completionID": {
+                    "description": "补全请求ID，用于唯一标识一次补全请求",
+                    "type": "string"
+                },
+                "context": {
+                    "description": "上下文",
+                    "type": "string"
+                },
+                "max_tokens": {
+                    "description": "回复内容的最大token数",
+                    "type": "integer"
+                },
+                "model": {
+                    "description": "模型",
+                    "type": "string"
+                },
+                "prefix": {
+                    "description": "前缀",
+                    "type": "string"
+                },
+                "stop": {
+                    "description": "停止符",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "suffix": {
+                    "description": "后缀",
+                    "type": "string"
+                },
+                "temperature": {
+                    "description": "温度",
+                    "type": "number"
+                },
+                "verbose": {
+                    "description": "是否需要更详细的回复，帮助调试",
+                    "type": "boolean"
+                }
+            }
+        },
+        "model.CompletionStatus": {
+            "type": "string",
+            "enum": [
+                "success",
+                "reqError",
+                "serverError",
+                "modelError",
+                "empty",
+                "rejected",
+                "timeout",
+                "canceled",
+                "busy"
+            ],
+            "x-enum-comments": {
+                "StatusBusy": "服务端繁忙",
+                "StatusCanceled": "用户取消",
+                "StatusEmpty": "补全结果为空",
+                "StatusModelError": "模型响应错误",
+                "StatusRejected": "根据规则拒绝补全",
+                "StatusReqError": "请求存在错误",
+                "StatusServerError": "服务端错误",
+                "StatusSuccess": "补全成功",
+                "StatusTimeout": "补全请求超时"
+            },
+            "x-enum-descriptions": [
+                "补全成功",
+                "请求存在错误",
+                "服务端错误",
+                "模型响应错误",
+                "补全结果为空",
+                "根据规则拒绝补全",
+                "补全请求超时",
+                "用户取消",
+                "服务端繁忙"
+            ],
+            "x-enum-varnames": [
+                "StatusSuccess",
+                "StatusReqError",
+                "StatusServerError",
+                "StatusModelError",
+                "StatusEmpty",
+                "StatusRejected",
+                "StatusTimeout",
+                "StatusCanceled",
+                "StatusBusy"
+            ]
+        },
+        "model.CompletionVerbose": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "input": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "output": {
+                    "type": "object",
+                    "additionalProperties": true
+                }
+            }
+        },
+        "server.LogSettings": {
+            "type": "object",
+            "properties": {
+                "level": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

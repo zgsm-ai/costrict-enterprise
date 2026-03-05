@@ -1,0 +1,13 @@
+.git
+.cospec
+.roo
+.vscode
+.gitignore
+bin/cgtok
+bin/library
+tests
+README.md
+Dockerfile
+.dockerignore
+**/*.test
+**/tmp
