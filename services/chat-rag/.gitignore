@@ -1,0 +1,26 @@
+# Binaries
+*.exe
+bin/
+
+# Logs
+logs/
+
+# Dependency directories
+vendor/
+go/pkg/
+
+# IDE specific files
+.idea/
+.vscode/
+.roo/
+.cursor/
+.costrict
+.claude
+.cospec
+.history/
+*.swp
+*.swo
+
+# Environment files
+.env
+.DS_Store
