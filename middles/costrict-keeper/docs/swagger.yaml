@@ -1,0 +1,713 @@
+basePath: /
+definitions:
+  models.CheckResponse:
+    description: 系统检查API响应数据结构
+    properties:
+      components:
+        items:
+          $ref: '#/definitions/models.ComponentCheckResult'
+        type: array
+      failedChecks:
+        example: 2
+        type: integer
+      midnightRooster:
+        $ref: '#/definitions/models.MidnightRoosterCheckResult'
+      overallStatus:
+        example: healthy
+        type: string
+      passedChecks:
+        example: 8
+        type: integer
+      services:
+        items:
+          $ref: '#/definitions/models.ServiceCheckResult'
+        type: array
+      timestamp:
+        example: "2024-01-01T10:00:00Z"
+        type: string
+      totalChecks:
+        example: 10
+        type: integer
+    type: object
+  models.ComponentCheckResult:
+    description: 组件状态检查结果
+    properties:
+      installed:
+        example: true
+        type: boolean
+      localVersion:
+        example: 1.0.0
+        type: string
+      name:
+        example: costrict
+        type: string
+      needUpgrade:
+        example: true
+        type: boolean
+      remoteVersion:
+        example: 1.1.0
+        type: string
+    type: object
+  models.ComponentSpecification:
+    properties:
+      install_dir:
+        type: string
+      name:
+        type: string
+      upgrade:
+        $ref: '#/definitions/models.UpgradeSpecification'
+      version:
+        type: string
+    type: object
+  models.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  models.HealthResponse:
+    description: 健康检查API响应数据结构
+    properties:
+      metrics:
+        $ref: '#/definitions/models.Metrics'
+      startTime:
+        example: "2024-01-01T10:00:00Z"
+        type: string
+      status:
+        example: UP
+        type: string
+      uptime:
+        example: 1h30m45s
+        type: string
+      version:
+        example: 1.0.0
+        type: string
+    type: object
+  models.Metrics:
+    description: 系统关键指标数据结构
+    properties:
+      activeServices:
+        example: 3
+        type: integer
+      activeTunnels:
+        example: 2
+        type: integer
+      errorRequests:
+        example: 5
+        type: integer
+      totalComponents:
+        type: integer
+      totalRequests:
+        example: 1000
+        type: integer
+      upgradedComponents:
+        example: 4
+        type: integer
+    type: object
+  models.MidnightRoosterCheckResult:
+    description: 半夜鸡叫自动升级检查结果
+    properties:
+      componentsCount:
+        example: 5
+        type: integer
+      lastCheckTime:
+        example: "2024-01-01T03:30:00Z"
+        type: string
+      nextCheckTime:
+        example: "2024-01-02T03:30:00Z"
+        type: string
+      status:
+        example: active
+        type: string
+      upgradesNeeded:
+        example: 2
+        type: integer
+    type: object
+  models.PortPair:
+    properties:
+      localPort:
+        description: local port
+        type: integer
+      mappingPort:
+        description: mapping port to cloud
+        type: integer
+    type: object
+  models.RunStatus:
+    enum:
+    - exited
+    - running
+    - stopped
+    - error
+    type: string
+    x-enum-varnames:
+    - StatusExited
+    - StatusRunning
+    - StatusStopped
+    - StatusError
+  models.ServiceCheckResult:
+    description: 服务健康状态检查结果
+    properties:
+      healthy:
+        example: true
+        type: boolean
+      lastExitReason:
+        example: exited normally
+        type: string
+      lastExitTime:
+        example: "2024-01-01T09:00:00Z"
+        type: string
+      name:
+        example: costrict
+        type: string
+      pid:
+        example: 1234
+        type: integer
+      port:
+        example: 8080
+        type: integer
+      processName:
+        example: costrict
+        type: string
+      restartCount:
+        example: 0
+        type: integer
+      startTime:
+        example: "2024-01-01T10:00:00Z"
+        type: string
+      status:
+        example: running
+        type: string
+      tunnel:
+        $ref: '#/definitions/models.TunnelCheckResult'
+    type: object
+  models.ServiceSpecification:
+    properties:
+      accessible:
+        type: string
+      args:
+        items:
+          type: string
+        type: array
+      command:
+        type: string
+      healthy:
+        type: string
+      metrics:
+        type: string
+      name:
+        type: string
+      port:
+        type: integer
+      protocol:
+        type: string
+      startup:
+        type: string
+    type: object
+  models.TunnelCheckResult:
+    description: 隧道状态检查结果
+    properties:
+      createdTime:
+        type: string
+      pid:
+        type: integer
+      ports:
+        items:
+          $ref: '#/definitions/models.PortPair'
+        type: array
+      status:
+        type: string
+    type: object
+  models.TunnelResponse:
+    properties:
+      appName:
+        description: application name
+        type: string
+      message:
+        description: response message
+        type: string
+      status:
+        description: operation status
+        type: string
+    type: object
+  models.UpgradeSpecification:
+    properties:
+      highest:
+        type: string
+      lowest:
+        type: string
+      mode:
+        type: string
+    type: object
+  services.ComponentInstance:
+    properties:
+      installed:
+        type: boolean
+      local_version:
+        type: string
+      need_upgrade:
+        type: boolean
+      remote_version:
+        type: string
+      spec:
+        $ref: '#/definitions/models.ComponentSpecification'
+    type: object
+  services.ProcessInstance:
+    properties:
+      args:
+        items:
+          type: string
+        type: array
+      command:
+        type: string
+      instanceName:
+        type: string
+      lastExitReason:
+        type: string
+      lastExitTime:
+        type: string
+      maxRestartCount:
+        type: integer
+      pid:
+        type: integer
+      processName:
+        type: string
+      restartCount:
+        type: integer
+      startTime:
+        type: string
+      status:
+        type: string
+      workDir:
+        type: string
+    type: object
+  services.ServiceDetail:
+    properties:
+      component:
+        $ref: '#/definitions/services.ComponentInstance'
+      name:
+        type: string
+      pid:
+        type: integer
+      port:
+        type: integer
+      process:
+        $ref: '#/definitions/services.ProcessInstance'
+      spec:
+        $ref: '#/definitions/models.ServiceSpecification'
+      startTime:
+        type: string
+      status:
+        type: string
+      tunnel:
+        $ref: '#/definitions/services.TunnelInstance'
+    type: object
+  services.ServiceInstance:
+    properties:
+      name:
+        type: string
+      pid:
+        type: integer
+      port:
+        type: integer
+      startTime:
+        type: string
+      status:
+        type: string
+    type: object
+  services.TunnelInstance:
+    properties:
+      createdTime:
+        description: creation time
+        type: string
+      name:
+        description: service name
+        type: string
+      pairs:
+        description: Port pairs
+        items:
+          $ref: '#/definitions/models.PortPair'
+        type: array
+      pid:
+        description: process ID of the tunnel
+        type: integer
+      status:
+        allOf:
+        - $ref: '#/definitions/models.RunStatus'
+        description: tunnel status(running/stopped/error/exited)
+    type: object
+host: localhost:8999
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is the API server for Costrict Keeper
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Costrict Keeper API
+  version: "1.0"
+paths:
+  /costrict/api/v1/check:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        立即执行各项检查，包括服务健康状态、进程状态、隧道状态、组件更新状态和半夜鸡叫自动升级检查机制
+        返回详细的检查结果，包括各项服务的运行状态、进程信息、隧道连接状态、组件版本信息以及系统总体健康状态
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '示例响应：{\n  \"timestamp\": \"2024-01-01T10:00:00Z\",\n  \"services\":
+            [{\n    \"name\": \"costrict\",\n    \"status\": \"running\",\n    \"pid\":
+            1234,\n    \"port\": 8080,\n    \"startTime\": \"2024-01-01T09:00:00Z\",\n    \"healthy\":
+            true\n  }],\n  \"processes\": [],\n  \"tunnels\": [{\n    \"name\": \"myapp\",\n    \"localPort\":
+            8080,\n    \"mappingPort\": 30001,\n    \"status\": \"running\",\n    \"pid\":
+            1235,\n    \"createdTime\": \"2024-01-01T09:00:00Z\"\n  }],\n  \"components\":
+            [{\n    \"name\": \"costrict\",\n    \"localVersion\": \"1.0.0\",\n    \"remoteVersion\":
+            \"1.1.0\",\n    \"installed\": true,\n    \"needUpgrade\": true\n  }],\n  \"midnightRooster\":
+            {\n    \"status\": \"active\",\n    \"nextCheckTime\": \"2024-01-02T03:30:00Z\",\n    \"lastCheckTime\":
+            \"2024-01-01T03:30:00Z\",\n    \"componentsCount\": 5,\n    \"upgradesNeeded\":
+            2\n  },\n  \"overallStatus\": \"warning\",\n  \"totalChecks\": 4,\n  \"passedChecks\":
+            3,\n  \"failedChecks\": 1\n}'
+          schema:
+            $ref: '#/definitions/models.CheckResponse'
+        "500":
+          description: '示例错误响应：{\n  \"code\": \"system.check_failed\",\n  \"message\":
+            \"Failed to perform system check: timeout error\"\n}'
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 执行系统检查
+      tags:
+      - System
+  /costrict/api/v1/components:
+    get:
+      description: 获取所有已安装组件信息
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/services.ComponentInstance'
+            type: array
+      summary: 获取组件列表
+      tags:
+      - Components
+  /costrict/api/v1/components/{name}:
+    delete:
+      description: 根据组件名删除指定组件
+      parameters:
+      - description: 组件名称
+        in: path
+        name: name
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 删除组件
+      tags:
+      - Components
+  /costrict/api/v1/components/{name}/upgrade:
+    post:
+      description: 升级指定组件到最新版本
+      parameters:
+      - description: 组件名称
+        in: path
+        name: name
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: '{"code": "component.not_found", "message": "Component not
+            found"}'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: 升级组件
+      tags:
+      - Components
+  /costrict/api/v1/reload:
+    post:
+      description: 重新加载应用配置文件
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 重新加载配置
+      tags:
+      - Config
+  /costrict/api/v1/services:
+    get:
+      consumes:
+      - application/json
+      description: Get list of all managed services with their current status
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of service instances
+          schema:
+            items:
+              $ref: '#/definitions/services.ServiceInstance'
+            type: array
+        "500":
+          description: Internal server error response
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: List all services
+      tags:
+      - Services
+  /costrict/api/v1/services/{name}:
+    get:
+      consumes:
+      - application/json
+      description: Get detailed information of a specific service by its name
+      parameters:
+      - description: Service name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Service detail information
+          schema:
+            $ref: '#/definitions/services.ServiceDetail'
+        "404":
+          description: Service not found error response
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal server error response
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get service information
+      tags:
+      - Services
+  /costrict/api/v1/services/{name}/close:
+    post:
+      consumes:
+      - application/json
+      description: Close the reverse tunnel for the specified service to disable remote
+        access
+      parameters:
+      - description: Service name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Tunnel close operation success response
+          schema:
+            $ref: '#/definitions/models.TunnelResponse'
+        "404":
+          description: Service not found error response
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal server error response
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Close reverse tunnel for service
+      tags:
+      - Services
+  /costrict/api/v1/services/{name}/open:
+    post:
+      consumes:
+      - application/json
+      description: Create a reverse tunnel for the specified service to enable remote
+        access
+      parameters:
+      - description: Service name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Tunnel information with port mappings and status
+          schema:
+            $ref: '#/definitions/services.TunnelInstance'
+        "404":
+          description: Service not found error response
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal server error response
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Create reverse tunnel for service
+      tags:
+      - Services
+  /costrict/api/v1/services/{name}/reopen:
+    post:
+      consumes:
+      - application/json
+      description: Restart the reverse tunnel for the specified service to refresh
+        connection and port mapping
+      parameters:
+      - description: Service name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Tunnel restart operation success response
+          schema:
+            $ref: '#/definitions/models.TunnelResponse'
+        "404":
+          description: Service not found error response
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal server error response
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Restart reverse tunnel for service
+      tags:
+      - Services
+  /costrict/api/v1/services/{name}/restart:
+    post:
+      consumes:
+      - application/json
+      description: Restart a specific service by its name
+      parameters:
+      - description: Service name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Service restart success response
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Service not found error response
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal server error response
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Restart service
+      tags:
+      - Services
+  /costrict/api/v1/services/{name}/start:
+    post:
+      consumes:
+      - application/json
+      description: Start a specific service by its name
+      parameters:
+      - description: Service name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Service start success response
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Service not found error response
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal server error response
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Start service
+      tags:
+      - Services
+  /costrict/api/v1/services/{name}/stop:
+    post:
+      consumes:
+      - application/json
+      description: Stop a specific service by its name
+      parameters:
+      - description: Service name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Service stop success response
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Service not found error response
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal server error response
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Stop service
+      tags:
+      - Services
+  /healthz:
+    get:
+      description: 检查服务是否已经做好准备，返回服务版本、启动时间、健康状态和关键指标统计结果
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.HealthResponse'
+      summary: 业务就绪探针
+      tags:
+      - System
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
