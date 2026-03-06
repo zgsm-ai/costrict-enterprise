@@ -1,0 +1,19 @@
+services:
+  codebase-embedder:
+    image: ${IMAGE_CODEBASE_EMBEDDER}
+    restart: always
+    command: ["/app/server", "-f", "/app/conf/conf.yaml"]
+    environment:
+      - TZ=Asia/Shanghai
+      - INDEX_NODE=1
+    volumes:
+      - ./conf.yaml:/app/conf/conf.yaml:ro
+      - ${COSTRICT_DATA_DIR}/logs/codebase-embedder/logs:/app/logs
+    networks:
+      - shenma
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8888/health"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 15s

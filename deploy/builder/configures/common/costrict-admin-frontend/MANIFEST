@@ -1,0 +1,36 @@
+# 安装清单文件
+#
+# 格式说明:
+#   1. 源文件相对路径 -> 目标相对路径
+#      目标相对路径会放到安装目标目录的costrict子目录下
+#      示例: costrict-admin/costrict-admin -> bin/costrict-admin
+#            实际目标: /usr/local/costrict/bin/costrict-admin
+#
+#   2. 源文件相对路径 -> 目标绝对路径
+#      目标绝对路径直接使用，不受costrict子目录限制
+#      示例: costrict-admin/costrict-admin -> /usr/local/bin/costrict-admin
+#            实际目标: /usr/local/bin/costrict-admin
+#
+#   3. 源文件相对路径
+#      未指定目标时，1:1镜像拷贝到costrict子目录
+#      示例: costrict-admin/costrict-admin
+#            实际目标: /usr/local/costrict/costrict-admin/costrict-admin
+#
+#   4. 源目录相对路径
+#      目录下的所有文件和子目录会被递归拷贝
+#
+#   5. 目标相对路径指定
+#      @@指令可指定后续拷贝指令的目标相对路径(即相对backend-dir的路径)
+#      如果无@@指令，则目标相对路径是包名字
+#      如果指定相对路径是空(即@@)或'~'(即@@~)，相对路径是空，即backend-dir本身
+#      示例: @@bin
+#            实际目标: /usr/local/costrict/bin
+#            @@~
+#            实际目标: /usr/local/costrict
+# ===================================================
+
+@@portal/data/costrict-admin
+@clean
+
+assets
+index.html

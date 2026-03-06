@@ -1,0 +1,384 @@
+{
+  "packages": [
+    "costrict-config",
+    "cotun-options",
+    "completion-config",
+    "tokenizer-config",
+    "hidden-scores-config",
+    "system",
+    "codebase-indexer",
+    "apisix",
+    "casdoor",
+    "chat-rag",
+    "code-completion",
+    "codebase-embedder",
+    "codebase-querier",
+    "codereview",
+    "credit-manager",
+    "client-manager",
+    "etcd",
+    "monitoring",
+    "oneapi",
+    "portal",
+    "postgres",
+    "quota-manager",
+    "redis",
+    "weaviate",
+    "smc",
+    "completion-agent",
+    "cotun",
+    "costrict",
+    "firmware",
+    "backend",
+    "frontend",
+    "costrict-admin-frontend",
+    "costrict-admin-backend",
+    "costrict-admin",
+    "costrict-system"
+  ],
+  "builds": [
+    {
+      "name": "smc",
+      "type": "exec",
+      "path": "../smc",
+      "version": "1.1.16",
+      "platforms": [
+        {
+          "os": "windows",
+          "arch": "amd64"
+        },
+        {
+          "os": "linux",
+          "arch": "amd64"
+        }
+      ],
+      "description": "System management console"
+    },
+    {
+      "name": "costrict",
+      "type": "exec",
+      "path": "../costrict-keeper",
+      "version": "1.1.33",
+      "platforms": [
+        {
+          "os": "windows",
+          "arch": "amd64"
+        },
+        {
+          "os": "linux",
+          "arch": "amd64"
+        },
+        {
+          "os": "linux",
+          "arch": "arm64"
+        },
+        {
+          "os": "darwin",
+          "arch": "amd64"
+        },
+        {
+          "os": "darwin",
+          "arch": "arm64"
+        }
+      ],
+      "description": "Costrict client process management service"
+    },
+    {
+      "name": "cotun",
+      "type": "exec",
+      "path": "../cotun",
+      "version": "1.3.11",
+      "platforms": [
+        {
+          "os": "windows",
+          "arch": "amd64"
+        },
+        {
+          "os": "linux",
+          "arch": "amd64"
+        },
+        {
+          "os": "linux",
+          "arch": "arm64"
+        },
+        {
+          "os": "darwin",
+          "arch": "amd64"
+        },
+        {
+          "os": "darwin",
+          "arch": "arm64"
+        }
+      ],
+      "description": "Stream transfer tools"
+    },
+    {
+      "name": "completion-agent",
+      "type": "exec",
+      "path": "../completion-agent",
+      "version": "1.0.20",
+      "platforms": [
+        {
+          "os": "windows",
+          "arch": "amd64"
+        },
+        {
+          "os": "linux",
+          "arch": "amd64"
+        },
+        {
+          "os": "linux",
+          "arch": "arm64"
+        },
+        {
+          "os": "darwin",
+          "arch": "amd64"
+        },
+        {
+          "os": "darwin",
+          "arch": "arm64"
+        }
+      ],
+      "description": "Client agent for code completion"
+    },
+    {
+      "name": "costrict-admin",
+      "type": "exec",
+      "path": "../costrict-admin/backend",
+      "platforms": [
+        {
+          "os": "windows",
+          "arch": "amd64"
+        },
+        {
+          "os": "linux",
+          "arch": "amd64"
+        }
+      ],
+      "version": "1.0.48",
+      "description": "The back-end management of costrict"
+    },
+    {
+      "name": "costrict-admin-backend",
+      "type": "zip",
+      "path": "./configures",
+      "version": "1.0.46",
+      "description": "The back-end docker-service of costrict"
+    },
+    {
+      "name": "costrict-admin-frontend",
+      "type": "zip",
+      "path": "./configures",
+      "version": "1.0.36",
+      "description": "The front-end page of the costrict-admin service"
+    },
+    {
+      "name": "system",
+      "type": "conf",
+      "path": "./configures",
+      "target": "system-spec.json",
+      "filename": "share/system-spec.json",
+      "version": "1.1.5",
+      "description": "Client Subsystem Definition File"
+    },
+    {
+      "name": "costrict-system",
+      "type": "zip",
+      "path": "./configures",
+      "version": "1.0.1",
+      "description": "CoStrict system"
+    },
+    {
+      "name": "firmware",
+      "type": "zip",
+      "path": "./configures",
+      "version": "1.0.38",
+      "description": "The firmware of the backend system"
+    },
+    {
+      "name": "frontend",
+      "type": "zip",
+      "path": "./configures",
+      "version": "1.0.4",
+      "description": "Frontend Subsystem Definition File"
+    },
+    {
+      "name": "backend",
+      "type": "zip",
+      "path": "./configures",
+      "version": "1.0.26",
+      "description": "Backend Subsystem Definition File"
+    },
+    {
+      "name": "costrict-config",
+      "type": "conf",
+      "path": "./configures",
+      "target": "costrict.json",
+      "filename": "config/costrict.json",
+      "version": "1.1.4",
+      "description": "Costrict configure file"
+    },
+    {
+      "name": "cotun-options",
+      "type": "conf",
+      "path": "./configures",
+      "target": "cotun-options.json",
+      "filename": "config/cotun-options.json",
+      "version": "1.0.0",
+      "description": "Cotun option file"
+    },
+    {
+      "name": "completion-config",
+      "type": "conf",
+      "path": "./configures",
+      "target": "completion-agent.json",
+      "filename": "config/completion-agent.json",
+      "version": "1.0.6",
+      "description": "Completion-Agent configure file"
+    },
+    {
+      "name": "tokenizer-config",
+      "type": "conf",
+      "path": "./configures",
+      "target": "tokenizer.json",
+      "filename": "config/tokenizer.json",
+      "version": "1.0.0",
+      "description": "The definition file used by the Tokenizer"
+    },
+    {
+      "name": "hidden-scores-config",
+      "type": "conf",
+      "path": "./configures",
+      "target": "hidden-scores.json",
+      "filename": "config/hidden-scores.json",
+      "version": "1.0.0",
+      "description": "The Configuration for hidden-scores filter"
+    },
+    {
+      "name": "apisix",
+      "type": "zip",
+      "path": "./configures",
+      "version": "1.0.3",
+      "description": "Back-end API entry gateway"
+    },
+    {
+      "name": "casdoor",
+      "type": "zip",
+      "path": "./configures",
+      "version": "1.0.5",
+      "description": "User Authentication Management System"
+    },
+    {
+      "name": "cotund",
+      "type": "zip",
+      "path": "./configures",
+      "version": "1.0.0",
+      "description": "Management service for the collaborative tunnel between the client and the server"
+    },
+    {
+      "name": "chat-rag",
+      "type": "zip",
+      "path": "./configures",
+      "version": "1.0.4",
+      "description": "CHAT service with RAG enhancement capabilities"
+    },
+    {
+      "name": "code-completion",
+      "type": "zip",
+      "path": "./configures",
+      "version": "1.0.3",
+      "description": "Code completion service"
+    },
+    {
+      "name": "codebase-embedder",
+      "type": "zip",
+      "path": "./configures",
+      "version": "1.0.5",
+      "description": "A service used to construct embeddable code vectors"
+    },
+    {
+      "name": "codebase-querier",
+      "type": "zip",
+      "path": "./configures",
+      "version": "1.0.4",
+      "description": "Code context query service"
+    },
+    {
+      "name": "codereview",
+      "type": "zip",
+      "path": "./configures",
+      "version": "1.0.4",
+      "description": "Code review service"
+    },
+    {
+      "name": "credit-manager",
+      "type": "zip",
+      "path": "./configures",
+      "version": "1.0.3",
+      "description": "Credit Management Service"
+    },
+    {
+      "name": "client-manager",
+      "type": "zip",
+      "path": "./configures",
+      "version": "1.0.4",
+      "description": "Client Management Support Service"
+    },
+    {
+      "name": "etcd",
+      "type": "zip",
+      "path": "./configures",
+      "version": "1.0.4",
+      "description": "A key-value database provided for use by services such as APISIX"
+    },
+    {
+      "name": "monitoring",
+      "type": "zip",
+      "path": "./configures",
+      "version": "1.0.4",
+      "description": "System Monitoring Subsystem"
+    },
+    {
+      "name": "oneapi",
+      "type": "zip",
+      "path": "./configures",
+      "version": "1.0.4",
+      "description": "LLM Management Gateway Service"
+    },
+    {
+      "name": "portal",
+      "type": "zip",
+      "path": "./configures",
+      "version": "1.0.6",
+      "description": "Unified static resource entry point"
+    },
+    {
+      "name": "postgres",
+      "type": "zip",
+      "path": "./configures",
+      "version": "1.0.4",
+      "description": "A universal database for storing critical user data"
+    },
+    {
+      "name": "quota-manager",
+      "type": "zip",
+      "path": "./configures",
+      "version": "1.0.3",
+      "description": "LLM Quota Management Service"
+    },
+    {
+      "name": "redis",
+      "type": "zip",
+      "path": "./configures",
+      "version": "1.0.5",
+      "description": "General data caching service"
+    },
+    {
+      "name": "weaviate",
+      "type": "zip",
+      "path": "./configures",
+      "version": "1.0.5",
+      "description": "Vector database for storing code and document vectors"
+    }
+  ]
+}

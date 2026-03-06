@@ -1,0 +1,11 @@
+services:
+  portal:
+    image: ${IMAGE_NGINX}
+    restart: always
+    environment:
+      TZ: "Asia/Shanghai"
+    volumes:
+      - ./data:/var/www
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - shenma

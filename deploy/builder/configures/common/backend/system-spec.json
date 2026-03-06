@@ -1,0 +1,290 @@
+{
+  "subsystem": "backend",
+  "components": [
+    {
+      "component_name": "costrict-admin-backend",
+      "display_name": "costrict-admin后端服务",
+      "description": "CoStrict管理服务的后端服务",
+      "allowed_versions": ">=1.0.0"
+    },
+    {
+      "component_name": "costrict-admin-frontend",
+      "display_name": "costrict-admin前端页面",
+      "description": "CoStrict管理服务的前端页面",
+      "allowed_versions": ">=1.0.0",
+      "dependences": [
+        {
+          "component_name": "portal",
+          "version": ">=1.0.0"
+        }
+      ]
+    },
+    {
+      "component_name": "casdoor",
+      "display_name": "Casdoor",
+      "description": "身份认证和授权平台",
+      "allowed_versions": ">=1.0.0",
+      "dependences": [
+        {
+          "component_name": "postgres",
+          "version": ">=1.0.0"
+        }
+      ]
+    },
+    {
+      "component_name": "oneapi",
+      "display_name": "OneAPI",
+      "description": "大语言模型管理服务，聚合多来源多类型大语言模型API",
+      "allowed_versions": ">=1.0.0"
+    },
+    {
+      "component_name": "etcd",
+      "display_name": "ETCD",
+      "description": "分布式键值存储，用于配置管理和服务发现",
+      "allowed_versions": ">=3.4.0"
+    },
+    {
+      "component_name": "redis",
+      "display_name": "Redis",
+      "description": "内存数据结构存储，用作缓存和消息代理",
+      "allowed_versions": ">=6.0.0"
+    },
+    {
+      "component_name": "postgres",
+      "display_name": "PostgreSQL",
+      "description": "关系型数据库，存储业务数据",
+      "allowed_versions": ">=13.0.0"
+    },
+    {
+      "component_name": "apisix",
+      "display_name": "APISIX",
+      "description": "云原生 API 网关，提供 API 网关和负载均衡功能",
+      "allowed_versions": ">=2.0.0",
+      "dependences": [
+        {
+          "component_name": "etcd",
+          "version": ">=1.0.0"
+        }
+      ]
+    },
+    {
+      "component_name": "portal",
+      "display_name": "Portal",
+      "description": "前端门户网站服务",
+      "allowed_versions": ">=1.0.0"
+    },
+    {
+      "component_name": "cotund",
+      "display_name": "CoTun",
+      "description": "隧道服务",
+      "allowed_versions": ">=1.0.0"
+    },
+    {
+      "component_name": "codebase-querier",
+      "display_name": "Codebase-Querier",
+      "description": "提供代码库查询和检索功能",
+      "allowed_versions": ">=1.0.0"
+    },
+    {
+      "component_name": "codebase-embedder",
+      "display_name": "Codebase-Embedder",
+      "description": "提供代码库向量化和嵌入功能",
+      "allowed_versions": ">=1.0.0"
+    },
+    {
+      "component_name": "chat-rag",
+      "display_name": "Chat-RAG",
+      "description": "提供基于RAG的聊天和问答服务",
+      "allowed_versions": ">=1.0.0"
+    },
+    {
+      "component_name": "codereview",
+      "display_name": "CodeReview",
+      "description": "提供代码审查和管理功能",
+      "allowed_versions": ">=1.0.0"
+    },
+    {
+      "component_name": "credit-manager",
+      "display_name": "Credit-Manager",
+      "description": "提供用户额度和配额管理功能",
+      "allowed_versions": ">=1.0.0"
+    },
+    {
+      "component_name": "code-completion",
+      "display_name": "Code-Completion",
+      "description": "提供智能代码补全和建议功能",
+      "allowed_versions": ">=1.0.0"
+    },
+    {
+      "component_name": "monitoring",
+      "display_name": "监控服务",
+      "description": "提供系统监控和数据可视化功能",
+      "allowed_versions": ">=1.0.0"
+    },
+    {
+      "component_name": "quota-manager",
+      "display_name": "Quota-Manager",
+      "description": "提供资源配额和限流管理功能",
+      "allowed_versions": ">=1.0.0"
+    },
+    {
+      "component_name": "client-manager",
+      "display_name": "Client-Manager",
+      "description": "客户端管理支撑服务",
+      "allowed_versions": ">=1.0.0"
+    },
+    {
+      "component_name": "weaviate",
+      "display_name": "Weaviate",
+      "description": "向量数据库，用于语义搜索", 
+      "allowed_versions": ">=1.0.0"
+    }
+  ],
+  "services": [
+    {
+      "service_name": "costrict-admin-backend",
+      "component_name": "costrict-admin-backend",
+      "display_name": "CoStrict后端管理",
+      "http_address": "http://{{ .COSTRICT_HOST }}:{{ .PORT_APISIX_ENTRY }}",
+      "health_url": "http://localhost:8080/healthz",
+      "log_file": "/var/log/costrict-admin.log"
+    },
+    {
+      "service_name": "etcd",
+      "component_name": "etcd",
+      "health_url": "http://localhost:32382/health",
+      "log_file": "/var/log/etcd.log"
+    },
+    {
+      "service_name": "redis",
+      "component_name": "redis",
+      "health_url": "http://localhost:36379/ping",
+      "log_file": "/var/log/redis.log"
+    },
+    {
+      "service_name": "postgres",
+      "component_name": "postgres",
+      "health_url": "http://localhost:35432/healthz",
+      "log_file": "/var/log/postgres.log"
+    },
+    {
+      "service_name": "apisix",
+      "component_name": "apisix",
+      "health_url": "http://localhost:39180/healthz",
+      "log_file": "/var/log/apisix.log"
+    },
+    {
+      "service_name": "casdoor",
+      "component_name": "casdoor",
+      "http_address": "http://{{ .COSTRICT_HOST }}:{{ .PORT_CASDOOR }}",
+      "health_url": "http://localhost:39009/healthz",
+      "log_file": "/var/log/casdoor.log"
+    },
+    {
+      "service_name": "oidc-auth",
+      "component_name": "casdoor",
+      "health_url": "http://localhost:8085/healthz",
+      "log_file": "/var/log/oidc-auth.log"
+    },
+    {
+      "service_name": "portal",
+      "component_name": "portal",
+      "health_url": "http://localhost:3000/healthz",
+      "log_file": "/var/log/portal.log"
+    },
+    {
+      "service_name": "oneapi",
+      "component_name": "oneapi",
+      "http_address": "http://{{ .COSTRICT_HOST }}:{{ .PORT_ONEAPI }}",
+      "health_url": "http://localhost:39000/healthz",
+      "log_file": "/var/log/oneapi.log"
+    },
+    {
+      "service_name": "cotund",
+      "component_name": "cotund",
+      "health_url": "http://localhost:8090/healthz",
+      "log_file": "/var/log/cotund.log"
+    },
+    {
+      "service_name": "codebase-querier",
+      "component_name": "codebase-querier",
+      "health_url": "http://localhost:8091/healthz",
+      "log_file": "/var/log/codebase-querier.log"
+    },
+    {
+      "service_name": "codebase-embedder",
+      "component_name": "codebase-embedder",
+      "health_url": "http://localhost:8092/healthz",
+      "log_file": "/var/log/codebase-embedder.log"
+    },
+    {
+      "service_name": "chat-rag",
+      "component_name": "chat-rag",
+      "health_url": "http://localhost:8093/healthz",
+      "log_file": "/var/log/chat-rag.log"
+    },
+    {
+      "service_name": "review-manager",
+      "component_name": "codereview",
+      "health_url": "http://localhost:8094/healthz",
+      "log_file": "/var/log/review-manager.log"
+    },
+    {
+      "service_name": "review-worker",
+      "component_name": "codereview",
+      "health_url": "http://localhost:8095/healthz",
+      "log_file": "/var/log/review-worker.log"
+    },
+    {
+      "service_name": "issue-manager",
+      "component_name": "codereview",
+      "health_url": "http://localhost:8096/healthz",
+      "log_file": "/var/log/issue-manager.log"
+    },
+    {
+      "service_name": "review-checker",
+      "component_name": "codereview",
+      "health_url": "http://localhost:8097/healthz",
+      "log_file": "/var/log/review-checker.log"
+    },
+    {
+      "service_name": "credit-manager",
+      "component_name": "credit-manager",
+      "health_url": "http://localhost:8098/healthz",
+      "log_file": "/var/log/credit-manager.log"
+    },
+    {
+      "service_name": "code-completion",
+      "component_name": "code-completion",
+      "health_url": "http://localhost:8099/healthz",
+      "log_file": "/var/log/code-completion.log"
+    },
+    {
+      "service_name": "prometheus",
+      "component_name": "monitoring",
+      "http_address": "http://{{ .COSTRICT_HOST }}:{{ .PORT_PROMETHEUS }}",
+      "health_url": "http://localhost:39090/healthz",
+      "log_file": "/var/log/prometheus.log"
+    },
+    {
+      "service_name": "grafana",
+      "component_name": "monitoring",
+      "http_address": "http://{{ .COSTRICT_HOST }}:{{ .PORT_GRAFANA }}",
+      "health_url": "http://localhost:33000/healthz",
+      "log_file": "/var/log/grafana.log"
+    },
+    {
+      "service_name": "es",
+      "component_name": "monitoring",
+      "http_address": "http://{{ .COSTRICT_HOST }}:{{ .PORT_ES }}",
+      "health_url": "http://localhost:39200/healthz",
+      "log_file": "/var/log/es.log"
+    }
+  ],
+  "dependencies": [
+    {
+      "depend_component": "firmware",
+      "depend_versions": ">=1.0.0"
+    }
+  ]
+}

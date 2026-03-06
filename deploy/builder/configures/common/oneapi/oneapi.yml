@@ -1,0 +1,12 @@
+services:
+  oneapi:
+    image: ${IMAGE_ONEAPI}
+    restart: always
+    environment:
+      TZ: "Asia/Shanghai"
+    volumes:
+      - ${COSTRICT_DATA_DIR}/data/oneapi/data:/data
+    ports:
+      - "${PORT_ONEAPI}:3000"
+    networks:
+      - shenma

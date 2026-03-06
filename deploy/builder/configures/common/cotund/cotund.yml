@@ -1,0 +1,11 @@
+services:
+  cotund:
+    image: ${IMAGE_COTUN}
+    restart: always
+    command: ["--reverse", "--port", "8080", "--authfile", "/cotun/users.json"]
+    environment:
+      TZ: "Asia/Shanghai"
+    volumes:
+      - ./users.json:/cotun/users.json:ro
+    networks:
+      - shenma

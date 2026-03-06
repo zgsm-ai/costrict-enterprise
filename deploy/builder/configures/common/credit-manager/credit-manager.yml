@@ -1,0 +1,9 @@
+services:
+  credit-manager:
+    image: ${IMAGE_CREDIT_MANAGER}
+    command: ["nginx", "-g", "daemon off;"]
+    restart: always
+    volumes:
+      - ./config:/config
+    networks:
+      - shenma

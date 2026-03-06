@@ -1,0 +1,17 @@
+services:
+  etcd:
+    image: ${IMAGE_ETCD}
+    restart: always
+    volumes:
+      - ${COSTRICT_DATA_DIR}/data/etcd/data:/bitnami/etcd/data
+    user: "1000:1000"
+    environment:
+      TZ: "Asia/Shanghai"
+      ETCD_ENABLE_V2: "true"
+      ALLOW_NONE_AUTHENTICATION: "yes"
+      ETCD_ADVERTISE_CLIENT_URLS: "http://127.0.0.1:2379"
+      ETCD_LISTEN_CLIENT_URLS: "http://0.0.0.0:2379"
+    ports:
+      - "${PORT_ETCD}:2379/tcp"
+    networks:
+      - shenma

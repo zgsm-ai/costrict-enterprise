@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: ${IMAGE_POSTGRES}
+    restart: always
+    environment:
+      TZ: "Asia/Shanghai"
+      POSTGRES_DB: "${POSTGRES_DB}"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${PASSWORD_POSTGRES}"
+    volumes:
+      - ${COSTRICT_DATA_DIR}/data/postgres/data:/var/lib/postgresql/data
+      - ./initdb.d:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "${PORT_POSTGRES}:5432/tcp"
+    networks:
+      - shenma

@@ -1,0 +1,13 @@
+services:
+  apisix:
+    image: ${IMAGE_APISIX}
+    restart: always
+    environment:
+      TZ: "Asia/Shanghai"
+    volumes:
+      - ./config.yaml:/usr/local/apisix/conf/config.yaml:ro
+    ports:
+      - "${PORT_APISIX_API}:9180/tcp"
+      - "${PORT_APISIX_ENTRY}:9080/tcp"
+    networks:
+      - shenma

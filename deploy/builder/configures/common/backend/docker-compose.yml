@@ -1,0 +1,127 @@
+version: '3.8'
+
+services:
+  # 基础设施服务
+  etcd:
+    extends:
+      file: ./etcd/etcd.yml
+      service: etcd
+
+  redis:
+    extends:
+      file: ./redis/redis.yml
+      service: redis
+
+  postgres:
+    extends:
+      file: ./postgres/postgres.yml
+      service: postgres
+
+  # 核心网关服务
+  apisix:
+    extends:
+      file: ./apisix/apisix.yml
+      service: apisix
+
+  costrict-admin-backend:
+    extends:
+      file: ./costrict-admin-backend/costrict-admin-backend.yml
+      service: costrict-admin-backend
+
+  casdoor:
+    extends:
+      file: ./casdoor/casdoor.yml
+      service: casdoor
+
+  portal:
+    extends:
+      file: ./portal/portal.yml
+      service: portal
+
+  oneapi:
+    extends:
+      file: ./oneapi/oneapi.yml
+      service: oneapi
+
+  # 基础服务
+  cotund:
+    extends:
+      file: ./cotund/cotund.yml
+      service: cotund
+
+  codebase-querier:
+    extends:
+      file: ./codebase-querier/codebase-querier.yml
+      service: codebase-querier
+
+  codebase-embedder:
+    extends:
+      file: ./codebase-embedder/codebase-embedder.yml
+      service: codebase-embedder
+
+  # 业务服务
+  chat-rag:
+    extends:
+      file: ./chat-rag/chat-rag.yml
+      service: chat-rag
+
+  review-manager:
+    extends:
+      file: ./codereview/codereview.yml
+      service: review-manager
+
+  review-worker:
+    extends:
+      file: ./codereview/codereview.yml
+      service: review-worker
+
+  issue-manager:
+    extends:
+      file: ./codereview/codereview.yml
+      service: issue-manager
+
+  review-checker:
+    extends:
+      file: ./codereview/codereview.yml
+      service: review-checker
+
+  credit-manager:
+    extends:
+      file: ./credit-manager/credit-manager.yml
+      service: credit-manager
+
+  client-manager:
+    extends:
+      file: ./client-manager/client-manager.yml
+      service: client-manager
+
+  oidc-auth:
+    extends:
+      file: ./casdoor/oidc-auth.yml
+      service: oidc-auth
+
+  code-completion:
+    extends:
+      file: ./code-completion/code-completion.yml
+      service: code-completion
+
+  # 监控服务
+  prometheus:
+    extends:
+      file: ./monitoring/monitoring.yml
+      service: prometheus
+
+  grafana:
+    extends:
+      file: ./monitoring/monitoring.yml
+      service: grafana
+
+  es:
+    extends:
+      file: ./monitoring/monitoring.yml
+      service: es
+
+networks:
+  shenma:
+    driver: bridge
+

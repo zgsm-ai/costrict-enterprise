@@ -1,0 +1,174 @@
+#!/bin/sh
+#
+# costrict-admin    costrict-admin服务启动脚本
+#
+# chkconfig: 35 80 20
+# description: costrict-admin 服务用于提供管理界面
+# processname: costrict-admin
+#
+
+### BEGIN INIT INFO
+# Provides:          costrict-admin
+# Required-Start:    $network $local_fs $remote_fs
+# Required-Stop:     $network $local_fs $remote_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: costrict-admin service
+# Description:       costrict-admin provides admin interface
+### END INIT INFO
+
+# 设置变量
+NAME="costrict-admin"
+DAEMON="/usr/local/bin/costrict-admin"
+#DAEMON_ARGS="serve --port 8888"
+DAEMON_ARGS="daemon --port 8989"
+PIDFILE="/var/run/${NAME}.pid"
+LOGFILE="/var/log/${NAME}.log"
+USER="root"
+LOCKFILE="/var/lock/subsys/${NAME}"
+
+# 检查可执行文件是否存在
+if [ ! -x "$DAEMON" ]; then
+    echo "错误: 可执行文件 $DAEMON 不存在或不可执行"
+    exit 1
+fi
+
+# 定义函数
+start() {
+    echo -n "启动 $NAME: "
+    
+    # 拷贝可执行文件到 /usr/local/bin
+    if [ -f "/root/.costrict/bin/costrict-admin" ]; then
+        cp -f /root/.costrict/bin/costrict-admin $DAEMON
+        chmod +x $DAEMON
+    fi
+    
+    # 检查是否已在运行
+    if [ -f "$PIDFILE" ]; then
+        PID=$(cat "$PIDFILE")
+        if ps -p "$PID" > /dev/null 2>&1; then
+            echo "$NAME 已经在运行 (PID: $PID)"
+            return 1
+        else
+            rm -f "$PIDFILE"
+        fi
+    fi
+    
+    # 启动服务 - 使用兼容的方式，确保日志输出
+    if command -v start-stop-daemon >/dev/null 2>&1; then
+        # Debian/Ubuntu 使用 start-stop-daemon，并重定向日志
+        start-stop-daemon --start --quiet --chuid "$USER" \
+            --pidfile "$PIDFILE" --make-pidfile \
+            --background --exec /bin/sh -- \
+            -c "exec $DAEMON $DAEMON_ARGS >> $LOGFILE 2>&1"
+    else
+        # 使用传统方式启动
+        nohup "$DAEMON" $DAEMON_ARGS >> "$LOGFILE" 2>&1 &
+        echo $! > "$PIDFILE"
+    fi
+    
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ]; then
+        # 确保锁文件目录存在
+        mkdir -p "$(dirname "$LOCKFILE")"
+        touch "$LOCKFILE"
+        echo "成功"
+    else
+        echo "失败"
+    fi
+    return $RETVAL
+}
+
+stop() {
+    echo -n $"停止 $NAME: "
+    
+    # 检查PID文件
+    if [ ! -f "$PIDFILE" ]; then
+        echo "$NAME 未运行"
+        return 1
+    fi
+    
+    PID=$(cat "$PIDFILE")
+    
+    # 检查进程是否存在
+    if ! ps -p "$PID" > /dev/null 2>&1; then
+        echo "$NAME 进程不存在，清理 PID 文件"
+        rm -f "$PIDFILE"
+        rm -f "$LOCKFILE"
+        return 1
+    fi
+    
+    # 停止进程
+    kill "$PID"
+    RETVAL=$?
+    
+    # 等待进程结束
+    for i in 1 2 3 4 5; do
+        if ! ps -p "$PID" > /dev/null 2>&1; then
+            break
+        fi
+        sleep 1
+    done
+    
+    # 如果进程仍在运行，强制终止
+    if ps -p "$PID" > /dev/null 2>&1; then
+        kill -9 "$PID"
+        RETVAL=$?
+    fi
+    
+    if [ $RETVAL -eq 0 ]; then
+        rm -f "$PIDFILE"
+        rm -f "$LOCKFILE"
+        echo "成功"
+    else
+        echo "失败"
+    fi
+    return $RETVAL
+}
+
+status() {
+    if [ -f "$PIDFILE" ]; then
+        PID=$(cat "$PIDFILE")
+        if ps -p "$PID" > /dev/null 2>&1; then
+            echo "$NAME 正在运行 (PID: $PID)"
+            return 0
+        else
+            echo "$NAME 已停止但 PID 文件存在"
+            return 1
+        fi
+    else
+        echo "$NAME 已停止"
+        return 3
+    fi
+}
+
+restart() {
+    stop
+    sleep 1
+    start
+}
+
+# 处理命令
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    restart)
+        restart
+        ;;
+    reload)
+        restart
+        ;;
+    status)
+        status
+        ;;
+    *)
+        echo "用法: $0 {start|stop|restart|status}"
+        exit 1
+        ;;
+esac
+
+exit $?

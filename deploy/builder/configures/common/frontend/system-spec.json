@@ -1,0 +1,40 @@
+{
+    "configuration": "1.0.1",
+    "subsystem": "frontend",
+    "components": [
+        {
+            "component_name": "costrict",
+            "allowed_versions": ">=1.0.0",
+            "description": "CoStrict Client Program Manager"
+        },
+        {
+            "component_name": "codebase-indexer",
+            "allowed_versions": "^1.0.0",
+            "description": "Indexing tool for codebase"
+        },
+        {
+            "component_name": "cotun",
+            "allowed_versions": "~1.0.0",
+            "description": "Client of the CoStrict tunnel service"
+        },
+        {
+            "component_name": "completion-agent",
+            "allowed_versions": "~1.0.0",
+            "description": "Agent for code completion service"
+        }
+    ],
+    "auxiliaries": [
+        {
+            "component_name": "costrict-config",
+            "allowed_versions": "^1.0.0"
+        },
+        {
+            "component_name": "system",
+            "allowed_versions": "~1.0.0"
+        },
+        {
+            "component_name": "cotun-options",
+            "allowed_versions": "~1.0.0"
+        }
+    ]
+}

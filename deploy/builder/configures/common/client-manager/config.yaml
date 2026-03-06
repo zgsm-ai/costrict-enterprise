@@ -1,0 +1,10 @@
+server:
+  port: "8080"
+
+database:
+  dsn: "./data/client-manager.db"
+
+log:
+  level: "info"
+  format: "json"
+  output: "stdout"

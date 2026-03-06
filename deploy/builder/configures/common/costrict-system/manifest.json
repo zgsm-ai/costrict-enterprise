@@ -1,0 +1,122 @@
+{
+  "leadings": [
+    {
+      "component_name": "costrict-admin",
+      "display_name": "后端管理工具",
+      "description": "后端管理工具，提供各种后端管理实用工具"
+    }, 
+    {
+      "component_name": "firmware",
+      "display_name": "后端系统底座",
+      "description": "后端系统运行需要的底座"
+    }, 
+    {
+      "component_name": "backend",
+      "display_name": "后端服务集",
+      "description": "后端业务逻辑和数据处理服务集合"
+    }, 
+    {
+      "component_name": "frontend",
+      "display_name": "前端应用集",
+      "description": "支撑用户界面和前端交互逻辑的前端服务集合"
+    }
+  ],
+  "components": [
+    {
+      "name": "costrict-admin",
+      "version": "1.0.48"
+    },
+    {
+      "name": "firmware",
+      "version": "1.0.38"
+    },
+    {
+      "name": "backend",
+      "version": "1.0.25"
+    },
+    {
+      "name": "frontend",
+      "version": "1.0.4"
+    },
+    {
+      "name": "costrict-admin-backend",
+      "version": "1.0.45"
+    },
+    {
+      "name": "costrict-admin-frontend",
+      "version": "1.0.35"
+    },
+    {
+      "name": "casdoor",
+      "version": "1.0.4"
+    },
+    {
+      "name": "oneapi",
+      "version": "1.0.3"
+    },
+    {
+      "name": "etcd",
+      "version": "1.0.3"
+    },
+    {
+      "name": "redis",
+      "version": "1.0.4"
+    },
+    {
+      "name": "postgres",
+      "version": "1.0.3"
+    },
+    {
+      "name": "apisix",
+      "version": "1.0.3"
+    },
+    {
+      "name": "portal",
+      "version": "1.0.5"
+    },
+    {
+      "name": "cotund",
+      "version": "1.0.0"
+    },
+    {
+      "name": "codebase-querier",
+      "version": "1.0.3"
+    },
+    {
+      "name": "codebase-embedder",
+      "version": "1.0.4"
+    },
+    {
+      "name": "chat-rag",
+      "version": "1.0.3"
+    },
+    {
+      "name": "codereview",
+      "version": "1.0.3"
+    },
+    {
+      "name": "credit-manager",
+      "version": "1.0.3"
+    },
+    {
+      "name": "code-completion",
+      "version": "1.0.3"
+    },
+    {
+      "name": "monitoring",
+      "version": "1.0.3"
+    },
+    {
+      "name": "quota-manager",
+      "version": "1.0.3"
+    },
+    {
+      "name": "client-manager",
+      "version": "1.0.3"
+    },
+    {
+      "name": "weaviate",
+      "version": "1.0.4"
+    }
+  ]
+}
