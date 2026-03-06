@@ -1,0 +1,29 @@
+services:
+  oidc-auth:
+    image: ${IMAGE_OIDC_AUTH}
+    restart: always
+    environment:
+      SERVER_BASEURL: "${COSTRICT_BASEURL}"
+      PROVIDERS_CASDOOR_CLIENTID: ${OIDC_AUTH_CLIENT_ID}
+      PROVIDERS_CASDOOR_CLIENTSECRET: "${OIDC_AUTH_CLIENT_SECRET}"
+      PROVIDERS_CASDOOR_BASEURL: "${COSTRICT_BASEURL}"
+      PROVIDERS_CASDOOR_INTERNALURL: "${OIDC_CASDOOR_ADDR}"
+      SMS_ENABLEDTEST: true
+      SMS_CLIENTID: 
+      SMS_CLIENTSECRET: 
+      SMS_TOKENURL: 
+      SMS_SENDURL: 
+      SYNCSTAR_ENABLED: false
+      SYNCSTAR_PERSONALTOKEN: 
+      SYNCSTAR_OWNER: zgsm-ai
+      SYNCSTAR_REPO: zgsm
+      DATABASE_HOST: postgres
+      DATABASE_DBNAME: auth
+      DATABASE_PASSWORD: ${PASSWORD_POSTGRES}
+      DATABASE_PORT: 5432
+      DATABASE_USERNAME: ${POSTGRES_USER}
+      ENCRYPT_AESKEY: pUD8mylndVVK7hTNt56VZMkNrppinbNg
+    volumes:
+      - ./oidc-auth/logs:/app/logs
+    networks:
+      - shenma

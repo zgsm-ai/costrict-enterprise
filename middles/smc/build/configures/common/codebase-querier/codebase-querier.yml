@@ -1,0 +1,20 @@
+services:
+  codebase-querier:
+    image: ${IMAGE_CODEBASE_QUERIER}
+    restart: always
+    command: ["/app/server", "-f", "/app/conf/conf.yaml"]
+    #ports:
+    #  - "${PORT_CODEBASE_QUERIER}:8888"
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      - ./conf.yaml:/app/conf/conf.yaml:ro
+      - ./logs:/app/logs
+    networks:
+      - shenma
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8888/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

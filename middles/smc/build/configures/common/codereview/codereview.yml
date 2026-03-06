@@ -1,0 +1,92 @@
+services:
+  review-manager:
+    image: ${IMAGE_REVIEW_MANAGER}
+    restart: always
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_USER: ${POSTGRES_USER}
+      DATABASE_PASSWORD: ${PASSWORD_POSTGRES}
+      DATABASE_NAME: codereview
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    volumes:
+      - ./logs/review-manager:/app/logs
+      - ./config/review-manager:/app/config
+    networks:
+      - shenma
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  review-worker:
+    image: ${IMAGE_REVIEW_MANAGER}
+    command: ./review-manager worker
+    restart: always
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_USER: ${POSTGRES_USER}
+      DATABASE_PASSWORD: ${PASSWORD_POSTGRES}
+      DATABASE_NAME: codereview
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    volumes:
+      - ./logs/review-worker:/app/logs
+      - ./config/review-manager:/app/config
+    networks:
+      - shenma
+    healthcheck:
+      test: ["CMD-SHELL", "ps aux | grep '[r]eview-manager worker' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  issue-manager:
+    image: ${IMAGE_ISSUE_MANAGER}
+    restart: always
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_USER: ${POSTGRES_USER}
+      DATABASE_PASSWORD: ${PASSWORD_POSTGRES}
+      DATABASE_NAME: codereview
+    volumes:
+      - ./logs/issue-manager:/app/logs
+      - ./config/issue-manager:/app/config
+    networks:
+      - shenma
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  review-checker:
+    image: ${IMAGE_REVIEW_CHECKER}
+    restart: always
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_USER: ${POSTGRES_USER}
+      DATABASE_PASSWORD: ${PASSWORD_POSTGRES}
+      DATABASE_NAME: codereview
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_DB: 2
+    volumes:
+      - ./logs/review-checker:/app/logs
+      - ./config/review-checker:/app/config
+    networks:
+      - shenma
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

@@ -1,0 +1,11 @@
+services:
+  chat-rag:
+    image: ${IMAGE_CHATRAG}
+    command: ["/app/chat-rag", "-f", "/app/etc/chat-api.yaml"]
+    restart: always
+    volumes:
+      - ./logs:/data/logs
+      - ./chat-api.yaml:/app/etc/chat-api.yaml:ro
+      - ./rules.yaml:/app/etc/rules.yaml:ro
+    networks:
+      - shenma

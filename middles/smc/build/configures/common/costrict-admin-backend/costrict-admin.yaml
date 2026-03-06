@@ -1,0 +1,46 @@
+server:
+  host: "0.0.0.0"
+  port: "8080"
+  mode: "debug"
+
+database:
+  type: "sqlite"
+  dsn: "/root/.costrict/data/costrict-admin/costrict-admin.db"
+
+nacos:
+  enabled: false
+  server_addr: "127.0.0.1"
+  port: 8848
+  namespace: "public"
+  group: "DEFAULT_GROUP"
+  username: ""
+  password: ""
+  data_id: "costrict-admin-config"
+
+casdoor:
+  enabled: true
+  service_url: "http://localhost:39009"
+  client_id: "3b215b8c312b0c47ccd7"
+  client_secret: "e2f78c894cafc828a0b0161059d2c0b8d81deac5"
+  application_id: "app-built-in"
+  organization: "built-in"
+  login_app: "loginApp"
+
+higress:
+  enabled: false
+  config_path: "/etc/higress"
+  service_url: ""
+  environment: "production"
+
+monitor:
+  enabled: true
+  check_interval: 60  # seconds, default 60 seconds (1 minute)
+
+oneapi:
+  enabled: true
+  base_url: "http://localhost:3003"
+  username: "root"
+  password: "r!65Gq7@4acYsB"
+
+upgrade:
+  verify_tls: false

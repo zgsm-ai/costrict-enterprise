@@ -1,0 +1,12 @@
+services:
+  redis:
+    image: ${IMAGE_REDIS}
+    restart: always
+    environment:
+      TZ: "Asia/Shanghai"
+    volumes:
+      - ./data:/data
+    ports:
+      - "${PORT_REDIS}:6379"
+    networks:
+      - shenma

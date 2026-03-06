@@ -1,0 +1,11 @@
+services:
+  casdoor:
+    image: ${IMAGE_CASDOOR}
+    restart: always
+    ports:
+      - "${PORT_CASDOOR}:8000"
+    environment:
+      driverName: postgres
+      dataSourceName: "host=postgres port=5432 user=${POSTGRES_USER} password=${PASSWORD_POSTGRES} dbname=casdoor sslmode=disable"
+    networks:
+      - shenma

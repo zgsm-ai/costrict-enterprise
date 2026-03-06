@@ -1,0 +1,10 @@
+services:
+  code-completion:
+    image: ${IMAGE_CODE_COMPLETION}
+    restart: always
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro
+    environment:
+      TZ: Asia/Shanghai
+    networks:
+      - shenma
