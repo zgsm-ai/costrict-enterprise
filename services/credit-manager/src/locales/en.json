@@ -1,0 +1,500 @@
+{
+    "creditCodeModal": {
+        "title": "Credit transfer",
+        "codeLabel": "Redemption Code:",
+        "codePlaceholder": "please input",
+        "copyTooltip": "copy",
+        "tip1": "Please copy the redemption code and provide it to the User ID. The recipient need go to the Credit Redemption page and enter the code to complete the redemption before the Credit expires.",
+        "tip2": "The records of this transfer (including the Redemption codes) can be viewed on the Credit history page."
+    },
+    "creditTransferModal": {
+        "title": "Credit transfer",
+        "tabCreditOut": "Transfer out",
+        "tabCreditIn": "Transfer in",
+        "receiverIdLabel": "Redemption Code：",
+        "receiverIdPlaceholder": "please input",
+        "receiverIdTip": "Can be viewed in Account & usage page > basic information",
+        "transferCreditLabel": "Credit Transfer out:",
+        "expiryDateColumn": "Expiration date",
+        "totalCreditColumn": "Credit ",
+        "transferOutCreditColumn": "Transfer out",
+        "redeemCodeLabel": "Redemption Code:",
+        "redeemCodePlaceholder": "please input",
+        "redeemSuccessStatus": "Redemption Successful",
+        "confirmButton": "Confirm",
+        "cancelButton": "Cancel",
+        "creditReceiveDetailTitle": "Credit Receiving Details:",
+        "viewReceiveRecordLeft": "Can be",
+        "viewReceiveRecordRight": "viewed in the Credit History page",
+        "validationReceiverIdRequired": "Please enter the recipient's User ID",
+        "validationSelectCreditRequired": "Please select at least one item to transfer Credits",
+        "generateVoucherCodeFailed": "Failed to generate redemption code!",
+        "generateVoucherCodeSuccess": "Redemption code generated successfully!",
+        "redeemSuccessMessage": "Redemption Successful!",
+        "redeemCodeAlreadyRedeemed": "This redemption code has already been used and cannot be redeemed again.",
+        "redeemCodeExpiredReminder": "Credit has expired. Please initiate a new transfer",
+        "redeemCodeError": "Invalid redemption code. Please try again",
+        "expiredTag": "Expired",
+        "invalidUUID": "Please enter a valid UUID format",
+        "onlySupportCreditTransfer": "Support credit transfer by clicking 'star' on GitHub,",
+        "effectiveIn": "Takes effect within 5 minutes"
+    },
+    "creditsPage": {
+        "title": "Credit History",
+        "remainingCredit": "Remaining Credit: ",
+        "creditChange": "Credit Changes",
+        "effectiveDate": "Start Time",
+        "description": "Description",
+        "expiryDate": "Expiration date",
+        "popoverTriggerText": "Hover to view",
+        "githubActivityDesc": "Earned by participating in the GitHub star event",
+        "transferOutDesc": "Transferred {amount} Credits to user {relatedUser}, redemption code:",
+        "transferInBaseDesc": "{amount} Credits received from user {relatedUser}",
+        "validCreditDetails": "Valid Credits: {validAmount} ({validDetails})",
+        "expiredCreditDetails": "Expired Credits: {expiredAmount} ({expiredDetails})",
+        "validDetailItem": "{amount} Credits will expire on {expiryDate}",
+        "expiredDetailItem": "{amount} Credits expired on {expiryDate}",
+        "voucherCodeSuffix": ", redemption code:",
+        "userRegisterZhuge": "User registered CoStrict",
+        "inviteeStarReward": "You participated in the \"Invite New User\" campaign added bonus",
+        "inviterRegisterReward": "The new user {relatedUser} you invited completed the CoStrict registration task",
+        "inviterStarReward": "The new user {relatedUser} you invited completed the GitHub star task",
+        "mergeInDesc": "You have bound the account with user ID {relatedUser} to the current account, and all credits from the original account have been transferred to the current account"
+    },
+    "homePage": {
+        "basicInfo": "Basic Information",
+        "githubAccount": "Github Account:",
+        "bindText": "Bind Now",
+        "phoneLabel": "Phone Number:",
+        "userIdLabel": "User ID:",
+        "inviteCodeLabel": "Invitation code:",
+        "usageTitle": "Usage",
+        "creditTransfer": "Credit transfer",
+        "creditRecords": "Credit History >>",
+        "userCredits": "User Prompt Credits",
+        "creditDesc": "The Credit consumption per request varies across different models，only advanced models will calculate the usage of Credit.",
+        "creditValidity": "Credit Validity",
+        "expiryDate": "Expiration Time",
+        "creditNum": "Credit Number",
+        "activityTitle": "ActivityTitle",
+        "creditPlan": "Credits Reward Plan",
+        "planDesc": "If your credits are running low and you can't continue using the premium model, complete the following tasks to get more credits!",
+        "githubStar": "Get 50 Credits (automatically effective within 5 minutes) for your first star on the CoStrict open-source project on GitHub.",
+        "useCredit": "{used} / {total} Used ",
+        "restCredit": "{rest} left",
+        "menu": {
+            "profile": "Profile",
+            "subscription": "Subscription",
+            "usage": "Usage Stats",
+            "usageConsumption": "Usage Consumption",
+            "activity": "Operations"
+        },
+        "usageConsumptionTitle": "Usage Consumption Stats",
+        "usageConsumptionDesc": "View your detailed usage consumption records",
+        "subscriptionTitle": "Subscription",
+        "subscriptionDesc": "Subscription management features are under development...",
+        "startTime": "Time",
+        "model": "Model",
+        "mode": "Mode",
+        "tokens": "Tokens",
+        "creditsUsed": "Credits Used",
+        "package": "Package",
+        "source": "Source"
+    },
+    "common": {
+        "comma": ",",
+        "langZh": "中文",
+        "footer": {
+            "emailContactLabel": "Contact us",
+            "copyright": "©2025 SANGFOR TECHNOLOGIES. ALL RIGHTS RESERVED."
+        },
+        "header": {
+            "appName": "CoStrict",
+            "accountAndUsage": "ACCOUNT & USAGE",
+            "logout": "LOG OUT"
+        },
+        "request": {
+            "requestFailed": "Request failed",
+            "unauthorized": "Please re-login.",
+            "requestTimeout": "Request timed out",
+            "networkConnectionError": "Network connection error",
+            "networkError": "Network error"
+        }
+    },
+    "rewardPlan": {
+        "title": "Credits Reward Plan",
+        "invitationCode": "Invitation method (choose one of the two)",
+        "invitationCodeText": "Please fill in the invitation code on the login/registration page. If missed, Credits cannot be distributed.",
+        "exclusiveInvitationLink": "Exclusive invitation link:",
+        "invitationCodeLabel": "Invitation Code: ",
+        "rulesTitle": "Invite new users to register, the new user will receive 500 Credits, and the inviter will receive 400 Credits",
+        "operationGuideTitle": "New User Operation Guide",
+        "operationGuideSubtitle": "(New users can follow the instructions to complete tasks)",
+        "aboutCreditsTitle": "About Credits",
+        "contactUsTitle": "Contact Us",
+        "contactUsDescription": "If you have any questions, please contact us. Scan the QR code below to join the official communication group.",
+        "officialAccount": "Scan to follow official account",
+        "joinGroup": "Scan to join communication group",
+        "copyLink": "Click to copy",
+        "copyLoginLink": "Click to copy",
+        "howToParticipate": "How to Participate",
+        "introTitle": "Running out of credits? Don't worry! 🔥",
+        "introContent": "CoStrict officially launches the Credits Reward Program - complete the tasks below to easily earn credits and enjoy AI programming without burden. Invite friends to participate, collect more Credits, and explore unlimited possibilities!",
+        "participationStep1": "1. Copy your exclusive invitation link",
+        "participationStep2": "2. Share with developer friends",
+        "participationStep3": "3. Wait for rewards to be automatically credited!",
+        "invitationMethod": "Invitation Method",
+        "exclusiveInviteLink": "Exclusive Invitation Link: ",
+        "pleaseLoginFirst": "Please login first",
+        "fetchLoginUrlFailed": "Failed to get login URL:",
+        "githubUrl": "https://github.com/zgsm-ai/costrict",
+        "docsUrl": "https://docs.costrict.ai/category/getting-started",
+        "contactEmail": "zgsm@sangfor.com.cn",
+        "qaCard": {
+            "question": "Q",
+            "answer": "A"
+        },
+        "operationGuide": {
+            "task1Title": "Task 1: Registration and Login CoStrict",
+            "task2Title": "Task 2: Click Star on GitHub to bookmark the CoStrict project",
+            "task3Title": "Task 3: Install the CoStrict product and experience its features",
+            "step1Content": "Please confirm that the invitation code has been automatically filled in (if not, please enter it manually). Use GitHub to log in.",
+            "step1Tips": "If you do not have a GitHub account, follow the guided process to register first.",
+            "step2Header": "After login, the page will automatically redirect to the User Info & Quota Usage page.",
+            "step2Tips": "If you do not have a GitHub account, follow the guided process to register first.",
+            "step3Content": "Please follow the official documentation to complete CoStrict plugin installation and login, and successfully send a conversation",
+            "loginNow": " Log in Now >> ",
+            "goNow": " Go Now >> ",
+            "viewDocs": " View official documentation >> ",
+            "linkAddress": "Link: ",
+            "visitGithub": "Visit the CoStrict project page on GitHub, click the Star button to bookmark the project.",
+            "pleaseLoginFirst": "Please log in to CoStrict,",
+            "completePluginInstall": "Please refer to the official documentation to complete the installation and login of the CoStrict, successfully send one conversation."
+        },
+        "rules": {
+            "inviterLabel": "Inviter:",
+            "newUserLabel": "New User:",
+            "rule1": "1. For each new user invited to register a CoStrict account, the new user immediately gets",
+            "rule1NewUser": " 200 Credits",
+            "rule1Inviter": ", and the inviter gets",
+            "rule1InviterCredits": " 100 Credits",
+            "rule1End": ";",
+            "rule2": "2. New user downloads the CoStrict plugin, completes a simple conversation, and clicks Star on GitHub to favorite CoStrict:",
+            "rule2a": "New user gets an additional",
+            "rule2aCredits": " 400 Credits",
+            "rule2aTotal": " (total",
+            "rule2aTotalCredits": " 500 Credits",
+            "rule2aEnd": ").",
+            "rule2b": "Inviter gets an additional",
+            "rule2bCredits": " 300 Credits",
+            "rule2bTotal": " (total",
+            "rule2bTotalCredits": " 400 Credits",
+            "rule2bEnd": ")",
+            "rule3": "3. Existing users inviting multiple new users to register through invitation code/link can have rewards stacked."
+        },
+        "qa": {
+            "question1": "How to check if Credits have been deposited?",
+            "answer1": "Go to the \"Usage\" module on the User Info & Quota Usage page and check the \"Credit History\" section for detailed credit deposit records.",
+            "question2": "Why didn't I receive the correct amount of Credits after completing tasks?",
+            "answer2": {
+                "before": "Credits are typically deposited within a few minutes. If you haven't received them after an extended period, please contact us via email: ",
+                "after": ". We will respond as soon as possible."
+            },
+            "accountBinding": "Bind GitHub account in the basic information module of the User Info & Quota Usage page.",
+            "goNow": " View Now >> ",
+            "linkAddress": "Link: ",
+            "basicInfoModule": ") basic information module to bind GitHub account.",
+            "leftParenthesis": "(",
+            "rightParenthesis": ")"
+        }
+    },
+    "utils": {
+        "copySuccess": "Copy successful",
+        "copyFailed": "Copy failed, please copy manually"
+    },
+    "activityCard": {
+        "githubStar": "GitHub Star",
+        "githubStarDesc": "First time clicking star on CoStrict open source project on GitHub, get 200 Credits (automatically effective within 10 minutes)",
+        "gitStarNow": "git star now >",
+        "inviteNewUser": "Invite New User",
+        "inviteNewUserDesc": "Invite new users to register, inviter gets 400 Credits, new user gets 500 Credits.",
+        "goInvite": "Go Invite >",
+        "inviteRules": {
+            "rule1": "For each new user invited to register CoStrict account, new user immediately gets 200 Credits, inviter gets 100 Credits;",
+            "rule2": "New user downloads CoStrict plugin and stars on GitHub:",
+            "rule2a": "a. New user gets additional 300 Credits (total 500 Credits).",
+            "rule2b": "b. Inviter gets additional 300 Credits (total 400 Credits).",
+            "rule3": "Rewards can be stacked, the more new users invited, the more Credits."
+        },
+        "annualReport": "Annual Report",
+        "annualReportDesc": "Review your annual usage data and unlock exclusive annual achievements.",
+        "goAnnualReport": "View it >"
+    },
+    "login": {
+        "notLogged": "Not logged in yet",
+        "getUserInfoBeforeLogin": "Log in to view user information and credit usage",
+        "loginImmediatly": "Log in now"
+    },
+    "components": {
+        "datePicker": {
+            "displayText": "Custom Date",
+            "displayTextUnit": "to"
+        }
+    },
+    "pricingPlans": {
+        "personalFree": {
+            "title": "Personal Free Version",
+            "description": "Officially gifted Credits, validity period varies depending on the situation",
+            "buttonText": "Download and Use",
+            "features": {
+                "newUserCredits": "New users get 200 Credits (approximately equal to 200 requests)",
+                "freeCodeCompletion": "Free code completion, limited usage count",
+                "freeCodeReview": "Free CodeReview, limited usage count",
+                "advancedModelUnavailable": "Advanced models unavailable"
+            }
+        },
+        "trafficPackage1": {
+            "title": "Traffic Package 1",
+            "description": "Credits deducted based on actual usage, valid for 1 year",
+            "buttonText": "Buy Now",
+            "features": {
+                "credits": "500 Credits (approximately equal to 500 requests)",
+                "freeCodeCompletion": "Free code completion, limited usage",
+                "freeCodeReview": "Free code review, limited usage",
+                "advancedModelAvailable": "Advanced models available"
+            }
+        },
+        "trafficPackage2": {
+            "title": "Traffic Package 2",
+            "description": "Credits deducted based on actual usage, valid for 1 year",
+            "buttonText": "Buy Now",
+            "features": {
+                "credits": "2000 + extra 100 Credits (equal to 2100 requests)",
+                "freeCodeCompletion": "Free code completion, unlimited usage",
+                "freeCodeReview": "Free code review, unlimited usage",
+                "advancedModelAvailable": "Advanced models available"
+            }
+        },
+        "trafficPackage3": {
+            "title": "Traffic Package 3",
+            "description": "Credits deducted based on actual usage, valid for 1 year",
+            "buttonText": "Buy Now",
+            "features": {
+                "credits": "5000 + extra 400 Credits (equal to 5400 requests)",
+                "freeCodeCompletion": "Free code completion, unlimited usage",
+                "freeCodeReview": "Free code review, unlimited usage",
+                "advancedModelAvailable": "Advanced models available"
+            }
+        },
+        "defaultPackageTitle": "Traffic package",
+        "creditUnit": "Credit will be deducted based on actual usage, valid for one month.",
+        "creditFeature": "{total} + additional {bonus} credits (equivalent to {estimated} requests)",
+        "purchaseButtonText": "Buy it now",
+        "freeCodeCompletion": "Free code completion, limited uses.",
+        "freeCodeReview": "Free code review, unlimited use",
+        "advancedModelAvailable": "Premium models available"
+    },
+    "subscriptionSection": {
+        "subscriptionTitle": "Subscription Information",
+        "billingDescription": "Package & Billing Description >>",
+        "trafficLabel": "Traffic",
+        "operationGuide": "Operation Guide",
+        "recordsTitle": "Activation Records",
+        "totalItems": "Total {total} items",
+        "orderNumber": "Order Number",
+        "orderType": "Order Type",
+        "orderSource": "Order Source",
+        "purchaseCount": "Purchase Quantity",
+        "orderAmount": "Order Amount",
+        "orderTime": "Order Time",
+        "validityPeriod": "Validity Period",
+        "invoiceStatus": "Invoice Status",
+        "firstRechargeDiscount": "First recharge discount"
+    },
+    "homePageUi": {
+        "personalInfo": "Personal Information",
+        "loginManagement": "Login Management",
+        "accountLogout": "Account Logout",
+        "logout": "Logout",
+        "subscription": "Subscription",
+        "usageStatistics": "Usage Statistics",
+        "today": "Today",
+        "within7Days": "7 Days",
+        "within30Days": "30 Days",
+        "packageBillingDescription": "Package & Billing >>",
+        "tips": " Some models are half price at night (8:00 PM - 9:00 AM the next day) and all day on weekends, which can be combined with a 10% discount on auto mode."
+    },
+    "paymentMethods": {
+        "alipay": {
+            "name": "Alipay",
+            "description": "Pay securely with Alipay"
+        },
+        "wechat": {
+            "name": "WeChat Pay",
+            "description": "Pay securely with WeChat Pay"
+        },
+        "unionpay": {
+            "name": "UnionPay",
+            "description": "Pay with UnionPay card"
+        }
+    },
+    "paymentModals": {
+        "paymentFailure": {
+            "title": "Payment Failed",
+            "tip": "Please confirm your payment method and order before trying again",
+            "returnButton": "Return"
+        },
+        "paymentSuccess": {
+            "title": "Payment successful. Please log in to the plugin again to get the latest services!",
+            "tip": "Credits will be credited to your account within 24 hours after successful payment. Scan the QR code to quickly join the official after-sales group"
+        }
+    },
+    "subscribePage": {
+        "breadcrumb": {
+            "price": "Price",
+            "purchase": "Purchase"
+        },
+        "package": {
+            "description": "Credits deducted based on actual usage, valid for 1 month",
+            "unit": "/ pack",
+            "tips": "(First purchase ¥9.9 | Subsequent purchases ¥25)"
+        },
+        "total": "Total: ",
+        "paymentMethod": "Payment Method",
+        "agreement": {
+            "prefix": "Click to agree to",
+            "linkText": "Paid Service Agreement",
+            "modalTitle": "Agreement Confirmation",
+            "modalContent": "Please read and agree",
+            "confirm": "Agree",
+            "cancel": "Cancel"
+        },
+        "purchase": "Purchase",
+        "paymentModal": {
+            "title": "Scan to Pay",
+            "unit": " yuan",
+            "instruction": "Please scan to complete payment",
+            "agreementText": "You have agreed to the CoStrict Paid Service Agreement",
+            "loading": "Loading...",
+            "qrCodeError": "Failed to get QR code, please close the modal and try again"
+        },
+        "testButtons": {
+            "simulateSuccess": "Simulate Payment Success",
+            "simulateFailure": "Simulate Payment Failure"
+        },
+        "quantityPlaceholder": "Please enter quantity",
+        "quantityRulesMssage": "The input value must not be less than 0"
+    },
+    "invoiceModal": {
+        "title": "Invoice Application",
+        "tip": "Electronic invoices have the same legal effect as paper invoices. Invoices will be sent to your email within 7 working days after approval.",
+        "headerType": {
+            "label": "Header Type:",
+            "company": "Company/Organization",
+            "personal": "Personal"
+        },
+        "invoiceType": {
+            "label": "Invoice Type:",
+            "vat": "VAT General Invoice",
+            "special": "VAT Special Invoice"
+        },
+        "invoiceTitle": {
+            "label": "Invoice Title",
+            "companyPlaceholder": "Please enter the full name of the company/organization",
+            "personalValue": "Personal"
+        },
+        "taxNumber": {
+            "label": "Tax Identification Number:",
+            "placeholder": "Please enter 18-digit tax identification number"
+        },
+        "address": {
+            "label": "Company Registration Address:",
+            "placeholder": "Please enter the organization address"
+        },
+        "phone": {
+            "label": "Company Registration Phone:",
+            "placeholder": "Please enter the phone number"
+        },
+        "bank": {
+            "label": "Bank Name:",
+            "placeholder": "Please enter the bank name"
+        },
+        "bankAccount": {
+            "label": "Bank Account:",
+            "placeholder": "Please enter the bank account"
+        },
+        "email": {
+            "label": "Invoice Email:",
+            "placeholder": "Please enter your email address, electronic invoices will be sent to this email"
+        },
+        "orderInfo": {
+            "orderNumber": "Order Number:",
+            "amount": "Amount:",
+            "content": "Invoice Content:",
+            "serviceFee": "Software Service Fee"
+        },
+        "buttons": {
+            "submit": "Submit Application",
+            "cancel": "Cancel"
+        },
+        "validation": {
+            "selectHeaderType": "Please select header type",
+            "selectInvoiceType": "Please select invoice type",
+            "enterEmail": "Please enter invoice email",
+            "emailFormatInvalid": "Please enter a valid email format",
+            "enterInvoiceTitle": "Please enter invoice title",
+            "taxNumberTooLong": "Tax identification number cannot exceed 18 digits",
+            "taxNumberDigitsOnly": "Tax identification number can only contain digits",
+            "invoiceTitleEmpty": "Invoice title cannot be empty"
+        },
+        "submitSuccess": "Application submitted successfully",
+        "submitFailed": "Failed to submit application"
+    },
+    "subscriptionComments": {
+        "subscriptionInfo": "Subscription Information",
+        "operationGuide": "Operation Guide",
+        "activationRecords": "Activation Records",
+        "invoiceModal": "Invoice Modal",
+        "operation": "Operation",
+        "goToInvoice": "Go to Invoice"
+    },
+    "invoiceStatus": {
+        "pending": "Pending",
+        "processing": "Processing",
+        "completed": "Completed",
+        "cancelled": "Cancelled"
+    },
+    "annualSummary": {
+        "dataLoadFailed": "数据加载失败，请刷新页面重试",
+        "dataLoading": "数据正在加载中，请稍候",
+        "dear": "亲爱的",
+        "unlockItem": "恭喜解锁道具：CoStrict",
+        "pastOneYear": "过去一年里",
+        "days": "天",
+        "year": "年",
+        "month": "月",
+        "day": "日",
+        "notOneTimeTool": "你没有把它当成一次性工具",
+        "stayInWorkflow": "而是让它留在了你的工作流里",
+        "youInitiated": "你发起了",
+        "challenges": "次挑战",
+        "skillUnlocked": "技能已解锁：",
+        "codeModeSkill": "Code模式 技能点已修炼",
+        "askModeSkill": "Ask模式 技能点已修炼",
+        "architectModeSkill": "Architect 技能点已修炼",
+        "tokenConsumption": "Token消耗量：",
+        "yearlyCreditsConsumption": "本年度Credits消耗",
+        "annualReport": "2025年度报告",
+        "scanQRCode": "Scan QR Code · Unlock Exclusive Annual Content",
+        "youUsed": "You used",
+        "inviteCode": "Invite code:",
+        "savePoster": "Save Poster",
+        "learnProduct": "Learn More",
+        "loginExperience": "Login to Try",
+        "generating": "生成中...",
+        "saveFailedTip": "*如保存失败可截图分享",
+        "reviewAgain": "重新回顾",
+        "ifOnlyCaloriesConsumed": "如果这是消耗的卡路里就好了",
+        "yearlySummary": "年度总结-"
+    }
+}

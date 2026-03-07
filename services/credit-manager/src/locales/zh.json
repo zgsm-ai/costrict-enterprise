@@ -1,0 +1,501 @@
+{
+    "creditCodeModal": {
+        "title": "Credit转出&转入",
+        "codeLabel": "兑换码：",
+        "codePlaceholder": "请输入",
+        "copyTooltip": "复制",
+        "tip1": "请复制兑换码给到接收人用户ID，然后接收人要在Credit有效期内前往配额兑换页面输入该码完成兑换",
+        "tip2": "本次转出的记录（包括兑换码）可在Credit记录页面查看到"
+    },
+    "creditTransferModal": {
+        "title": "Credit转出&转入",
+        "tabCreditOut": "Credit 转出",
+        "tabCreditIn": "Credit 转入",
+        "receiverIdLabel": "接收人的用户ID：",
+        "receiverIdPlaceholder": "请输入",
+        "receiverIdTip": "接收人可在账户&用量页面的基本信息中查看",
+        "transferCreditLabel": "转出Credit：",
+        "expiryDateColumn": "到期时间",
+        "totalCreditColumn": "Credit总数",
+        "transferOutCreditColumn": "转出Credit",
+        "redeemCodeLabel": "兑换码：",
+        "redeemCodePlaceholder": "请输入",
+        "redeemSuccessStatus": "已成功兑换",
+        "confirmButton": "确认",
+        "cancelButton": "取消",
+        "creditReceiveDetailTitle": "Credit接收详情：",
+        "viewReceiveRecordLeft": "可在",
+        "viewReceiveRecordRight": "记录页面查看接收记录",
+        "validationReceiverIdRequired": "请输入接收人用户ID",
+        "validationSelectCreditRequired": "请至少选择一项转出Credit",
+        "generateVoucherCodeFailed": "生成兑换码失败！",
+        "generateVoucherCodeSuccess": "生成兑换码成功！",
+        "redeemSuccessMessage": "兑换成功!",
+        "redeemCodeAlreadyRedeemed": "该兑换码已兑换，无法再次使用",
+        "redeemCodeExpiredReminder": "Credit已过期，请重新转出",
+        "redeemCodeError": "兑换码错误，请重新输入",
+        "expiredTag": "已过期",
+        "invalidUUID": "请输入有效的UUID格式",
+        "onlySupportCreditTransfer": "在 GitHub 上点击 star 后支持转出 Credit",
+        "effectiveIn": "5分钟内生效"
+    },
+    "creditsPage": {
+        "title": "Credit 记录",
+        "remainingCredit": "当前剩余Credit：",
+        "creditChange": "Credit变动",
+        "effectiveDate": "生效时间",
+        "description": "描述",
+        "expiryDate": "到期时间",
+        "popoverTriggerText": "点击查看",
+        "githubActivityDesc": "用户参与 github 点亮 star 活动获取",
+        "transferOutDesc": "给用户 {relatedUser} 转了 {amount} Credit， 兑换码：",
+        "transferInBaseDesc": "由用户 {relatedUser} 给您转入总共 {amount} Credit",
+        "validCreditDetails": "其中有效Credit：{validAmount}（{validDetails}）",
+        "expiredCreditDetails": "失效Credit：{expiredAmount}（{expiredDetails}）",
+        "validDetailItem": "{amount} Credit将在 {expiryDate} 到期",
+        "expiredDetailItem": "{amount} Credit已在 {expiryDate} 过期",
+        "voucherCodeSuffix": "， 兑换码：",
+        "userRegisterZhuge": "用户注册 CoStrict",
+        "inviteeStarReward": "您参加\"邀请新用户\"运营活动额外奖励",
+        "inviterRegisterReward": "您邀请的新用户 {relatedUser} 完成了 CoStrict 的注册任务",
+        "inviterStarReward": "您邀请的新用户 {relatedUser} 完成了 github 点亮 star 任务",
+        "mergeInDesc": "您将用户ID为 {relatedUser} 的账户与当前账户做了绑定，原账户的全部额度已经转入当前账户中"
+    },
+    "homePage": {
+        "basicInfo": "基本信息",
+        "githubAccount": "GitHub账号：",
+        "bindText": "立即绑定",
+        "phoneLabel": "手机号：",
+        "userIdLabel": "用户ID：",
+        "inviteCodeLabel": "邀请码：",
+        "usageTitle": "用量概览",
+        "creditTransfer": "Credit转出&转入",
+        "creditRecords": "Credit 记录>>",
+        "userCredits": "用户 Prompt Credits",
+        "creditDesc": "不同模型的每次请求消耗的credit不同，只有高级模型会统计Credit用量",
+        "creditValidity": "Credit 有效期",
+        "expiryDate": "到期时间",
+        "creditNum": "Credit数",
+        "activityTitle": "运营活动",
+        "creditPlan": "Credits 奖励计划",
+        "planDesc": "如果您的 Credits 告急，无法继续使用高级模型，快来完成以下任务获取更多额度吧!",
+        "githubStar": "首次在GitHub上点击star收藏 CoStrict 开源项目，可获赠 50Credit（5分钟内自动生效）",
+        "useCredit": "{used} / {total} 已使用",
+        "restCredit": "剩余 {rest}",
+        "menu": {
+            "profile": "个人信息",
+            "subscription": "订阅",
+            "usage": "用量统计",
+            "usageConsumption": "用量消耗统计",
+            "activity": "运营活动"
+        },
+        "usageConsumptionTitle": "用量消耗统计",
+        "usageConsumptionDesc": "查看您的用量消耗详细记录",
+        "subscriptionTitle": "订阅",
+        "subscriptionDesc": "订阅管理功能正在开发中...",
+        "startTime": "时间",
+        "model": "模型",
+        "mode": "模式",
+        "tokens": "Tokens",
+        "creditsUsed": "Credits消耗",
+        "package": "套餐",
+        "source": "来源"
+    },
+    "common": {
+        "comma": "，",
+        "langZh": "中文",
+        "footer": {
+            "emailContactLabel": "邮箱联系我们",
+            "copyright": "©2025 深信服科技股份有限公司版权所有"
+        },
+        "header": {
+            "appName": "CoStrict",
+            "accountAndUsage": "账户&用量",
+            "logout": "退出登录"
+        },
+        "request": {
+            "requestFailed": "请求失败",
+            "unauthorized": "请重新登录",
+            "requestTimeout": "请求超时",
+            "networkConnectionError": "网络连接错误",
+            "networkError": "网络错误"
+        }
+    },
+    "rewardPlan": {
+        "title": "Credits 奖励计划",
+        "invitationCode": "邀请方式（二选一）",
+        "invitationCodeText": "请在登录注册页面填写邀请码，如果遗漏将导致 Credit 无法发放",
+        "exclusiveInvitationLink": "专属邀请链接：",
+        "invitationCodeLabel": "邀请码：",
+        "rulesTitle": "邀请新用户注册，新用户获500 Credits，邀请者获400 Credits",
+        "operationGuideTitle": "新用户操作指引",
+        "operationGuideSubtitle": "（新用户可参照指引完成任务）",
+        "aboutCreditsTitle": "关于Credits",
+        "contactUsTitle": "联系我们",
+        "contactUsDescription": "您有任何问题欢迎联系我们，扫描下方二维码进入官方交流群。",
+        "officialAccount": "扫码关注公众号",
+        "joinGroup": "扫码加入交流群",
+        "copyLink": "点击复制",
+        "copyLoginLink": "点击复制",
+        "howToParticipate": "如何参与",
+        "introTitle": "额度不够用？别着急！🔥",
+        "introContent": "CoStrict 官方上线 Credits 奖励计划 —— 完成下方任务轻松赢取额度，让你无负担畅玩AI编程。快邀请好友一起参与，把更多 Credits 收入囊中，探索无限可能！",
+        "participationStep1": "1. 复制你的专属邀请链接",
+        "participationStep2": "2. 分享给开发者好友",
+        "participationStep3": "3. 坐等奖励自动到账！",
+        "invitationMethod": "邀请方式",
+        "exclusiveInviteLink": "专属邀请链接：",
+        "pleaseLoginFirst": "请先登录",
+        "fetchLoginUrlFailed": "获取登录链接失败:",
+        "githubUrl": "https://github.com/zgsm-ai/costrict",
+        "docsUrl": "https://docs.costrict.ai/category/getting-started",
+        "contactEmail": "zgsm@sangfor.com.cn",
+        "qaCard": {
+            "question": "问",
+            "answer": "答"
+        },
+        "operationGuide": {
+            "task1Title": "任务1：注册登录 CoStrict",
+            "task2Title": "任务2：GitHub 上点击 Star 收藏 CoStrict 项目",
+            "task3Title": "任务3：安装 CoStrict 产品体验产品",
+            "step1Content": "请确认邀请码已经自动填写（如未填写请自行填写邀请码），支持手机号和 Github 两种登录方式，推荐使用 Github 方式登录，方便后续任务二进行。",
+            "step1Tips": "若没有 Github 账号，可按照流程引导先注册。",
+            "step2Header": "登录完成后页面会自动跳转至用户信息&配额用量页面",
+            "step2Tips": "若没有 Github 账号，可按照流程引导先注册。",
+            "step3Content": "请根据官方文档，完成 CoStrict 插件的安装登录，并成功发送一次对话",
+            "loginNow": "立即登录 >> ",
+            "goNow": "立即前往 >> ",
+            "viewDocs": "查看官方文档 >> ",
+            "linkAddress": "链接地址：",
+            "visitGithub": "访问 Github 的 CoStrict 项目页面，点击 star 收藏 CoStrict 项目，",
+            "pleaseLoginFirst": "请先登录 CoStrict",
+            "completePluginInstall": "请根据官方文档，完成 CoStrict 插件的安装登录，并成功发送一次对话，"
+        },
+        "rules": {
+            "inviterLabel": "邀请人：",
+            "newUserLabel": "新人用户：",
+            "rule1": "1. 每邀请1位新用户注册 CoStrict 账号，新用户立得",
+            "rule1NewUser": " 200 Credits",
+            "rule1Inviter": "，邀请者可获",
+            "rule1InviterCredits": " 100 Credits",
+            "rule1End": "；",
+            "rule2": "2. 新用户下载 CoStrict 插件，完成一次简单对话，并在 GitHub 上点击 Star 收藏 CoStrict：",
+            "rule2a": "新用户再获",
+            "rule2aCredits": " 300 Credits",
+            "rule2aTotal": "（累计",
+            "rule2aTotalCredits": " 500 Credits",
+            "rule2aEnd": "）。",
+            "rule2b": "邀请者再获",
+            "rule2bCredits": " 300 Credits",
+            "rule2bTotal": "（累计",
+            "rule2bTotalCredits": " 400 Credits",
+            "rule2bEnd": "）",
+            "rule3": "3. 老用户邀请多名新用户通过邀请码/邀请链接注册，奖励可叠加。"
+        },
+        "qa": {
+            "question1": "如何查看Credit是否到账？",
+            "answer1": "在用户信息&配额用量页面的\"用量\"模块的\"历史记录\"页面查看具体的额度到账情况。",
+            "question2": "为什么任务都做了，Credit 获得的额度对不上？",
+            "answer2": {
+                "before": "如果用户在登录的时候使用的是手机号，在 Github 点赞收藏 CoStrict 使用的是 Github 账号，两个账号没有做关联，因此 Credits 被分别发放到两个账号中， 此时只需要做一个账号绑定，即可看到全部额度。",
+                "after": ""
+            },
+            "accountBinding": "在用户信息&配额用量页面的基本信息模块绑定 Github 账号即可。",
+            "goNow": "立即前往 >> ",
+            "linkAddress": "链接地址：",
+            "basicInfoModule": "）的基本信息模块绑定 Github 账号即可。",
+            "leftParenthesis": "（",
+            "rightParenthesis": "）"
+        }
+    },
+    "utils": {
+        "copySuccess": "复制成功",
+        "copyFailed": "复制失败，请手动复制"
+    },
+    "activityCard": {
+        "githubStar": "GitHub Star 一下",
+        "githubStarDesc": "首次在 GitHub 上点击 star 收藏 CoStrict 开源项目，可获赠 200 Credits（10分钟内自动生效）",
+        "gitStarNow": "git star 一下 >",
+        "inviteNewUser": "邀请新用户",
+        "inviteNewUserDesc": "邀请新用户注册，邀请者获400 Credits，新用户获500 Credits。",
+        "goInvite": "去邀请 >",
+        "inviteRules": {
+            "rule1": "每邀请1位新用户注册 CoStrict 账号，新用户立得200 Credits，邀请者可获100 Credits；",
+            "rule2": "新用户下载 CoStrict 插件，并通过GitHub Star一下：",
+            "rule2a": "a. 新用户再获300 Credits（累计500 Credits）。",
+            "rule2b": "b. 邀请人再获300 Credits（累计400 Credits）。",
+            "rule3": "奖励可叠加，邀请新用户越多，Credits越多。"
+        },
+        "annualReport": "解锁2025年度副本报告",
+        "annualReportDesc": "回顾您的年度使用数据，解锁专属年度成就。",
+        "goAnnualReport": "去解锁 >"
+    },
+    "login": {
+        "notLogged": "尚未登录",
+        "getUserInfoBeforeLogin": "登录后查看用户信息 & Credits用量",
+        "loginImmediatly": "立即登录"
+    },
+    "components": {
+        "datePicker": {
+            "displayText": "自定义日期",
+            "displayTextUnit": "至"
+        }
+    },
+    "pricingPlans": {
+        "personalFree": {
+            "title": "个人免费版",
+            "description": "官方赠送的 Credit，有效期视情况而定",
+            "buttonText": "下载使用",
+            "features": {
+                "newUserCredits": "新用户获赠 400 Credits（约等于400次请求）",
+                "freeCodeCompletion": "免费代码补全，有限使用次数",
+                "freeCodeReview": "免费 CodeReview，有限使用次数",
+                "advancedModelUnavailable": "高级模型不可用"
+            }
+        },
+        "trafficPackage1": {
+            "title": "流量套餐1",
+            "description": "按实际使用用量扣除 Credit，有效期1年",
+            "buttonText": "立即购买",
+            "features": {
+                "credits": "500 Credits（约等于500次请求）",
+                "freeCodeCompletion": "免费代码补全，有限使用",
+                "freeCodeReview": "免费代码审查，有限使用",
+                "advancedModelAvailable": "高级模型可用"
+            }
+        },
+        "trafficPackage2": {
+            "title": "流量套餐2",
+            "description": "按实际使用用量扣除 Credit，有效期1年",
+            "buttonText": "立即购买",
+            "features": {
+                "credits": "2000+额外赠送 100Credits（等于2100次请求）",
+                "freeCodeCompletion": "免费代码补全，无限使用",
+                "freeCodeReview": "免费代码审查，无限使用",
+                "advancedModelAvailable": "高级模型可用"
+            }
+        },
+        "trafficPackage3": {
+            "title": "流量套餐3",
+            "description": "按实际使用用量扣除 Credit，有效期1年",
+            "buttonText": "立即购买",
+            "features": {
+                "credits": "5000+额外赠送 400Credits（等于5400次请求）",
+                "freeCodeCompletion": "免费代码补全，无限使用",
+                "freeCodeReview": "免费代码审查，无限使用",
+                "advancedModelAvailable": "高级模型可用"
+            }
+        },
+        "defaultPackageTitle": "流量套餐",
+        "creditUnit": "按实际使用用量扣除 Credit，有效期1个月",
+        "creditFeature": "{total}+额外赠送 {bonus}Credits（约等于{estimated}次请求）",
+        "purchaseButtonText": "立即购买",
+        "freeCodeCompletion": "免费代码补全，有限使用次数",
+        "freeCodeReview": "免费代码审查，无限使用",
+        "advancedModelAvailable": "高级模型可用",
+        "creditFeatureWithoutBonus": "{total} Credits（约等于{estimated}次请求）"
+    },
+    "subscriptionSection": {
+        "subscriptionTitle": "订阅信息",
+        "billingDescription": "套餐&计费说明 >>",
+        "trafficLabel": "流量包",
+        "operationGuide": "操作指引",
+        "recordsTitle": "开通记录",
+        "totalItems": "共 {total} 条",
+        "orderNumber": "订单号",
+        "orderType": "订单类型",
+        "orderSource": "订单来源",
+        "purchaseCount": "购买个数",
+        "orderAmount": "订单金额",
+        "orderTime": "下单时间",
+        "validityPeriod": "过期时间",
+        "invoiceStatus": "发票状态",
+        "firstRechargeDiscount": "首次充值优惠"
+    },
+    "homePageUi": {
+        "personalInfo": "个人信息",
+        "loginManagement": "登录管理",
+        "accountLogout": "账号退出登录",
+        "logout": "退出登录",
+        "subscription": "订阅",
+        "usageStatistics": "用量统计",
+        "today": "今天",
+        "within7Days": "7天内",
+        "within30Days": "30天内",
+        "packageBillingDescription": "套餐&计费说明 >>",
+        "tips": " 部分模型夜间（每日 20:00 - 次日 09:00）和周末全天半价，可以和auto模式九折叠加"
+    },
+    "paymentMethods": {
+        "alipay": {
+            "name": "支付宝",
+            "description": "使用支付宝安全支付"
+        },
+        "wechat": {
+            "name": "微信支付",
+            "description": "使用微信安全支付"
+        },
+        "unionpay": {
+            "name": "银行卡",
+            "description": "使用银联卡支付"
+        }
+    },
+    "paymentModals": {
+        "paymentFailure": {
+            "title": "支付失败",
+            "tip": "请确认付款方式和订单后再试",
+            "returnButton": "返回"
+        },
+        "paymentSuccess": {
+            "title": "支付成功，请重新登录插件端获取最新服务！",
+            "tip": "预计支付成功后24小时内到账，扫码可快速加入官方售后群"
+        }
+    },
+    "subscribePage": {
+        "breadcrumb": {
+            "price": "价格",
+            "purchase": "购买"
+        },
+        "package": {
+            "description": "接实际使用用量扣除 Credit，有效期1个月",
+            "unit": "/ 套",
+            "tips": "（首充¥9.9｜续购 ¥25）"
+        },
+        "total": "共计：",
+        "paymentMethod": "支付方式",
+        "agreement": {
+            "prefix": "点击表示同意",
+            "linkText": "付费服务协议",
+            "modalTitle": "协议确认",
+            "modalContent": "请先阅读并同意",
+            "confirm": "同意",
+            "cancel": "取消"
+        },
+        "purchase": "购买",
+        "paymentModal": {
+            "title": "扫码支付",
+            "unit": "元",
+            "instruction": "请扫码完成支付",
+            "agreementText": "您已同意 CoStrict 付费服务协议",
+            "loading": "加载中...",
+            "qrCodeError": "二维码获取失败，请关闭弹窗后重新购买"
+        },
+        "testButtons": {
+            "simulateSuccess": "模拟支付成功",
+            "simulateFailure": "模拟支付失败"
+        },
+        "quantityPlaceholder": "请输入数量",
+        "quantityRulesMssage": "输入值不得小于0"
+    },
+    "invoiceModal": {
+        "title": "申请开具发票",
+        "tip": "电子发票与纸质发票具备同等法律效力，发票将在审核通过后 7个工作日内发送至您的邮箱",
+        "headerType": {
+            "label": "抬头类型：",
+            "company": "企业/单位",
+            "personal": "个人"
+        },
+        "invoiceType": {
+            "label": "发票类型：",
+            "vat": "增值税普通发票",
+            "special": "增值税专用发票"
+        },
+        "invoiceTitle": {
+            "label": "发票抬头",
+            "companyPlaceholder": "请输入企业/单位全称",
+            "personalValue": "个人"
+        },
+        "taxNumber": {
+            "label": "纳税人识别号：",
+            "placeholder": "请输入18位纳税人识别号"
+        },
+        "address": {
+            "label": "企业注册地址：",
+            "placeholder": "请输入单位地址"
+        },
+        "phone": {
+            "label": "企业注册电话：",
+            "placeholder": "请输入号码"
+        },
+        "bank": {
+            "label": "开户银行：",
+            "placeholder": "请输入开户银行"
+        },
+        "bankAccount": {
+            "label": "银行账号：",
+            "placeholder": "请输入银行账号"
+        },
+        "email": {
+            "label": "收票邮箱：",
+            "placeholder": "请输入邮箱账号，电子发票将发送至该邮箱"
+        },
+        "orderInfo": {
+            "orderNumber": "订单号：",
+            "amount": "金额：",
+            "content": "发票内容：",
+            "serviceFee": "软件服务费"
+        },
+        "buttons": {
+            "submit": "提交申请",
+            "cancel": "取消"
+        },
+        "validation": {
+            "selectHeaderType": "请选择抬头类型",
+            "selectInvoiceType": "请选择发票类型",
+            "enterEmail": "请输入收票邮箱",
+            "emailFormatInvalid": "请输入正确的邮箱格式",
+            "enterInvoiceTitle": "请输入发票抬头",
+            "taxNumberTooLong": "纳税人识别号不能超过18位",
+            "taxNumberDigitsOnly": "纳税人识别号只能包含数字",
+            "invoiceTitleEmpty": "发票抬头不能为空"
+        },
+        "submitSuccess": "提交申请成功",
+        "submitFailed": "提交申请失败"
+    },
+    "subscriptionComments": {
+        "subscriptionInfo": "订阅信息",
+        "operationGuide": "操作指引",
+        "activationRecords": "开通记录",
+        "invoiceModal": "发票弹窗",
+        "operation": "操作",
+        "goToInvoice": "去开票"
+    },
+    "invoiceStatus": {
+        "pending": "待开票",
+        "processing": "开票中",
+        "completed": "已开票",
+        "cancelled": "已作废"
+    },
+    "annualSummary": {
+        "dataLoadFailed": "数据加载失败，请刷新页面重试",
+        "dataLoading": "数据正在加载中，请稍候",
+        "dear": "亲爱的",
+        "unlockItem": "恭喜解锁道具：CoStrict",
+        "pastOneYear": "过去一年里",
+        "days": "天",
+        "year": "年",
+        "month": "月",
+        "day": "日",
+        "notOneTimeTool": "你没有把它当成一次性工具",
+        "stayInWorkflow": "而是让它留在了你的工作流里",
+        "youInitiated": "你发起了",
+        "challenges": "次挑战",
+        "skillUnlocked": "技能已解锁：",
+        "codeModeSkill": "Code模式 技能点已修炼",
+        "askModeSkill": "Ask模式 技能点已修炼",
+        "architectModeSkill": "Architect 技能点已修炼",
+        "tokenConsumption": "Token消耗量：",
+        "yearlyCreditsConsumption": "本年度Credits消耗",
+        "annualReport": "2025年度报告",
+        "scanQRCode": "扫描二维码·解锁专属年度副本",
+        "youUsed": "你使用了",
+        "inviteCode": "邀请码:",
+        "learnProduct": "了解产品",
+        "loginExperience": "登录体验",
+        "savePoster": "保存海报",
+        "generating": "生成中...",
+        "saveFailedTip": "*如保存失败可截图分享",
+        "reviewAgain": "重新回顾",
+        "ifOnlyCaloriesConsumed": "如果这是消耗的卡路里就好了",
+        "yearlySummary": "年度总结-"
+    }
+}

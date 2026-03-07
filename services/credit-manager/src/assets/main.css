@@ -1,0 +1,20 @@
+@import './base.less';
+@import 'highlight.js/styles/github.css';
+@import 'github-markdown-css/github-markdown.css';
+@import 'tailwindcss';
+@config '../../tailwind.config.js';
+
+@font-face {
+    font-family: 'ZCOOL KuaiLe';
+    src: url('./fonts/ZCOOLKuaiLe-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+#app {
+    margin: 0 auto;
+    font-weight: normal;
+    height: 100%;
+    background: #000;
+}

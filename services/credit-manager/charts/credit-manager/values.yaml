@@ -1,0 +1,45 @@
+# values.yaml
+
+replicaCount: 1
+
+service:
+  type: ClusterIP
+  port: 5173
+  targetPort: 80
+  nodePort: ""
+
+image:
+  pullPolicy: IfNotPresent
+  repository: zgsm/zgsm-admin-system
+  tag: ""
+
+containerPorts:
+  web: 80
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+rollingUpdate:
+  maxUnavailable: "25%"
+  maxSurge: "25%"
+
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                  - zgsm-admin-system
+          topologyKey: "kubernetes.io/hostname"
+
+nodeSelector: {}
+# kubernetes.io/os: linux
