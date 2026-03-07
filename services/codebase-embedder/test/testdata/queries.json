@@ -1,0 +1,202 @@
+{
+  "queries": [
+    {
+      "id": "query_1",
+      "text": "type UserService struct",
+      "expected_files": ["sample1.go"],
+      "expected_contents": ["type UserService struct", "UserService", "struct"],
+      "scenario_dimension": "关键词",
+      "language": "go",
+      "scenario_type": "code"
+    },
+    {
+      "id": "query_2",
+      "text": "NewUserService() *UserService",
+      "expected_files": ["sample1.go"],
+      "expected_contents": ["NewUserService", "UserService", "func", "return"],
+      "scenario_dimension": "关键词",
+      "language": "go",
+      "scenario_type": "code"
+    },
+    {
+      "id": "query_3",
+      "text": "service.AddUser(",
+      "expected_files": ["sample1.go"],
+      "expected_contents": ["AddUser", "func", "user", "service"],
+      "scenario_dimension": "关键词",
+      "language": "go",
+      "scenario_type": "code"
+    },
+    {
+      "id": "query_4",
+      "text": "service.ListUsers()",
+      "expected_files": ["sample1.go"],
+      "expected_contents": ["ListUsers", "func", "users", "service"],
+      "scenario_dimension": "关键词",
+      "language": "go",
+      "scenario_type": "code"
+    },
+    {
+      "id": "query_5",
+      "text": "class UserService",
+      "expected_files": ["sample2.py"],
+      "expected_contents": ["class UserService", "UserService", "class"],
+      "scenario_dimension": "关键词",
+      "language": "python",
+      "scenario_type": "code"
+    },
+    {
+      "id": "query_6",
+      "text": "add_user(self, user_id, name)",
+      "expected_files": ["sample2.py"],
+      "expected_contents": ["add_user", "def", "user", "self"],
+      "scenario_dimension": "关键词",
+      "language": "python",
+      "scenario_type": "code"
+    },
+    {
+      "id": "query_7",
+      "text": "def delete_user(self, user_id)",
+      "expected_files": ["sample2.py"],
+      "expected_contents": ["delete_user", "def", "user", "self"],
+      "scenario_dimension": "关键词",
+      "language": "python",
+      "scenario_type": "code"
+    },
+    {
+      "id": "query_8",
+      "text": "class UserService {",
+      "expected_files": ["sample3.js"],
+      "expected_contents": ["class UserService", "UserService", "class"],
+      "scenario_dimension": "关键词",
+      "language": "javascript",
+      "scenario_type": "code"
+    },
+    {
+      "id": "query_9",
+      "text": "addUser(id, name)",
+      "expected_files": ["sample3.js"],
+      "expected_contents": ["addUser", "function", "user", "id", "name"],
+      "scenario_dimension": "关键词",
+      "language": "javascript",
+      "scenario_type": "code"
+    },
+    {
+      "id": "query_10",
+      "text": "dictionary operations in Python",
+      "expected_files": ["sample3.js"],
+      "expected_contents": ["dictionary", "operations", "Python", "dict"],
+      "scenario_dimension": "中英文",
+      "language": "javascript",
+      "scenario_type": "code"
+    },
+    {
+      "id": "query_11",
+      "text": "自定义知识库",
+      "expected_files": ["自定义知识库功能.md"],
+      "expected_contents": ["自定义知识库", "知识库", "custom", "knowledge"],
+      "scenario_dimension": "中英文",
+      "language": "markdown",
+      "scenario_type": "doc"
+    },
+    {
+      "id": "query_12",
+      "text": "AI统一检索接口",
+      "expected_files": ["自定义知识库功能.md"],
+      "expected_contents": ["AI", "统一检索", "接口", "search", "interface"],
+      "scenario_dimension": "中英文",
+      "language": "markdown",
+      "scenario_type": "doc"
+    },
+    {
+      "id": "query_21",
+      "text": "我希望在Costrict的设置界面中有一个\"知识库管理\"面板",
+      "expected_files": ["自定义知识库功能.md"],
+      "expected_contents": ["知识库管理", "设置界面", "面板", "management", "panel"],
+      "scenario_dimension": "中英文",
+      "language": "markdown",
+      "scenario_type": "doc"
+    },
+    {
+      "id": "query_22",
+      "text": "知识库检索Function Call",
+      "expected_files": ["自定义知识库功能.md"],
+      "expected_contents": ["知识库检索", "Function Call", "search", "function"],
+      "scenario_dimension": "中英文",
+      "language": "markdown",
+      "scenario_type": "doc"
+    },
+    {
+      "id": "query_23",
+      "text": "检索准确率",
+      "expected_files": ["自定义知识库功能.md"],
+      "expected_contents": ["检索准确率", "准确率", "precision", "recall"],
+      "scenario_dimension": "同义词",
+      "language": "markdown",
+      "scenario_type": "doc"
+    },
+    {
+      "id": "query_24",
+      "text": "平均倒数排名",
+      "expected_files": ["自定义知识库功能.md"],
+      "expected_contents": ["平均倒数排名", "MRR", "ranking", "reciprocal"],
+      "scenario_dimension": "同义词",
+      "language": "markdown",
+      "scenario_type": "doc"
+    },
+    {
+      "id": "query_25",
+      "text": "端到端任务成功率",
+      "expected_files": ["自定义知识库功能.md"],
+      "expected_contents": ["端到端", "任务成功率", "success", "end-to-end"],
+      "scenario_dimension": "同义词",
+      "language": "markdown",
+      "scenario_type": "doc"
+    },
+    {
+      "id": "query_26",
+      "text": "What Can Roo Code Do",
+      "expected_files": ["index.md"],
+      "expected_contents": ["Roo Code", "capabilities", "features", "functionality"],
+      "scenario_dimension": "关键词",
+      "language": "markdown",
+      "scenario_type": "doc"
+    },
+    {
+      "id": "query_27",
+      "text": "For answering questions and providing information",
+      "expected_files": ["index.md"],
+      "expected_contents": ["answering", "questions", "information", "help"],
+      "scenario_dimension": "近义词",
+      "language": "markdown",
+      "scenario_type": "doc"
+    },
+    {
+      "id": "query_28",
+      "text": "Smart Tools",
+      "expected_files": ["index.md"],
+      "expected_contents": ["Smart Tools", "tools", "utilities", "features"],
+      "scenario_dimension": "近义词",
+      "language": "markdown",
+      "scenario_type": "doc"
+    },
+    {
+      "id": "query_29",
+      "text": "custom modes and tools",
+      "expected_files": ["index.md"],
+      "expected_contents": ["custom modes", "tools", "modes", "customization"],
+      "scenario_dimension": "近义词",
+      "language": "markdown",
+      "scenario_type": "doc"
+    },
+    {
+      "id": "query_30",
+      "text": "Roo Code community resources",
+      "expected_files": ["index.md"],
+      "expected_contents": ["Roo Code", "community", "resources", "documentation"],
+      "scenario_dimension": "关键词",
+      "language": "markdown",
+      "scenario_type": "doc"
+    }
+  ]
+}

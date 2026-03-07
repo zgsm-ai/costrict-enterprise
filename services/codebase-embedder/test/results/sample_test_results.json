@@ -1,0 +1,122 @@
+{
+  "test_name": "嵌入模型对比测试",
+  "test_description": "使用相同向量数据库，测试不同嵌入模型的召回效果",
+  "start_time": "2025-09-06T09:30:00.000Z",
+  "end_time": "2025-09-06T09:35:00.000Z",
+  "configuration": {
+    "queries_file": "./test/testdata/queries.json",
+    "vector_store": "weaviate-default",
+    "top_k": 5,
+    "scenario_types": ["code", "doc"]
+  },
+  "results": {
+    "gte-modernbert-base": {
+      "start_time": "2025-09-06T09:30:00.000Z",
+      "end_time": "2025-09-06T09:35:00.000Z",
+      "query_results": [
+        {
+          "query_id": "query_1",
+          "query": "type UserService struct",
+          "scenario_type": "code",
+          "language": "go",
+          "metrics": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1_score": 1.0,
+            "map": 1.0,
+            "ndcg": 1.0,
+            "response_time": 53.0
+          },
+          "retrieved": [
+            {
+              "content": "type UserService struct {\n\tmu         sync.RWMutex\n\tusers      map[string]*User\n\tmaxUsers   int\n}",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\code_samples\\sample1.go",
+              "score": 0.9234567,
+              "startLine": 1,
+              "endLine": 5
+            }
+          ],
+          "expected": ["sample1.go"]
+        },
+        {
+          "query_id": "query_11",
+          "query": "自定义知识库",
+          "scenario_type": "doc",
+          "language": "markdown",
+          "metrics": {
+            "precision": 0.8,
+            "recall": 1.0,
+            "f1_score": 0.8889,
+            "map": 0.8,
+            "ndcg": 0.85,
+            "response_time": 67.0
+          },
+          "retrieved": [
+            {
+              "content": "#### **Epic 1: 自定义知识库**\n\n- **FR-2.1: 知识库管理界面**\n  - **用户故事：** 作为一个开发者，我希望在Costrict的设置界面中有一个\"知识库管理\"面板，我可以在这里看到当前已导入的文档，并且可以添加或移除它们。",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.8765432,
+              "startLine": 2,
+              "endLine": 5
+            },
+            {
+              "content": "### Smart Tools\nRoo Code comes with powerful [tools](/basic-usage/how-tools-work) that can:\n- Read and write files in your project\n- Execute commands in your VS Code terminal\n- Control a web browser\n- Use external tools via [MCP (Model Context Protocol)](/features/mcp/overview)",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.7654321,
+              "startLine": 50,
+              "endLine": 54
+            }
+          ],
+          "expected": ["自定义知识库功能.md"]
+        }
+      ],
+      "average_metrics": {
+        "precision": 0.9000,
+        "recall": 1.0000,
+        "f1_score": 0.9444,
+        "map": 0.9000,
+        "ndcg": 0.9250,
+        "response_time": 60.0
+      },
+      "scenario_breakdown": {
+        "code": {
+          "query_count": 10,
+          "precision": 0.9500,
+          "recall": 1.0000,
+          "f1_score": 0.9744,
+          "map": 0.9500,
+          "ndcg": 0.9750,
+          "response_time": 55.0
+        },
+        "doc": {
+          "query_count": 20,
+          "precision": 0.8750,
+          "recall": 1.0000,
+          "f1_score": 0.9333,
+          "map": 0.8750,
+          "ndcg": 0.9000,
+          "response_time": 65.0
+        }
+      }
+    }
+  },
+  "summary": {
+    "total_queries": 30,
+    "code_queries": 10,
+    "doc_queries": 20,
+    "best_performing_model": "gte-modernbert-base",
+    "overall_performance": {
+      "precision": 0.9000,
+      "recall": 1.0000,
+      "f1_score": 0.9444,
+      "map": 0.9000,
+      "ndcg": 0.9250,
+      "response_time": 60.0
+    },
+    "recommendations": [
+      "代码场景的检索效果优于文档场景，建议针对文档内容优化嵌入策略",
+      "响应时间在可接受范围内，但文档查询仍有优化空间",
+      "建议增加更多样化的文档查询测试用例"
+    ]
+  }
+}

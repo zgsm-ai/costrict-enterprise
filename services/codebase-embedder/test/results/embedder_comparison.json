@@ -1,0 +1,1975 @@
+{
+  "test_name": "嵌入模型对比测试",
+  "test_description": "使用相同向量数据库，测试不同嵌入模型的召回效果",
+  "start_time": "2025-09-05T15:27:51.7236771+08:00",
+  "end_time": "2025-09-05T15:30:12.6644409+08:00",
+  "results": {
+    "gte-modernbert-base": {
+      "start_time": "2025-09-05T15:30:04.9143697+08:00",
+      "end_time": "2025-09-05T15:30:12.6644409+08:00",
+      "query_results": [
+        {
+          "query_id": "query_11",
+          "query": "自定义知识库功能",
+          "metrics": {
+            "precision": 0,
+            "recall": 0,
+            "f1_score": 0,
+            "response_time": 53
+          },
+          "retrieved": [
+            {
+              "content": "    - **定义：** 这是最终的业务指标。对10个预设的、需要背景知识才能完成的编码任务（如“基于现有API文档，为`getUserProfile`函数编写一个调用示例”），分别在“有知识库”和“无知识库”两种模式下让AI生成代码。\n    - **验收标准：**\n      1. **对比基线：** 首先记录“无知识库”模式下的成功率（例如，10个任务中成功2个，成功率20%）。\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.82181656,
+              "startLine": 56,
+              "endLine": 58
+            },
+            {
+              "content": "\n### Customization\nMake Roo Code work your way with:\n- [Custom Instructions](/features/custom-instructions) for personalized behavior\n- [Custom Modes](/features/custom-modes) for specialized tasks\n- [Local Models](/advanced-usage/local-models) for offline use\n- [Auto-Approval Settings](/features/auto-approving-actions) for faster workflows\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.7578897,
+              "startLine": 59,
+              "endLine": 67
+            },
+            {
+              "content": "\n### Smart Tools\nRoo Code comes with powerful [tools](/basic-usage/how-tools-work) that can:\n- Read and write files in your project\n- Execute commands in your VS Code terminal\n- Control a web browser\n- Use external tools via [MCP (Model Context Protocol)](/features/mcp/overview)\n\nMCP extends Roo Code's capabilities by allowing you to add unlimited custom tools. Integrate with external APIs, connect to databases, or create specialized development tools - MCP provides the framework to expand Roo Code's functionality to meet your specific needs.\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.7308111,
+              "startLine": 50,
+              "endLine": 58
+            },
+            {
+              "content": "\n## Quick Start\n\n1. [Install Roo Code](/getting-started/installing)\n2. [Connect Your AI Provider](/getting-started/connecting-api-provider)\n3. [Try Your First Task](/getting-started/your-first-task)\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.7275617,
+              "startLine": 31,
+              "endLine": 38
+            },
+            {
+              "content": "\n### Multiple Modes\nRoo Code adapts to your needs with specialized [modes](/basic-usage/using-modes):\n- **Code Mode:** For general-purpose coding tasks\n- **Architect Mode:** For planning and technical leadership\n- **Ask Mode:** For answering questions and providing information\n- **Debug Mode:** For systematic problem diagnosis\n- **Orchestrator Mode:** For managing complex tasks and delegating work\n- **[Custom Modes](/features/custom-modes):** Create unlimited specialized personas for security auditing, performance optimization, documentation, or any other task\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.7213868,
+              "startLine": 41,
+              "endLine": 49
+            },
+            {
+              "content": "\n## Key Features\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.7172956,
+              "startLine": 39,
+              "endLine": 40
+            },
+            {
+              "content": "\n# Roo Code Docs\n\nRoo Code is an AI-powered autonomous coding agent that lives in your editor. It helps you code faster and smarter, whether you're starting a new project, maintaining existing code, or learning new technologies.\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.71392477,
+              "startLine": 14,
+              "endLine": 19
+            },
+            {
+              "content": "\n### Documentation\n- [Basic Usage Guide](/basic-usage/the-chat-interface)\n- [Advanced Features](/features/auto-approving-actions)\n- [Frequently Asked Questions](/faq)\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.70143694,
+              "startLine": 70,
+              "endLine": 74
+            },
+            {
+              "content": "\n## What Can Roo Code Do?\n\n- **Generate Code** from natural language descriptions\n- **Refactor \u0026 Debug** existing code\n- **Write \u0026 Update** documentation\n- **Answer Questions** about your codebase\n- **Automate** repetitive tasks\n- **Create** new files and projects\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.69995546,
+              "startLine": 20,
+              "endLine": 30
+            },
+            {
+              "content": "---\nsidebar_label: Welcome\ndescription: Learn how to use Roo Code, the autonomous AI coding agent that helps you code faster and smarter in VS Code. Complete guides, tutorials, and documentation.\nkeywords:\n  - Roo Code\n  - AI coding assistant\n  - VS Code extension\n  - autonomous coding agent\n  - AI pair programmer\n  - code generation\n  - documentation\nimage: /img/social-share.jpg\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.67987424,
+              "startLine": 0,
+              "endLine": 13
+            }
+          ],
+          "expected": [
+            "自定义知识库功能.md"
+          ]
+        },
+        {
+          "query_id": "query_12",
+          "query": "AI统一检索接口",
+          "metrics": {
+            "precision": 0,
+            "recall": 0,
+            "f1_score": 0,
+            "response_time": 94
+          },
+          "retrieved": [
+            {
+              "content": "    - **定义：** 这是最终的业务指标。对10个预设的、需要背景知识才能完成的编码任务（如“基于现有API文档，为`getUserProfile`函数编写一个调用示例”），分别在“有知识库”和“无知识库”两种模式下让AI生成代码。\n    - **验收标准：**\n      1. **对比基线：** 首先记录“无知识库”模式下的成功率（例如，10个任务中成功2个，成功率20%）。\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.764474,
+              "startLine": 56,
+              "endLine": 58
+            },
+            {
+              "content": "\n## Quick Start\n\n1. [Install Roo Code](/getting-started/installing)\n2. [Connect Your AI Provider](/getting-started/connecting-api-provider)\n3. [Try Your First Task](/getting-started/your-first-task)\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.71851987,
+              "startLine": 31,
+              "endLine": 38
+            },
+            {
+              "content": "\n## Key Features\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.7085591,
+              "startLine": 39,
+              "endLine": 40
+            },
+            {
+              "content": "\n### Documentation\n- [Basic Usage Guide](/basic-usage/the-chat-interface)\n- [Advanced Features](/features/auto-approving-actions)\n- [Frequently Asked Questions](/faq)\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.69810605,
+              "startLine": 70,
+              "endLine": 74
+            },
+            {
+              "content": "\n### Customization\nMake Roo Code work your way with:\n- [Custom Instructions](/features/custom-instructions) for personalized behavior\n- [Custom Modes](/features/custom-modes) for specialized tasks\n- [Local Models](/advanced-usage/local-models) for offline use\n- [Auto-Approval Settings](/features/auto-approving-actions) for faster workflows\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.67524445,
+              "startLine": 59,
+              "endLine": 67
+            },
+            {
+              "content": "\n## Resources\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.670401,
+              "startLine": 68,
+              "endLine": 69
+            },
+            {
+              "content": "\n# Roo Code Docs\n\nRoo Code is an AI-powered autonomous coding agent that lives in your editor. It helps you code faster and smarter, whether you're starting a new project, maintaining existing code, or learning new technologies.\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.66772765,
+              "startLine": 14,
+              "endLine": 19
+            },
+            {
+              "content": "\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.66720134,
+              "startLine": 0,
+              "endLine": 1
+            },
+            {
+              "content": "\n### Multiple Modes\nRoo Code adapts to your needs with specialized [modes](/basic-usage/using-modes):\n- **Code Mode:** For general-purpose coding tasks\n- **Architect Mode:** For planning and technical leadership\n- **Ask Mode:** For answering questions and providing information\n- **Debug Mode:** For systematic problem diagnosis\n- **Orchestrator Mode:** For managing complex tasks and delegating work\n- **[Custom Modes](/features/custom-modes):** Create unlimited specialized personas for security auditing, performance optimization, documentation, or any other task\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.65921545,
+              "startLine": 41,
+              "endLine": 49
+            },
+            {
+              "content": "\n### Smart Tools\nRoo Code comes with powerful [tools](/basic-usage/how-tools-work) that can:\n- Read and write files in your project\n- Execute commands in your VS Code terminal\n- Control a web browser\n- Use external tools via [MCP (Model Context Protocol)](/features/mcp/overview)\n\nMCP extends Roo Code's capabilities by allowing you to add unlimited custom tools. Integrate with external APIs, connect to databases, or create specialized development tools - MCP provides the framework to expand Roo Code's functionality to meet your specific needs.\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6562503,
+              "startLine": 50,
+              "endLine": 58
+            }
+          ],
+          "expected": [
+            "自定义知识库功能.md"
+          ]
+        },
+        {
+          "query_id": "query_13",
+          "query": "from natural language descriptions",
+          "metrics": {
+            "precision": 1,
+            "recall": 1,
+            "f1_score": 1,
+            "response_time": 102
+          },
+          "retrieved": [
+            {
+              "content": "\n## Resources\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.74112093,
+              "startLine": 68,
+              "endLine": 69
+            },
+            {
+              "content": "\n## Key Features\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.73933005,
+              "startLine": 39,
+              "endLine": 40
+            },
+            {
+              "content": "\n## What Can Roo Code Do?\n\n- **Generate Code** from natural language descriptions\n- **Refactor \u0026 Debug** existing code\n- **Write \u0026 Update** documentation\n- **Answer Questions** about your codebase\n- **Automate** repetitive tasks\n- **Create** new files and projects\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.7228885,
+              "startLine": 20,
+              "endLine": 30
+            },
+            {
+              "content": "\n# Roo Code Docs\n\nRoo Code is an AI-powered autonomous coding agent that lives in your editor. It helps you code faster and smarter, whether you're starting a new project, maintaining existing code, or learning new technologies.\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.7094618,
+              "startLine": 14,
+              "endLine": 19
+            },
+            {
+              "content": "\n## Quick Start\n\n1. [Install Roo Code](/getting-started/installing)\n2. [Connect Your AI Provider](/getting-started/connecting-api-provider)\n3. [Try Your First Task](/getting-started/your-first-task)\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.70007956,
+              "startLine": 31,
+              "endLine": 38
+            },
+            {
+              "content": "\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.698373,
+              "startLine": 0,
+              "endLine": 1
+            },
+            {
+              "content": "\n### Customization\nMake Roo Code work your way with:\n- [Custom Instructions](/features/custom-instructions) for personalized behavior\n- [Custom Modes](/features/custom-modes) for specialized tasks\n- [Local Models](/advanced-usage/local-models) for offline use\n- [Auto-Approval Settings](/features/auto-approving-actions) for faster workflows\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.68135697,
+              "startLine": 59,
+              "endLine": 67
+            },
+            {
+              "content": "\n### Multiple Modes\nRoo Code adapts to your needs with specialized [modes](/basic-usage/using-modes):\n- **Code Mode:** For general-purpose coding tasks\n- **Architect Mode:** For planning and technical leadership\n- **Ask Mode:** For answering questions and providing information\n- **Debug Mode:** For systematic problem diagnosis\n- **Orchestrator Mode:** For managing complex tasks and delegating work\n- **[Custom Modes](/features/custom-modes):** Create unlimited specialized personas for security auditing, performance optimization, documentation, or any other task\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.67859435,
+              "startLine": 41,
+              "endLine": 49
+            },
+            {
+              "content": "\n### Documentation\n- [Basic Usage Guide](/basic-usage/the-chat-interface)\n- [Advanced Features](/features/auto-approving-actions)\n- [Frequently Asked Questions](/faq)\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6722269,
+              "startLine": 70,
+              "endLine": 74
+            },
+            {
+              "content": "\n### Smart Tools\nRoo Code comes with powerful [tools](/basic-usage/how-tools-work) that can:\n- Read and write files in your project\n- Execute commands in your VS Code terminal\n- Control a web browser\n- Use external tools via [MCP (Model Context Protocol)](/features/mcp/overview)\n\nMCP extends Roo Code's capabilities by allowing you to add unlimited custom tools. Integrate with external APIs, connect to databases, or create specialized development tools - MCP provides the framework to expand Roo Code's functionality to meet your specific needs.\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6688409,
+              "startLine": 50,
+              "endLine": 58
+            }
+          ],
+          "expected": [
+            "index.md"
+          ]
+        },
+        {
+          "query_id": "query_21",
+          "query": "知识库管理界面功能",
+          "metrics": {
+            "precision": 0,
+            "recall": 0,
+            "f1_score": 0,
+            "response_time": 90
+          },
+          "retrieved": [
+            {
+              "content": "    - **定义：** 这是最终的业务指标。对10个预设的、需要背景知识才能完成的编码任务（如“基于现有API文档，为`getUserProfile`函数编写一个调用示例”），分别在“有知识库”和“无知识库”两种模式下让AI生成代码。\n    - **验收标准：**\n      1. **对比基线：** 首先记录“无知识库”模式下的成功率（例如，10个任务中成功2个，成功率20%）。\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.7658043,
+              "startLine": 56,
+              "endLine": 58
+            },
+            {
+              "content": "\n### Customization\nMake Roo Code work your way with:\n- [Custom Instructions](/features/custom-instructions) for personalized behavior\n- [Custom Modes](/features/custom-modes) for specialized tasks\n- [Local Models](/advanced-usage/local-models) for offline use\n- [Auto-Approval Settings](/features/auto-approving-actions) for faster workflows\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.70129406,
+              "startLine": 59,
+              "endLine": 67
+            },
+            {
+              "content": "\n### Smart Tools\nRoo Code comes with powerful [tools](/basic-usage/how-tools-work) that can:\n- Read and write files in your project\n- Execute commands in your VS Code terminal\n- Control a web browser\n- Use external tools via [MCP (Model Context Protocol)](/features/mcp/overview)\n\nMCP extends Roo Code's capabilities by allowing you to add unlimited custom tools. Integrate with external APIs, connect to databases, or create specialized development tools - MCP provides the framework to expand Roo Code's functionality to meet your specific needs.\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.69903654,
+              "startLine": 50,
+              "endLine": 58
+            },
+            {
+              "content": "\n### Documentation\n- [Basic Usage Guide](/basic-usage/the-chat-interface)\n- [Advanced Features](/features/auto-approving-actions)\n- [Frequently Asked Questions](/faq)\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6920183,
+              "startLine": 70,
+              "endLine": 74
+            },
+            {
+              "content": "\n## Key Features\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.68516934,
+              "startLine": 39,
+              "endLine": 40
+            },
+            {
+              "content": "\n### Multiple Modes\nRoo Code adapts to your needs with specialized [modes](/basic-usage/using-modes):\n- **Code Mode:** For general-purpose coding tasks\n- **Architect Mode:** For planning and technical leadership\n- **Ask Mode:** For answering questions and providing information\n- **Debug Mode:** For systematic problem diagnosis\n- **Orchestrator Mode:** For managing complex tasks and delegating work\n- **[Custom Modes](/features/custom-modes):** Create unlimited specialized personas for security auditing, performance optimization, documentation, or any other task\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.68464017,
+              "startLine": 41,
+              "endLine": 49
+            },
+            {
+              "content": "\n# Roo Code Docs\n\nRoo Code is an AI-powered autonomous coding agent that lives in your editor. It helps you code faster and smarter, whether you're starting a new project, maintaining existing code, or learning new technologies.\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6842845,
+              "startLine": 14,
+              "endLine": 19
+            },
+            {
+              "content": "\n## Quick Start\n\n1. [Install Roo Code](/getting-started/installing)\n2. [Connect Your AI Provider](/getting-started/connecting-api-provider)\n3. [Try Your First Task](/getting-started/your-first-task)\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6739547,
+              "startLine": 31,
+              "endLine": 38
+            },
+            {
+              "content": "\n## What Can Roo Code Do?\n\n- **Generate Code** from natural language descriptions\n- **Refactor \u0026 Debug** existing code\n- **Write \u0026 Update** documentation\n- **Answer Questions** about your codebase\n- **Automate** repetitive tasks\n- **Create** new files and projects\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.66429394,
+              "startLine": 20,
+              "endLine": 30
+            },
+            {
+              "content": "---\nsidebar_label: Welcome\ndescription: Learn how to use Roo Code, the autonomous AI coding agent that helps you code faster and smarter in VS Code. Complete guides, tutorials, and documentation.\nkeywords:\n  - Roo Code\n  - AI coding assistant\n  - VS Code extension\n  - autonomous coding agent\n  - AI pair programmer\n  - code generation\n  - documentation\nimage: /img/social-share.jpg\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6639163,
+              "startLine": 0,
+              "endLine": 13
+            }
+          ],
+          "expected": [
+            "自定义知识库功能.md"
+          ]
+        },
+        {
+          "query_id": "query_22",
+          "query": "知识库验收标准",
+          "metrics": {
+            "precision": 0,
+            "recall": 0,
+            "f1_score": 0,
+            "response_time": 98
+          },
+          "retrieved": [
+            {
+              "content": "    - **定义：** 这是最终的业务指标。对10个预设的、需要背景知识才能完成的编码任务（如“基于现有API文档，为`getUserProfile`函数编写一个调用示例”），分别在“有知识库”和“无知识库”两种模式下让AI生成代码。\n    - **验收标准：**\n      1. **对比基线：** 首先记录“无知识库”模式下的成功率（例如，10个任务中成功2个，成功率20%）。\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.8041272,
+              "startLine": 56,
+              "endLine": 58
+            },
+            {
+              "content": "\n## Quick Start\n\n1. [Install Roo Code](/getting-started/installing)\n2. [Connect Your AI Provider](/getting-started/connecting-api-provider)\n3. [Try Your First Task](/getting-started/your-first-task)\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6794738,
+              "startLine": 31,
+              "endLine": 38
+            },
+            {
+              "content": "\n### Documentation\n- [Basic Usage Guide](/basic-usage/the-chat-interface)\n- [Advanced Features](/features/auto-approving-actions)\n- [Frequently Asked Questions](/faq)\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.66820586,
+              "startLine": 70,
+              "endLine": 74
+            },
+            {
+              "content": "\n## Key Features\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6670719,
+              "startLine": 39,
+              "endLine": 40
+            },
+            {
+              "content": "\n### Customization\nMake Roo Code work your way with:\n- [Custom Instructions](/features/custom-instructions) for personalized behavior\n- [Custom Modes](/features/custom-modes) for specialized tasks\n- [Local Models](/advanced-usage/local-models) for offline use\n- [Auto-Approval Settings](/features/auto-approving-actions) for faster workflows\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6559868,
+              "startLine": 59,
+              "endLine": 67
+            },
+            {
+              "content": "\n#### **Epic 1: 自定义知识库**\n\n- **FR-2.1: 知识库管理界面**\n  - **用户故事：** 作为一个开发者，我希望在Costrict的设置界面中有一个“知识库管理”面板，我可以在这里看到当前已导入的文档，并且可以添加或移除它们。\n  - **交付物：**\n    1. 在Costrict的VS Code设置页或侧边栏视图中，增加一个“知识库”管理区域。\n    2. 该区域应包含一个“添加文档/文件夹”按钮和一个已导入源的列表。\n    3. 知识库系统页面，要支持树状管理，方便用户组织大量知识库。\n    4. 列表中的每一项都应有关联的“移除”按钮。\n  - **验收标准：**\n    1. 用户可以通过点击按钮，打开文件/文件夹选择器。\n    2. 成功选择`.md`文件或包含`.md`文件的文件夹后，该源会出现在列表中。\n    3. 点击“移除”按钮后，相应的源会从列表中消失，并且其对应的向量化数据也会从数据库中被删除。\n    4. 点击某个md文档，该文档会出现在vscode编辑窗口，支持编辑该知识\n    5. 每当知识库有变动时，需要增量 向量化该变动，存储起来。\n\n------\n\n\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.6344751,
+              "startLine": 2,
+              "endLine": 21
+            },
+            {
+              "content": "\n### Multiple Modes\nRoo Code adapts to your needs with specialized [modes](/basic-usage/using-modes):\n- **Code Mode:** For general-purpose coding tasks\n- **Architect Mode:** For planning and technical leadership\n- **Ask Mode:** For answering questions and providing information\n- **Debug Mode:** For systematic problem diagnosis\n- **Orchestrator Mode:** For managing complex tasks and delegating work\n- **[Custom Modes](/features/custom-modes):** Create unlimited specialized personas for security auditing, performance optimization, documentation, or any other task\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6344658,
+              "startLine": 41,
+              "endLine": 49
+            },
+            {
+              "content": "\n## What Can Roo Code Do?\n\n- **Generate Code** from natural language descriptions\n- **Refactor \u0026 Debug** existing code\n- **Write \u0026 Update** documentation\n- **Answer Questions** about your codebase\n- **Automate** repetitive tasks\n- **Create** new files and projects\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6336564,
+              "startLine": 20,
+              "endLine": 30
+            },
+            {
+              "content": "\n# Roo Code Docs\n\nRoo Code is an AI-powered autonomous coding agent that lives in your editor. It helps you code faster and smarter, whether you're starting a new project, maintaining existing code, or learning new technologies.\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.63353395,
+              "startLine": 14,
+              "endLine": 19
+            },
+            {
+              "content": "\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.6311718,
+              "startLine": 0,
+              "endLine": 1
+            }
+          ],
+          "expected": [
+            "自定义知识库功能.md"
+          ]
+        },
+        {
+          "query_id": "query_23",
+          "query": "检索准确率验收指标",
+          "metrics": {
+            "precision": 0,
+            "recall": 0,
+            "f1_score": 0,
+            "response_time": 95
+          },
+          "retrieved": [
+            {
+              "content": "    - **定义：** 这是最终的业务指标。对10个预设的、需要背景知识才能完成的编码任务（如“基于现有API文档，为`getUserProfile`函数编写一个调用示例”），分别在“有知识库”和“无知识库”两种模式下让AI生成代码。\n    - **验收标准：**\n      1. **对比基线：** 首先记录“无知识库”模式下的成功率（例如，10个任务中成功2个，成功率20%）。\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.81374884,
+              "startLine": 56,
+              "endLine": 58
+            },
+            {
+              "content": "\n### Documentation\n- [Basic Usage Guide](/basic-usage/the-chat-interface)\n- [Advanced Features](/features/auto-approving-actions)\n- [Frequently Asked Questions](/faq)\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.67240214,
+              "startLine": 70,
+              "endLine": 74
+            },
+            {
+              "content": "\n## Key Features\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.66825277,
+              "startLine": 39,
+              "endLine": 40
+            },
+            {
+              "content": "\n## Quick Start\n\n1. [Install Roo Code](/getting-started/installing)\n2. [Connect Your AI Provider](/getting-started/connecting-api-provider)\n3. [Try Your First Task](/getting-started/your-first-task)\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6661831,
+              "startLine": 31,
+              "endLine": 38
+            },
+            {
+              "content": "\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.6374313,
+              "startLine": 0,
+              "endLine": 1
+            },
+            {
+              "content": "\n### Customization\nMake Roo Code work your way with:\n- [Custom Instructions](/features/custom-instructions) for personalized behavior\n- [Custom Modes](/features/custom-modes) for specialized tasks\n- [Local Models](/advanced-usage/local-models) for offline use\n- [Auto-Approval Settings](/features/auto-approving-actions) for faster workflows\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6315521,
+              "startLine": 59,
+              "endLine": 67
+            },
+            {
+              "content": "\n## Resources\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.62770814,
+              "startLine": 68,
+              "endLine": 69
+            },
+            {
+              "content": "\n### Multiple Modes\nRoo Code adapts to your needs with specialized [modes](/basic-usage/using-modes):\n- **Code Mode:** For general-purpose coding tasks\n- **Architect Mode:** For planning and technical leadership\n- **Ask Mode:** For answering questions and providing information\n- **Debug Mode:** For systematic problem diagnosis\n- **Orchestrator Mode:** For managing complex tasks and delegating work\n- **[Custom Modes](/features/custom-modes):** Create unlimited specialized personas for security auditing, performance optimization, documentation, or any other task\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.61023533,
+              "startLine": 41,
+              "endLine": 49
+            },
+            {
+              "content": "\n# Roo Code Docs\n\nRoo Code is an AI-powered autonomous coding agent that lives in your editor. It helps you code faster and smarter, whether you're starting a new project, maintaining existing code, or learning new technologies.\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.60824764,
+              "startLine": 14,
+              "endLine": 19
+            },
+            {
+              "content": "\n### Smart Tools\nRoo Code comes with powerful [tools](/basic-usage/how-tools-work) that can:\n- Read and write files in your project\n- Execute commands in your VS Code terminal\n- Control a web browser\n- Use external tools via [MCP (Model Context Protocol)](/features/mcp/overview)\n\nMCP extends Roo Code's capabilities by allowing you to add unlimited custom tools. Integrate with external APIs, connect to databases, or create specialized development tools - MCP provides the framework to expand Roo Code's functionality to meet your specific needs.\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.60532355,
+              "startLine": 50,
+              "endLine": 58
+            }
+          ],
+          "expected": [
+            "自定义知识库功能.md"
+          ]
+        },
+        {
+          "query_id": "query_24",
+          "query": "平均倒数排名MRR",
+          "metrics": {
+            "precision": 0,
+            "recall": 0,
+            "f1_score": 0,
+            "response_time": 90
+          },
+          "retrieved": [
+            {
+              "content": "    - **定义：** 这是最终的业务指标。对10个预设的、需要背景知识才能完成的编码任务（如“基于现有API文档，为`getUserProfile`函数编写一个调用示例”），分别在“有知识库”和“无知识库”两种模式下让AI生成代码。\n    - **验收标准：**\n      1. **对比基线：** 首先记录“无知识库”模式下的成功率（例如，10个任务中成功2个，成功率20%）。\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.71902585,
+              "startLine": 56,
+              "endLine": 58
+            },
+            {
+              "content": "\n## Key Features\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.69938827,
+              "startLine": 39,
+              "endLine": 40
+            },
+            {
+              "content": "\n## Resources\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.67248595,
+              "startLine": 68,
+              "endLine": 69
+            },
+            {
+              "content": "\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.66412383,
+              "startLine": 0,
+              "endLine": 1
+            },
+            {
+              "content": "\n## Quick Start\n\n1. [Install Roo Code](/getting-started/installing)\n2. [Connect Your AI Provider](/getting-started/connecting-api-provider)\n3. [Try Your First Task](/getting-started/your-first-task)\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6496039,
+              "startLine": 31,
+              "endLine": 38
+            },
+            {
+              "content": "\n# Roo Code Docs\n\nRoo Code is an AI-powered autonomous coding agent that lives in your editor. It helps you code faster and smarter, whether you're starting a new project, maintaining existing code, or learning new technologies.\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6228577,
+              "startLine": 14,
+              "endLine": 19
+            },
+            {
+              "content": "\n### Smart Tools\nRoo Code comes with powerful [tools](/basic-usage/how-tools-work) that can:\n- Read and write files in your project\n- Execute commands in your VS Code terminal\n- Control a web browser\n- Use external tools via [MCP (Model Context Protocol)](/features/mcp/overview)\n\nMCP extends Roo Code's capabilities by allowing you to add unlimited custom tools. Integrate with external APIs, connect to databases, or create specialized development tools - MCP provides the framework to expand Roo Code's functionality to meet your specific needs.\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6125591,
+              "startLine": 50,
+              "endLine": 58
+            },
+            {
+              "content": "\n### Documentation\n- [Basic Usage Guide](/basic-usage/the-chat-interface)\n- [Advanced Features](/features/auto-approving-actions)\n- [Frequently Asked Questions](/faq)\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6113471,
+              "startLine": 70,
+              "endLine": 74
+            },
+            {
+              "content": "\n### Customization\nMake Roo Code work your way with:\n- [Custom Instructions](/features/custom-instructions) for personalized behavior\n- [Custom Modes](/features/custom-modes) for specialized tasks\n- [Local Models](/advanced-usage/local-models) for offline use\n- [Auto-Approval Settings](/features/auto-approving-actions) for faster workflows\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.59884715,
+              "startLine": 59,
+              "endLine": 67
+            },
+            {
+              "content": "\n### Community \u0026 Socials\n- **Discord:** [Join our Discord server](https://discord.gg/roocode) for real-time help and discussions.\n- **Reddit:** [Visit our subreddit](https://www.reddit.com/r/RooCode) to share experiences and tips.\n- **GitHub:** Report [issues](https://github.com/RooCodeInc/Roo-Code/issues) or request [features](https://github.com/RooCodeInc/Roo-Code/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop).\n- **X (Twitter):** [Follow @roo_code](https://x.com/roo_code).\n- **Bluesky:** [Follow roocode.bsky.social](https://bsky.app/profile/roocode.bsky.social).\n- **LinkedIn:** [Follow Roo Code](https://www.linkedin.com/company/roo-code).\n\nReady to get started? Click the **Next** button below to begin your journey with Roo Code!\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.59822214,
+              "startLine": 75,
+              "endLine": 84
+            }
+          ],
+          "expected": [
+            "自定义知识库功能.md"
+          ]
+        },
+        {
+          "query_id": "query_25",
+          "query": "端到端任务成功率",
+          "metrics": {
+            "precision": 0,
+            "recall": 0,
+            "f1_score": 0,
+            "response_time": 94
+          },
+          "retrieved": [
+            {
+              "content": "    - **定义：** 这是最终的业务指标。对10个预设的、需要背景知识才能完成的编码任务（如“基于现有API文档，为`getUserProfile`函数编写一个调用示例”），分别在“有知识库”和“无知识库”两种模式下让AI生成代码。\n    - **验收标准：**\n      1. **对比基线：** 首先记录“无知识库”模式下的成功率（例如，10个任务中成功2个，成功率20%）。\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.7877819,
+              "startLine": 56,
+              "endLine": 58
+            },
+            {
+              "content": "\n## Quick Start\n\n1. [Install Roo Code](/getting-started/installing)\n2. [Connect Your AI Provider](/getting-started/connecting-api-provider)\n3. [Try Your First Task](/getting-started/your-first-task)\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.7016022,
+              "startLine": 31,
+              "endLine": 38
+            },
+            {
+              "content": "\n## Key Features\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6893856,
+              "startLine": 39,
+              "endLine": 40
+            },
+            {
+              "content": "\n### Multiple Modes\nRoo Code adapts to your needs with specialized [modes](/basic-usage/using-modes):\n- **Code Mode:** For general-purpose coding tasks\n- **Architect Mode:** For planning and technical leadership\n- **Ask Mode:** For answering questions and providing information\n- **Debug Mode:** For systematic problem diagnosis\n- **Orchestrator Mode:** For managing complex tasks and delegating work\n- **[Custom Modes](/features/custom-modes):** Create unlimited specialized personas for security auditing, performance optimization, documentation, or any other task\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6709562,
+              "startLine": 41,
+              "endLine": 49
+            },
+            {
+              "content": "\n### Customization\nMake Roo Code work your way with:\n- [Custom Instructions](/features/custom-instructions) for personalized behavior\n- [Custom Modes](/features/custom-modes) for specialized tasks\n- [Local Models](/advanced-usage/local-models) for offline use\n- [Auto-Approval Settings](/features/auto-approving-actions) for faster workflows\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6700298,
+              "startLine": 59,
+              "endLine": 67
+            },
+            {
+              "content": "\n### Documentation\n- [Basic Usage Guide](/basic-usage/the-chat-interface)\n- [Advanced Features](/features/auto-approving-actions)\n- [Frequently Asked Questions](/faq)\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.66775966,
+              "startLine": 70,
+              "endLine": 74
+            },
+            {
+              "content": "\n### Smart Tools\nRoo Code comes with powerful [tools](/basic-usage/how-tools-work) that can:\n- Read and write files in your project\n- Execute commands in your VS Code terminal\n- Control a web browser\n- Use external tools via [MCP (Model Context Protocol)](/features/mcp/overview)\n\nMCP extends Roo Code's capabilities by allowing you to add unlimited custom tools. Integrate with external APIs, connect to databases, or create specialized development tools - MCP provides the framework to expand Roo Code's functionality to meet your specific needs.\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6653037,
+              "startLine": 50,
+              "endLine": 58
+            },
+            {
+              "content": "\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.65679604,
+              "startLine": 0,
+              "endLine": 1
+            },
+            {
+              "content": "\n## Resources\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.65304667,
+              "startLine": 68,
+              "endLine": 69
+            },
+            {
+              "content": "\n# Roo Code Docs\n\nRoo Code is an AI-powered autonomous coding agent that lives in your editor. It helps you code faster and smarter, whether you're starting a new project, maintaining existing code, or learning new technologies.\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6417818,
+              "startLine": 14,
+              "endLine": 19
+            }
+          ],
+          "expected": [
+            "自定义知识库功能.md"
+          ]
+        },
+        {
+          "query_id": "query_26",
+          "query": "Roo Code功能介绍",
+          "metrics": {
+            "precision": 0,
+            "recall": 0,
+            "f1_score": 0,
+            "response_time": 132
+          },
+          "retrieved": [
+            {
+              "content": "\n# Roo Code Docs\n\nRoo Code is an AI-powered autonomous coding agent that lives in your editor. It helps you code faster and smarter, whether you're starting a new project, maintaining existing code, or learning new technologies.\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.7820372,
+              "startLine": 14,
+              "endLine": 19
+            },
+            {
+              "content": "\n## Quick Start\n\n1. [Install Roo Code](/getting-started/installing)\n2. [Connect Your AI Provider](/getting-started/connecting-api-provider)\n3. [Try Your First Task](/getting-started/your-first-task)\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.78091127,
+              "startLine": 31,
+              "endLine": 38
+            },
+            {
+              "content": "\n### Smart Tools\nRoo Code comes with powerful [tools](/basic-usage/how-tools-work) that can:\n- Read and write files in your project\n- Execute commands in your VS Code terminal\n- Control a web browser\n- Use external tools via [MCP (Model Context Protocol)](/features/mcp/overview)\n\nMCP extends Roo Code's capabilities by allowing you to add unlimited custom tools. Integrate with external APIs, connect to databases, or create specialized development tools - MCP provides the framework to expand Roo Code's functionality to meet your specific needs.\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.76183915,
+              "startLine": 50,
+              "endLine": 58
+            },
+            {
+              "content": "\n## Key Features\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.76116765,
+              "startLine": 39,
+              "endLine": 40
+            },
+            {
+              "content": "\n### Customization\nMake Roo Code work your way with:\n- [Custom Instructions](/features/custom-instructions) for personalized behavior\n- [Custom Modes](/features/custom-modes) for specialized tasks\n- [Local Models](/advanced-usage/local-models) for offline use\n- [Auto-Approval Settings](/features/auto-approving-actions) for faster workflows\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.7444288,
+              "startLine": 59,
+              "endLine": 67
+            },
+            {
+              "content": "    - **定义：** 这是最终的业务指标。对10个预设的、需要背景知识才能完成的编码任务（如“基于现有API文档，为`getUserProfile`函数编写一个调用示例”），分别在“有知识库”和“无知识库”两种模式下让AI生成代码。\n    - **验收标准：**\n      1. **对比基线：** 首先记录“无知识库”模式下的成功率（例如，10个任务中成功2个，成功率20%）。\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.7442553,
+              "startLine": 56,
+              "endLine": 58
+            },
+            {
+              "content": "\n## What Can Roo Code Do?\n\n- **Generate Code** from natural language descriptions\n- **Refactor \u0026 Debug** existing code\n- **Write \u0026 Update** documentation\n- **Answer Questions** about your codebase\n- **Automate** repetitive tasks\n- **Create** new files and projects\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.73070526,
+              "startLine": 20,
+              "endLine": 30
+            },
+            {
+              "content": "\n### Multiple Modes\nRoo Code adapts to your needs with specialized [modes](/basic-usage/using-modes):\n- **Code Mode:** For general-purpose coding tasks\n- **Architect Mode:** For planning and technical leadership\n- **Ask Mode:** For answering questions and providing information\n- **Debug Mode:** For systematic problem diagnosis\n- **Orchestrator Mode:** For managing complex tasks and delegating work\n- **[Custom Modes](/features/custom-modes):** Create unlimited specialized personas for security auditing, performance optimization, documentation, or any other task\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.7202299,
+              "startLine": 41,
+              "endLine": 49
+            },
+            {
+              "content": "\n## Resources\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.7179133,
+              "startLine": 68,
+              "endLine": 69
+            },
+            {
+              "content": "\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.71586204,
+              "startLine": 0,
+              "endLine": 1
+            }
+          ],
+          "expected": [
+            "index.md"
+          ]
+        },
+        {
+          "query_id": "query_27",
+          "query": "AI coding agent capabilities",
+          "metrics": {
+            "precision": 0,
+            "recall": 0,
+            "f1_score": 0,
+            "response_time": 126
+          },
+          "retrieved": [
+            {
+              "content": "\n# Roo Code Docs\n\nRoo Code is an AI-powered autonomous coding agent that lives in your editor. It helps you code faster and smarter, whether you're starting a new project, maintaining existing code, or learning new technologies.\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.7524135,
+              "startLine": 14,
+              "endLine": 19
+            },
+            {
+              "content": "\n## Key Features\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.71222687,
+              "startLine": 39,
+              "endLine": 40
+            },
+            {
+              "content": "\n## Quick Start\n\n1. [Install Roo Code](/getting-started/installing)\n2. [Connect Your AI Provider](/getting-started/connecting-api-provider)\n3. [Try Your First Task](/getting-started/your-first-task)\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.70687336,
+              "startLine": 31,
+              "endLine": 38
+            },
+            {
+              "content": "---\nsidebar_label: Welcome\ndescription: Learn how to use Roo Code, the autonomous AI coding agent that helps you code faster and smarter in VS Code. Complete guides, tutorials, and documentation.\nkeywords:\n  - Roo Code\n  - AI coding assistant\n  - VS Code extension\n  - autonomous coding agent\n  - AI pair programmer\n  - code generation\n  - documentation\nimage: /img/social-share.jpg\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6978042,
+              "startLine": 0,
+              "endLine": 13
+            },
+            {
+              "content": "\n## Resources\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6956862,
+              "startLine": 68,
+              "endLine": 69
+            },
+            {
+              "content": "\n### Multiple Modes\nRoo Code adapts to your needs with specialized [modes](/basic-usage/using-modes):\n- **Code Mode:** For general-purpose coding tasks\n- **Architect Mode:** For planning and technical leadership\n- **Ask Mode:** For answering questions and providing information\n- **Debug Mode:** For systematic problem diagnosis\n- **Orchestrator Mode:** For managing complex tasks and delegating work\n- **[Custom Modes](/features/custom-modes):** Create unlimited specialized personas for security auditing, performance optimization, documentation, or any other task\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6884487,
+              "startLine": 41,
+              "endLine": 49
+            },
+            {
+              "content": "\n## What Can Roo Code Do?\n\n- **Generate Code** from natural language descriptions\n- **Refactor \u0026 Debug** existing code\n- **Write \u0026 Update** documentation\n- **Answer Questions** about your codebase\n- **Automate** repetitive tasks\n- **Create** new files and projects\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6760814,
+              "startLine": 20,
+              "endLine": 30
+            },
+            {
+              "content": "\n### Customization\nMake Roo Code work your way with:\n- [Custom Instructions](/features/custom-instructions) for personalized behavior\n- [Custom Modes](/features/custom-modes) for specialized tasks\n- [Local Models](/advanced-usage/local-models) for offline use\n- [Auto-Approval Settings](/features/auto-approving-actions) for faster workflows\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.674508,
+              "startLine": 59,
+              "endLine": 67
+            },
+            {
+              "content": "\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.6731267,
+              "startLine": 0,
+              "endLine": 1
+            },
+            {
+              "content": "\n### Smart Tools\nRoo Code comes with powerful [tools](/basic-usage/how-tools-work) that can:\n- Read and write files in your project\n- Execute commands in your VS Code terminal\n- Control a web browser\n- Use external tools via [MCP (Model Context Protocol)](/features/mcp/overview)\n\nMCP extends Roo Code's capabilities by allowing you to add unlimited custom tools. Integrate with external APIs, connect to databases, or create specialized development tools - MCP provides the framework to expand Roo Code's functionality to meet your specific needs.\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6648225,
+              "startLine": 50,
+              "endLine": 58
+            }
+          ],
+          "expected": [
+            "index.md"
+          ]
+        },
+        {
+          "query_id": "query_28",
+          "query": "Roo Code multiple modes",
+          "metrics": {
+            "precision": 0,
+            "recall": 0,
+            "f1_score": 0,
+            "response_time": 89
+          },
+          "retrieved": [
+            {
+              "content": "\n## Key Features\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.7851448,
+              "startLine": 39,
+              "endLine": 40
+            },
+            {
+              "content": "\n# Roo Code Docs\n\nRoo Code is an AI-powered autonomous coding agent that lives in your editor. It helps you code faster and smarter, whether you're starting a new project, maintaining existing code, or learning new technologies.\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.78235865,
+              "startLine": 14,
+              "endLine": 19
+            },
+            {
+              "content": "\n### Multiple Modes\nRoo Code adapts to your needs with specialized [modes](/basic-usage/using-modes):\n- **Code Mode:** For general-purpose coding tasks\n- **Architect Mode:** For planning and technical leadership\n- **Ask Mode:** For answering questions and providing information\n- **Debug Mode:** For systematic problem diagnosis\n- **Orchestrator Mode:** For managing complex tasks and delegating work\n- **[Custom Modes](/features/custom-modes):** Create unlimited specialized personas for security auditing, performance optimization, documentation, or any other task\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.75781006,
+              "startLine": 41,
+              "endLine": 49
+            },
+            {
+              "content": "\n## Resources\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.75511813,
+              "startLine": 68,
+              "endLine": 69
+            },
+            {
+              "content": "\n### Smart Tools\nRoo Code comes with powerful [tools](/basic-usage/how-tools-work) that can:\n- Read and write files in your project\n- Execute commands in your VS Code terminal\n- Control a web browser\n- Use external tools via [MCP (Model Context Protocol)](/features/mcp/overview)\n\nMCP extends Roo Code's capabilities by allowing you to add unlimited custom tools. Integrate with external APIs, connect to databases, or create specialized development tools - MCP provides the framework to expand Roo Code's functionality to meet your specific needs.\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.7412163,
+              "startLine": 50,
+              "endLine": 58
+            },
+            {
+              "content": "\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.7373407,
+              "startLine": 0,
+              "endLine": 1
+            },
+            {
+              "content": "\n## Quick Start\n\n1. [Install Roo Code](/getting-started/installing)\n2. [Connect Your AI Provider](/getting-started/connecting-api-provider)\n3. [Try Your First Task](/getting-started/your-first-task)\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.73104167,
+              "startLine": 31,
+              "endLine": 38
+            },
+            {
+              "content": "\n### Customization\nMake Roo Code work your way with:\n- [Custom Instructions](/features/custom-instructions) for personalized behavior\n- [Custom Modes](/features/custom-modes) for specialized tasks\n- [Local Models](/advanced-usage/local-models) for offline use\n- [Auto-Approval Settings](/features/auto-approving-actions) for faster workflows\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.7257291,
+              "startLine": 59,
+              "endLine": 67
+            },
+            {
+              "content": "\n## What Can Roo Code Do?\n\n- **Generate Code** from natural language descriptions\n- **Refactor \u0026 Debug** existing code\n- **Write \u0026 Update** documentation\n- **Answer Questions** about your codebase\n- **Automate** repetitive tasks\n- **Create** new files and projects\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6954341,
+              "startLine": 20,
+              "endLine": 30
+            },
+            {
+              "content": "\n### Community \u0026 Socials\n- **Discord:** [Join our Discord server](https://discord.gg/roocode) for real-time help and discussions.\n- **Reddit:** [Visit our subreddit](https://www.reddit.com/r/RooCode) to share experiences and tips.\n- **GitHub:** Report [issues](https://github.com/RooCodeInc/Roo-Code/issues) or request [features](https://github.com/RooCodeInc/Roo-Code/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop).\n- **X (Twitter):** [Follow @roo_code](https://x.com/roo_code).\n- **Bluesky:** [Follow roocode.bsky.social](https://bsky.app/profile/roocode.bsky.social).\n- **LinkedIn:** [Follow Roo Code](https://www.linkedin.com/company/roo-code).\n\nReady to get started? Click the **Next** button below to begin your journey with Roo Code!\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6905101,
+              "startLine": 75,
+              "endLine": 84
+            }
+          ],
+          "expected": [
+            "index.md"
+          ]
+        },
+        {
+          "query_id": "query_29",
+          "query": "custom modes and tools",
+          "metrics": {
+            "precision": 0,
+            "recall": 0,
+            "f1_score": 0,
+            "response_time": 141
+          },
+          "retrieved": [
+            {
+              "content": "\n## Key Features\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.78546166,
+              "startLine": 39,
+              "endLine": 40
+            },
+            {
+              "content": "\n### Customization\nMake Roo Code work your way with:\n- [Custom Instructions](/features/custom-instructions) for personalized behavior\n- [Custom Modes](/features/custom-modes) for specialized tasks\n- [Local Models](/advanced-usage/local-models) for offline use\n- [Auto-Approval Settings](/features/auto-approving-actions) for faster workflows\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.7797077,
+              "startLine": 59,
+              "endLine": 67
+            },
+            {
+              "content": "\n### Multiple Modes\nRoo Code adapts to your needs with specialized [modes](/basic-usage/using-modes):\n- **Code Mode:** For general-purpose coding tasks\n- **Architect Mode:** For planning and technical leadership\n- **Ask Mode:** For answering questions and providing information\n- **Debug Mode:** For systematic problem diagnosis\n- **Orchestrator Mode:** For managing complex tasks and delegating work\n- **[Custom Modes](/features/custom-modes):** Create unlimited specialized personas for security auditing, performance optimization, documentation, or any other task\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.77690566,
+              "startLine": 41,
+              "endLine": 49
+            },
+            {
+              "content": "\n### Smart Tools\nRoo Code comes with powerful [tools](/basic-usage/how-tools-work) that can:\n- Read and write files in your project\n- Execute commands in your VS Code terminal\n- Control a web browser\n- Use external tools via [MCP (Model Context Protocol)](/features/mcp/overview)\n\nMCP extends Roo Code's capabilities by allowing you to add unlimited custom tools. Integrate with external APIs, connect to databases, or create specialized development tools - MCP provides the framework to expand Roo Code's functionality to meet your specific needs.\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.7711953,
+              "startLine": 50,
+              "endLine": 58
+            },
+            {
+              "content": "\n## Resources\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.7602099,
+              "startLine": 68,
+              "endLine": 69
+            },
+            {
+              "content": "\n# Roo Code Docs\n\nRoo Code is an AI-powered autonomous coding agent that lives in your editor. It helps you code faster and smarter, whether you're starting a new project, maintaining existing code, or learning new technologies.\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.746324,
+              "startLine": 14,
+              "endLine": 19
+            },
+            {
+              "content": "\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.73249596,
+              "startLine": 0,
+              "endLine": 1
+            },
+            {
+              "content": "\n## Quick Start\n\n1. [Install Roo Code](/getting-started/installing)\n2. [Connect Your AI Provider](/getting-started/connecting-api-provider)\n3. [Try Your First Task](/getting-started/your-first-task)\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.69545084,
+              "startLine": 31,
+              "endLine": 38
+            },
+            {
+              "content": "\n## What Can Roo Code Do?\n\n- **Generate Code** from natural language descriptions\n- **Refactor \u0026 Debug** existing code\n- **Write \u0026 Update** documentation\n- **Answer Questions** about your codebase\n- **Automate** repetitive tasks\n- **Create** new files and projects\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6900411,
+              "startLine": 20,
+              "endLine": 30
+            },
+            {
+              "content": "\n### Documentation\n- [Basic Usage Guide](/basic-usage/the-chat-interface)\n- [Advanced Features](/features/auto-approving-actions)\n- [Frequently Asked Questions](/faq)\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6871832,
+              "startLine": 70,
+              "endLine": 74
+            }
+          ],
+          "expected": [
+            "index.md"
+          ]
+        },
+        {
+          "query_id": "query_30",
+          "query": "Roo Code community resources",
+          "metrics": {
+            "precision": 0,
+            "recall": 0,
+            "f1_score": 0,
+            "response_time": 93
+          },
+          "retrieved": [
+            {
+              "content": "\n# Roo Code Docs\n\nRoo Code is an AI-powered autonomous coding agent that lives in your editor. It helps you code faster and smarter, whether you're starting a new project, maintaining existing code, or learning new technologies.\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.81875944,
+              "startLine": 14,
+              "endLine": 19
+            },
+            {
+              "content": "\n## Resources\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.77338815,
+              "startLine": 68,
+              "endLine": 69
+            },
+            {
+              "content": "\n## Key Features\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.76747835,
+              "startLine": 39,
+              "endLine": 40
+            },
+            {
+              "content": "\n### Smart Tools\nRoo Code comes with powerful [tools](/basic-usage/how-tools-work) that can:\n- Read and write files in your project\n- Execute commands in your VS Code terminal\n- Control a web browser\n- Use external tools via [MCP (Model Context Protocol)](/features/mcp/overview)\n\nMCP extends Roo Code's capabilities by allowing you to add unlimited custom tools. Integrate with external APIs, connect to databases, or create specialized development tools - MCP provides the framework to expand Roo Code's functionality to meet your specific needs.\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.75755453,
+              "startLine": 50,
+              "endLine": 58
+            },
+            {
+              "content": "\n## Quick Start\n\n1. [Install Roo Code](/getting-started/installing)\n2. [Connect Your AI Provider](/getting-started/connecting-api-provider)\n3. [Try Your First Task](/getting-started/your-first-task)\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.7448503,
+              "startLine": 31,
+              "endLine": 38
+            },
+            {
+              "content": "---\nsidebar_label: Welcome\ndescription: Learn how to use Roo Code, the autonomous AI coding agent that helps you code faster and smarter in VS Code. Complete guides, tutorials, and documentation.\nkeywords:\n  - Roo Code\n  - AI coding assistant\n  - VS Code extension\n  - autonomous coding agent\n  - AI pair programmer\n  - code generation\n  - documentation\nimage: /img/social-share.jpg\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.73586273,
+              "startLine": 0,
+              "endLine": 13
+            },
+            {
+              "content": "\n### Community \u0026 Socials\n- **Discord:** [Join our Discord server](https://discord.gg/roocode) for real-time help and discussions.\n- **Reddit:** [Visit our subreddit](https://www.reddit.com/r/RooCode) to share experiences and tips.\n- **GitHub:** Report [issues](https://github.com/RooCodeInc/Roo-Code/issues) or request [features](https://github.com/RooCodeInc/Roo-Code/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop).\n- **X (Twitter):** [Follow @roo_code](https://x.com/roo_code).\n- **Bluesky:** [Follow roocode.bsky.social](https://bsky.app/profile/roocode.bsky.social).\n- **LinkedIn:** [Follow Roo Code](https://www.linkedin.com/company/roo-code).\n\nReady to get started? Click the **Next** button below to begin your journey with Roo Code!\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.73234904,
+              "startLine": 75,
+              "endLine": 84
+            },
+            {
+              "content": "\n## What Can Roo Code Do?\n\n- **Generate Code** from natural language descriptions\n- **Refactor \u0026 Debug** existing code\n- **Write \u0026 Update** documentation\n- **Answer Questions** about your codebase\n- **Automate** repetitive tasks\n- **Create** new files and projects\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.726209,
+              "startLine": 20,
+              "endLine": 30
+            },
+            {
+              "content": "\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.72376305,
+              "startLine": 0,
+              "endLine": 1
+            },
+            {
+              "content": "\n### Customization\nMake Roo Code work your way with:\n- [Custom Instructions](/features/custom-instructions) for personalized behavior\n- [Custom Modes](/features/custom-modes) for specialized tasks\n- [Local Models](/advanced-usage/local-models) for offline use\n- [Auto-Approval Settings](/features/auto-approving-actions) for faster workflows\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.7165944,
+              "startLine": 59,
+              "endLine": 67
+            }
+          ],
+          "expected": [
+            "index.md"
+          ]
+        },
+        {
+          "query_id": "query_31",
+          "query": "用户认证接口POST login",
+          "metrics": {
+            "precision": 0,
+            "recall": 0,
+            "f1_score": 0,
+            "response_time": 107
+          },
+          "retrieved": [
+            {
+              "content": "    - **定义：** 这是最终的业务指标。对10个预设的、需要背景知识才能完成的编码任务（如“基于现有API文档，为`getUserProfile`函数编写一个调用示例”），分别在“有知识库”和“无知识库”两种模式下让AI生成代码。\n    - **验收标准：**\n      1. **对比基线：** 首先记录“无知识库”模式下的成功率（例如，10个任务中成功2个，成功率20%）。\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.6711217,
+              "startLine": 56,
+              "endLine": 58
+            },
+            {
+              "content": "\n### Documentation\n- [Basic Usage Guide](/basic-usage/the-chat-interface)\n- [Advanced Features](/features/auto-approving-actions)\n- [Frequently Asked Questions](/faq)\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.659553,
+              "startLine": 70,
+              "endLine": 74
+            },
+            {
+              "content": "\n## Key Features\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6594814,
+              "startLine": 39,
+              "endLine": 40
+            },
+            {
+              "content": "\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.65074223,
+              "startLine": 0,
+              "endLine": 1
+            },
+            {
+              "content": "\n## Quick Start\n\n1. [Install Roo Code](/getting-started/installing)\n2. [Connect Your AI Provider](/getting-started/connecting-api-provider)\n3. [Try Your First Task](/getting-started/your-first-task)\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6468178,
+              "startLine": 31,
+              "endLine": 38
+            },
+            {
+              "content": "\n### Community \u0026 Socials\n- **Discord:** [Join our Discord server](https://discord.gg/roocode) for real-time help and discussions.\n- **Reddit:** [Visit our subreddit](https://www.reddit.com/r/RooCode) to share experiences and tips.\n- **GitHub:** Report [issues](https://github.com/RooCodeInc/Roo-Code/issues) or request [features](https://github.com/RooCodeInc/Roo-Code/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop).\n- **X (Twitter):** [Follow @roo_code](https://x.com/roo_code).\n- **Bluesky:** [Follow roocode.bsky.social](https://bsky.app/profile/roocode.bsky.social).\n- **LinkedIn:** [Follow Roo Code](https://www.linkedin.com/company/roo-code).\n\nReady to get started? Click the **Next** button below to begin your journey with Roo Code!\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6347964,
+              "startLine": 75,
+              "endLine": 84
+            },
+            {
+              "content": "\n### Multiple Modes\nRoo Code adapts to your needs with specialized [modes](/basic-usage/using-modes):\n- **Code Mode:** For general-purpose coding tasks\n- **Architect Mode:** For planning and technical leadership\n- **Ask Mode:** For answering questions and providing information\n- **Debug Mode:** For systematic problem diagnosis\n- **Orchestrator Mode:** For managing complex tasks and delegating work\n- **[Custom Modes](/features/custom-modes):** Create unlimited specialized personas for security auditing, performance optimization, documentation, or any other task\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6248199,
+              "startLine": 41,
+              "endLine": 49
+            },
+            {
+              "content": "\n### Customization\nMake Roo Code work your way with:\n- [Custom Instructions](/features/custom-instructions) for personalized behavior\n- [Custom Modes](/features/custom-modes) for specialized tasks\n- [Local Models](/advanced-usage/local-models) for offline use\n- [Auto-Approval Settings](/features/auto-approving-actions) for faster workflows\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6232833,
+              "startLine": 59,
+              "endLine": 67
+            },
+            {
+              "content": "\n## Resources\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.621413,
+              "startLine": 68,
+              "endLine": 69
+            },
+            {
+              "content": "\n### Smart Tools\nRoo Code comes with powerful [tools](/basic-usage/how-tools-work) that can:\n- Read and write files in your project\n- Execute commands in your VS Code terminal\n- Control a web browser\n- Use external tools via [MCP (Model Context Protocol)](/features/mcp/overview)\n\nMCP extends Roo Code's capabilities by allowing you to add unlimited custom tools. Integrate with external APIs, connect to databases, or create specialized development tools - MCP provides the framework to expand Roo Code's functionality to meet your specific needs.\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.61629826,
+              "startLine": 50,
+              "endLine": 58
+            }
+          ],
+          "expected": [
+            "api_documentation.md"
+          ]
+        },
+        {
+          "query_id": "query_32",
+          "query": "获取用户信息GET profile",
+          "metrics": {
+            "precision": 0,
+            "recall": 0,
+            "f1_score": 0,
+            "response_time": 132
+          },
+          "retrieved": [
+            {
+              "content": "\n### Multiple Modes\nRoo Code adapts to your needs with specialized [modes](/basic-usage/using-modes):\n- **Code Mode:** For general-purpose coding tasks\n- **Architect Mode:** For planning and technical leadership\n- **Ask Mode:** For answering questions and providing information\n- **Debug Mode:** For systematic problem diagnosis\n- **Orchestrator Mode:** For managing complex tasks and delegating work\n- **[Custom Modes](/features/custom-modes):** Create unlimited specialized personas for security auditing, performance optimization, documentation, or any other task\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6781135,
+              "startLine": 41,
+              "endLine": 49
+            },
+            {
+              "content": "\n## Key Features\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.66834825,
+              "startLine": 39,
+              "endLine": 40
+            },
+            {
+              "content": "\n### Documentation\n- [Basic Usage Guide](/basic-usage/the-chat-interface)\n- [Advanced Features](/features/auto-approving-actions)\n- [Frequently Asked Questions](/faq)\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6680273,
+              "startLine": 70,
+              "endLine": 74
+            },
+            {
+              "content": "    - **定义：** 这是最终的业务指标。对10个预设的、需要背景知识才能完成的编码任务（如“基于现有API文档，为`getUserProfile`函数编写一个调用示例”），分别在“有知识库”和“无知识库”两种模式下让AI生成代码。\n    - **验收标准：**\n      1. **对比基线：** 首先记录“无知识库”模式下的成功率（例如，10个任务中成功2个，成功率20%）。\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.66591644,
+              "startLine": 56,
+              "endLine": 58
+            },
+            {
+              "content": "\n## Quick Start\n\n1. [Install Roo Code](/getting-started/installing)\n2. [Connect Your AI Provider](/getting-started/connecting-api-provider)\n3. [Try Your First Task](/getting-started/your-first-task)\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.64714766,
+              "startLine": 31,
+              "endLine": 38
+            },
+            {
+              "content": "\n### Customization\nMake Roo Code work your way with:\n- [Custom Instructions](/features/custom-instructions) for personalized behavior\n- [Custom Modes](/features/custom-modes) for specialized tasks\n- [Local Models](/advanced-usage/local-models) for offline use\n- [Auto-Approval Settings](/features/auto-approving-actions) for faster workflows\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6464584,
+              "startLine": 59,
+              "endLine": 67
+            },
+            {
+              "content": "\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.642014,
+              "startLine": 0,
+              "endLine": 1
+            },
+            {
+              "content": "\n## Resources\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6304193,
+              "startLine": 68,
+              "endLine": 69
+            },
+            {
+              "content": "\n### Community \u0026 Socials\n- **Discord:** [Join our Discord server](https://discord.gg/roocode) for real-time help and discussions.\n- **Reddit:** [Visit our subreddit](https://www.reddit.com/r/RooCode) to share experiences and tips.\n- **GitHub:** Report [issues](https://github.com/RooCodeInc/Roo-Code/issues) or request [features](https://github.com/RooCodeInc/Roo-Code/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop).\n- **X (Twitter):** [Follow @roo_code](https://x.com/roo_code).\n- **Bluesky:** [Follow roocode.bsky.social](https://bsky.app/profile/roocode.bsky.social).\n- **LinkedIn:** [Follow Roo Code](https://www.linkedin.com/company/roo-code).\n\nReady to get started? Click the **Next** button below to begin your journey with Roo Code!\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.62721467,
+              "startLine": 75,
+              "endLine": 84
+            },
+            {
+              "content": "---\nsidebar_label: Welcome\ndescription: Learn how to use Roo Code, the autonomous AI coding agent that helps you code faster and smarter in VS Code. Complete guides, tutorials, and documentation.\nkeywords:\n  - Roo Code\n  - AI coding assistant\n  - VS Code extension\n  - autonomous coding agent\n  - AI pair programmer\n  - code generation\n  - documentation\nimage: /img/social-share.jpg\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6124464,
+              "startLine": 0,
+              "endLine": 13
+            }
+          ],
+          "expected": [
+            "api_documentation.md"
+          ]
+        },
+        {
+          "query_id": "query_33",
+          "query": "数据上传接口POST upload",
+          "metrics": {
+            "precision": 0,
+            "recall": 0,
+            "f1_score": 0,
+            "response_time": 94
+          },
+          "retrieved": [
+            {
+              "content": "\n## Key Features\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.70020473,
+              "startLine": 39,
+              "endLine": 40
+            },
+            {
+              "content": "\n## Resources\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6847593,
+              "startLine": 68,
+              "endLine": 69
+            },
+            {
+              "content": "\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.67562366,
+              "startLine": 0,
+              "endLine": 1
+            },
+            {
+              "content": "\n## Quick Start\n\n1. [Install Roo Code](/getting-started/installing)\n2. [Connect Your AI Provider](/getting-started/connecting-api-provider)\n3. [Try Your First Task](/getting-started/your-first-task)\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6625358,
+              "startLine": 31,
+              "endLine": 38
+            },
+            {
+              "content": "\n### Customization\nMake Roo Code work your way with:\n- [Custom Instructions](/features/custom-instructions) for personalized behavior\n- [Custom Modes](/features/custom-modes) for specialized tasks\n- [Local Models](/advanced-usage/local-models) for offline use\n- [Auto-Approval Settings](/features/auto-approving-actions) for faster workflows\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6462844,
+              "startLine": 59,
+              "endLine": 67
+            },
+            {
+              "content": "    - **定义：** 这是最终的业务指标。对10个预设的、需要背景知识才能完成的编码任务（如“基于现有API文档，为`getUserProfile`函数编写一个调用示例”），分别在“有知识库”和“无知识库”两种模式下让AI生成代码。\n    - **验收标准：**\n      1. **对比基线：** 首先记录“无知识库”模式下的成功率（例如，10个任务中成功2个，成功率20%）。\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.6402489,
+              "startLine": 56,
+              "endLine": 58
+            },
+            {
+              "content": "\n### Documentation\n- [Basic Usage Guide](/basic-usage/the-chat-interface)\n- [Advanced Features](/features/auto-approving-actions)\n- [Frequently Asked Questions](/faq)\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6308079,
+              "startLine": 70,
+              "endLine": 74
+            },
+            {
+              "content": "\n# Roo Code Docs\n\nRoo Code is an AI-powered autonomous coding agent that lives in your editor. It helps you code faster and smarter, whether you're starting a new project, maintaining existing code, or learning new technologies.\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.62846446,
+              "startLine": 14,
+              "endLine": 19
+            },
+            {
+              "content": "\n### Smart Tools\nRoo Code comes with powerful [tools](/basic-usage/how-tools-work) that can:\n- Read and write files in your project\n- Execute commands in your VS Code terminal\n- Control a web browser\n- Use external tools via [MCP (Model Context Protocol)](/features/mcp/overview)\n\nMCP extends Roo Code's capabilities by allowing you to add unlimited custom tools. Integrate with external APIs, connect to databases, or create specialized development tools - MCP provides the framework to expand Roo Code's functionality to meet your specific needs.\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.62634367,
+              "startLine": 50,
+              "endLine": 58
+            },
+            {
+              "content": "\n### Community \u0026 Socials\n- **Discord:** [Join our Discord server](https://discord.gg/roocode) for real-time help and discussions.\n- **Reddit:** [Visit our subreddit](https://www.reddit.com/r/RooCode) to share experiences and tips.\n- **GitHub:** Report [issues](https://github.com/RooCodeInc/Roo-Code/issues) or request [features](https://github.com/RooCodeInc/Roo-Code/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop).\n- **X (Twitter):** [Follow @roo_code](https://x.com/roo_code).\n- **Bluesky:** [Follow roocode.bsky.social](https://bsky.app/profile/roocode.bsky.social).\n- **LinkedIn:** [Follow Roo Code](https://www.linkedin.com/company/roo-code).\n\nReady to get started? Click the **Next** button below to begin your journey with Roo Code!\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6120049,
+              "startLine": 75,
+              "endLine": 84
+            }
+          ],
+          "expected": [
+            "api_documentation.md"
+          ]
+        },
+        {
+          "query_id": "query_34",
+          "query": "数据列表查询GET list",
+          "metrics": {
+            "precision": 0,
+            "recall": 0,
+            "f1_score": 0,
+            "response_time": 106
+          },
+          "retrieved": [
+            {
+              "content": "\n## Key Features\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6479882,
+              "startLine": 39,
+              "endLine": 40
+            },
+            {
+              "content": "\n## Resources\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6393876,
+              "startLine": 68,
+              "endLine": 69
+            },
+            {
+              "content": "\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.6339537,
+              "startLine": 0,
+              "endLine": 1
+            },
+            {
+              "content": "\n## Quick Start\n\n1. [Install Roo Code](/getting-started/installing)\n2. [Connect Your AI Provider](/getting-started/connecting-api-provider)\n3. [Try Your First Task](/getting-started/your-first-task)\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.63151515,
+              "startLine": 31,
+              "endLine": 38
+            },
+            {
+              "content": "    - **定义：** 这是最终的业务指标。对10个预设的、需要背景知识才能完成的编码任务（如“基于现有API文档，为`getUserProfile`函数编写一个调用示例”），分别在“有知识库”和“无知识库”两种模式下让AI生成代码。\n    - **验收标准：**\n      1. **对比基线：** 首先记录“无知识库”模式下的成功率（例如，10个任务中成功2个，成功率20%）。\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.62850827,
+              "startLine": 56,
+              "endLine": 58
+            },
+            {
+              "content": "\n### Community \u0026 Socials\n- **Discord:** [Join our Discord server](https://discord.gg/roocode) for real-time help and discussions.\n- **Reddit:** [Visit our subreddit](https://www.reddit.com/r/RooCode) to share experiences and tips.\n- **GitHub:** Report [issues](https://github.com/RooCodeInc/Roo-Code/issues) or request [features](https://github.com/RooCodeInc/Roo-Code/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop).\n- **X (Twitter):** [Follow @roo_code](https://x.com/roo_code).\n- **Bluesky:** [Follow roocode.bsky.social](https://bsky.app/profile/roocode.bsky.social).\n- **LinkedIn:** [Follow Roo Code](https://www.linkedin.com/company/roo-code).\n\nReady to get started? Click the **Next** button below to begin your journey with Roo Code!\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.61280817,
+              "startLine": 75,
+              "endLine": 84
+            },
+            {
+              "content": "\n### Customization\nMake Roo Code work your way with:\n- [Custom Instructions](/features/custom-instructions) for personalized behavior\n- [Custom Modes](/features/custom-modes) for specialized tasks\n- [Local Models](/advanced-usage/local-models) for offline use\n- [Auto-Approval Settings](/features/auto-approving-actions) for faster workflows\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6121451,
+              "startLine": 59,
+              "endLine": 67
+            },
+            {
+              "content": "\n## What Can Roo Code Do?\n\n- **Generate Code** from natural language descriptions\n- **Refactor \u0026 Debug** existing code\n- **Write \u0026 Update** documentation\n- **Answer Questions** about your codebase\n- **Automate** repetitive tasks\n- **Create** new files and projects\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6085154,
+              "startLine": 20,
+              "endLine": 30
+            },
+            {
+              "content": "\n### Documentation\n- [Basic Usage Guide](/basic-usage/the-chat-interface)\n- [Advanced Features](/features/auto-approving-actions)\n- [Frequently Asked Questions](/faq)\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6046823,
+              "startLine": 70,
+              "endLine": 74
+            },
+            {
+              "content": "\n# Roo Code Docs\n\nRoo Code is an AI-powered autonomous coding agent that lives in your editor. It helps you code faster and smarter, whether you're starting a new project, maintaining existing code, or learning new technologies.\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.5953022,
+              "startLine": 14,
+              "endLine": 19
+            }
+          ],
+          "expected": [
+            "api_documentation.md"
+          ]
+        },
+        {
+          "query_id": "query_35",
+          "query": "API请求参数和响应",
+          "metrics": {
+            "precision": 0,
+            "recall": 0,
+            "f1_score": 0,
+            "response_time": 88
+          },
+          "retrieved": [
+            {
+              "content": "\n## Quick Start\n\n1. [Install Roo Code](/getting-started/installing)\n2. [Connect Your AI Provider](/getting-started/connecting-api-provider)\n3. [Try Your First Task](/getting-started/your-first-task)\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6785892,
+              "startLine": 31,
+              "endLine": 38
+            },
+            {
+              "content": "\n### Documentation\n- [Basic Usage Guide](/basic-usage/the-chat-interface)\n- [Advanced Features](/features/auto-approving-actions)\n- [Frequently Asked Questions](/faq)\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6750074,
+              "startLine": 70,
+              "endLine": 74
+            },
+            {
+              "content": "\n### Customization\nMake Roo Code work your way with:\n- [Custom Instructions](/features/custom-instructions) for personalized behavior\n- [Custom Modes](/features/custom-modes) for specialized tasks\n- [Local Models](/advanced-usage/local-models) for offline use\n- [Auto-Approval Settings](/features/auto-approving-actions) for faster workflows\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.665539,
+              "startLine": 59,
+              "endLine": 67
+            },
+            {
+              "content": "    - **定义：** 这是最终的业务指标。对10个预设的、需要背景知识才能完成的编码任务（如“基于现有API文档，为`getUserProfile`函数编写一个调用示例”），分别在“有知识库”和“无知识库”两种模式下让AI生成代码。\n    - **验收标准：**\n      1. **对比基线：** 首先记录“无知识库”模式下的成功率（例如，10个任务中成功2个，成功率20%）。\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.6621486,
+              "startLine": 56,
+              "endLine": 58
+            },
+            {
+              "content": "\n## Key Features\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6560881,
+              "startLine": 39,
+              "endLine": 40
+            },
+            {
+              "content": "\n### Smart Tools\nRoo Code comes with powerful [tools](/basic-usage/how-tools-work) that can:\n- Read and write files in your project\n- Execute commands in your VS Code terminal\n- Control a web browser\n- Use external tools via [MCP (Model Context Protocol)](/features/mcp/overview)\n\nMCP extends Roo Code's capabilities by allowing you to add unlimited custom tools. Integrate with external APIs, connect to databases, or create specialized development tools - MCP provides the framework to expand Roo Code's functionality to meet your specific needs.\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6533769,
+              "startLine": 50,
+              "endLine": 58
+            },
+            {
+              "content": "\n### Community \u0026 Socials\n- **Discord:** [Join our Discord server](https://discord.gg/roocode) for real-time help and discussions.\n- **Reddit:** [Visit our subreddit](https://www.reddit.com/r/RooCode) to share experiences and tips.\n- **GitHub:** Report [issues](https://github.com/RooCodeInc/Roo-Code/issues) or request [features](https://github.com/RooCodeInc/Roo-Code/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop).\n- **X (Twitter):** [Follow @roo_code](https://x.com/roo_code).\n- **Bluesky:** [Follow roocode.bsky.social](https://bsky.app/profile/roocode.bsky.social).\n- **LinkedIn:** [Follow Roo Code](https://www.linkedin.com/company/roo-code).\n\nReady to get started? Click the **Next** button below to begin your journey with Roo Code!\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6518245,
+              "startLine": 75,
+              "endLine": 84
+            },
+            {
+              "content": "\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.64634407,
+              "startLine": 0,
+              "endLine": 1
+            },
+            {
+              "content": "\n### Multiple Modes\nRoo Code adapts to your needs with specialized [modes](/basic-usage/using-modes):\n- **Code Mode:** For general-purpose coding tasks\n- **Architect Mode:** For planning and technical leadership\n- **Ask Mode:** For answering questions and providing information\n- **Debug Mode:** For systematic problem diagnosis\n- **Orchestrator Mode:** For managing complex tasks and delegating work\n- **[Custom Modes](/features/custom-modes):** Create unlimited specialized personas for security auditing, performance optimization, documentation, or any other task\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.64526296,
+              "startLine": 41,
+              "endLine": 49
+            },
+            {
+              "content": "\n# Roo Code Docs\n\nRoo Code is an AI-powered autonomous coding agent that lives in your editor. It helps you code faster and smarter, whether you're starting a new project, maintaining existing code, or learning new technologies.\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6385927,
+              "startLine": 14,
+              "endLine": 19
+            }
+          ],
+          "expected": [
+            "api_documentation.md"
+          ]
+        },
+        {
+          "query_id": "query_36",
+          "query": "embeddings API endpoints",
+          "metrics": {
+            "precision": 0,
+            "recall": 0,
+            "f1_score": 0,
+            "response_time": 102
+          },
+          "retrieved": [
+            {
+              "content": "\n## Key Features\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.68654007,
+              "startLine": 39,
+              "endLine": 40
+            },
+            {
+              "content": "\n## Resources\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.68603206,
+              "startLine": 68,
+              "endLine": 69
+            },
+            {
+              "content": "\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.66079295,
+              "startLine": 0,
+              "endLine": 1
+            },
+            {
+              "content": "\n## Quick Start\n\n1. [Install Roo Code](/getting-started/installing)\n2. [Connect Your AI Provider](/getting-started/connecting-api-provider)\n3. [Try Your First Task](/getting-started/your-first-task)\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.65884805,
+              "startLine": 31,
+              "endLine": 38
+            },
+            {
+              "content": "\n### Documentation\n- [Basic Usage Guide](/basic-usage/the-chat-interface)\n- [Advanced Features](/features/auto-approving-actions)\n- [Frequently Asked Questions](/faq)\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6328125,
+              "startLine": 70,
+              "endLine": 74
+            },
+            {
+              "content": "\n# Roo Code Docs\n\nRoo Code is an AI-powered autonomous coding agent that lives in your editor. It helps you code faster and smarter, whether you're starting a new project, maintaining existing code, or learning new technologies.\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.63222206,
+              "startLine": 14,
+              "endLine": 19
+            },
+            {
+              "content": "\n### Customization\nMake Roo Code work your way with:\n- [Custom Instructions](/features/custom-instructions) for personalized behavior\n- [Custom Modes](/features/custom-modes) for specialized tasks\n- [Local Models](/advanced-usage/local-models) for offline use\n- [Auto-Approval Settings](/features/auto-approving-actions) for faster workflows\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6309265,
+              "startLine": 59,
+              "endLine": 67
+            },
+            {
+              "content": "\n### Community \u0026 Socials\n- **Discord:** [Join our Discord server](https://discord.gg/roocode) for real-time help and discussions.\n- **Reddit:** [Visit our subreddit](https://www.reddit.com/r/RooCode) to share experiences and tips.\n- **GitHub:** Report [issues](https://github.com/RooCodeInc/Roo-Code/issues) or request [features](https://github.com/RooCodeInc/Roo-Code/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop).\n- **X (Twitter):** [Follow @roo_code](https://x.com/roo_code).\n- **Bluesky:** [Follow roocode.bsky.social](https://bsky.app/profile/roocode.bsky.social).\n- **LinkedIn:** [Follow Roo Code](https://www.linkedin.com/company/roo-code).\n\nReady to get started? Click the **Next** button below to begin your journey with Roo Code!\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.62866825,
+              "startLine": 75,
+              "endLine": 84
+            },
+            {
+              "content": "\n### Multiple Modes\nRoo Code adapts to your needs with specialized [modes](/basic-usage/using-modes):\n- **Code Mode:** For general-purpose coding tasks\n- **Architect Mode:** For planning and technical leadership\n- **Ask Mode:** For answering questions and providing information\n- **Debug Mode:** For systematic problem diagnosis\n- **Orchestrator Mode:** For managing complex tasks and delegating work\n- **[Custom Modes](/features/custom-modes):** Create unlimited specialized personas for security auditing, performance optimization, documentation, or any other task\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6233635,
+              "startLine": 41,
+              "endLine": 49
+            },
+            {
+              "content": "\n### Smart Tools\nRoo Code comes with powerful [tools](/basic-usage/how-tools-work) that can:\n- Read and write files in your project\n- Execute commands in your VS Code terminal\n- Control a web browser\n- Use external tools via [MCP (Model Context Protocol)](/features/mcp/overview)\n\nMCP extends Roo Code's capabilities by allowing you to add unlimited custom tools. Integrate with external APIs, connect to databases, or create specialized development tools - MCP provides the framework to expand Roo Code's functionality to meet your specific needs.\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.61614764,
+              "startLine": 50,
+              "endLine": 58
+            }
+          ],
+          "expected": [
+            "swagger.json"
+          ]
+        },
+        {
+          "query_id": "query_37",
+          "query": "semantic search API",
+          "metrics": {
+            "precision": 0,
+            "recall": 0,
+            "f1_score": 0,
+            "response_time": 118
+          },
+          "retrieved": [
+            {
+              "content": "\n## Key Features\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6821277,
+              "startLine": 39,
+              "endLine": 40
+            },
+            {
+              "content": "\n## Resources\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.67824626,
+              "startLine": 68,
+              "endLine": 69
+            },
+            {
+              "content": "\n## Quick Start\n\n1. [Install Roo Code](/getting-started/installing)\n2. [Connect Your AI Provider](/getting-started/connecting-api-provider)\n3. [Try Your First Task](/getting-started/your-first-task)\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.67297,
+              "startLine": 31,
+              "endLine": 38
+            },
+            {
+              "content": "\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.67296606,
+              "startLine": 0,
+              "endLine": 1
+            },
+            {
+              "content": "\n### Smart Tools\nRoo Code comes with powerful [tools](/basic-usage/how-tools-work) that can:\n- Read and write files in your project\n- Execute commands in your VS Code terminal\n- Control a web browser\n- Use external tools via [MCP (Model Context Protocol)](/features/mcp/overview)\n\nMCP extends Roo Code's capabilities by allowing you to add unlimited custom tools. Integrate with external APIs, connect to databases, or create specialized development tools - MCP provides the framework to expand Roo Code's functionality to meet your specific needs.\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6616541,
+              "startLine": 50,
+              "endLine": 58
+            },
+            {
+              "content": "\n# Roo Code Docs\n\nRoo Code is an AI-powered autonomous coding agent that lives in your editor. It helps you code faster and smarter, whether you're starting a new project, maintaining existing code, or learning new technologies.\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6614159,
+              "startLine": 14,
+              "endLine": 19
+            },
+            {
+              "content": "\n### Documentation\n- [Basic Usage Guide](/basic-usage/the-chat-interface)\n- [Advanced Features](/features/auto-approving-actions)\n- [Frequently Asked Questions](/faq)\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6603651,
+              "startLine": 70,
+              "endLine": 74
+            },
+            {
+              "content": "\n### Multiple Modes\nRoo Code adapts to your needs with specialized [modes](/basic-usage/using-modes):\n- **Code Mode:** For general-purpose coding tasks\n- **Architect Mode:** For planning and technical leadership\n- **Ask Mode:** For answering questions and providing information\n- **Debug Mode:** For systematic problem diagnosis\n- **Orchestrator Mode:** For managing complex tasks and delegating work\n- **[Custom Modes](/features/custom-modes):** Create unlimited specialized personas for security auditing, performance optimization, documentation, or any other task\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6428864,
+              "startLine": 41,
+              "endLine": 49
+            },
+            {
+              "content": "\n### Community \u0026 Socials\n- **Discord:** [Join our Discord server](https://discord.gg/roocode) for real-time help and discussions.\n- **Reddit:** [Visit our subreddit](https://www.reddit.com/r/RooCode) to share experiences and tips.\n- **GitHub:** Report [issues](https://github.com/RooCodeInc/Roo-Code/issues) or request [features](https://github.com/RooCodeInc/Roo-Code/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop).\n- **X (Twitter):** [Follow @roo_code](https://x.com/roo_code).\n- **Bluesky:** [Follow roocode.bsky.social](https://bsky.app/profile/roocode.bsky.social).\n- **LinkedIn:** [Follow Roo Code](https://www.linkedin.com/company/roo-code).\n\nReady to get started? Click the **Next** button below to begin your journey with Roo Code!\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.640795,
+              "startLine": 75,
+              "endLine": 84
+            },
+            {
+              "content": "\n### Customization\nMake Roo Code work your way with:\n- [Custom Instructions](/features/custom-instructions) for personalized behavior\n- [Custom Modes](/features/custom-modes) for specialized tasks\n- [Local Models](/advanced-usage/local-models) for offline use\n- [Auto-Approval Settings](/features/auto-approving-actions) for faster workflows\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.640122,
+              "startLine": 59,
+              "endLine": 67
+            }
+          ],
+          "expected": [
+            "swagger.json"
+          ]
+        },
+        {
+          "query_id": "query_38",
+          "query": "API status check endpoint",
+          "metrics": {
+            "precision": 0,
+            "recall": 0,
+            "f1_score": 0,
+            "response_time": 99
+          },
+          "retrieved": [
+            {
+              "content": "\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.6756857,
+              "startLine": 0,
+              "endLine": 1
+            },
+            {
+              "content": "\n## Resources\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.67148453,
+              "startLine": 68,
+              "endLine": 69
+            },
+            {
+              "content": "\n## Key Features\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6606018,
+              "startLine": 39,
+              "endLine": 40
+            },
+            {
+              "content": "\n## Quick Start\n\n1. [Install Roo Code](/getting-started/installing)\n2. [Connect Your AI Provider](/getting-started/connecting-api-provider)\n3. [Try Your First Task](/getting-started/your-first-task)\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6375839,
+              "startLine": 31,
+              "endLine": 38
+            },
+            {
+              "content": "\n### Documentation\n- [Basic Usage Guide](/basic-usage/the-chat-interface)\n- [Advanced Features](/features/auto-approving-actions)\n- [Frequently Asked Questions](/faq)\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6342263,
+              "startLine": 70,
+              "endLine": 74
+            },
+            {
+              "content": "\n# Roo Code Docs\n\nRoo Code is an AI-powered autonomous coding agent that lives in your editor. It helps you code faster and smarter, whether you're starting a new project, maintaining existing code, or learning new technologies.\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6225154,
+              "startLine": 14,
+              "endLine": 19
+            },
+            {
+              "content": "\n### Community \u0026 Socials\n- **Discord:** [Join our Discord server](https://discord.gg/roocode) for real-time help and discussions.\n- **Reddit:** [Visit our subreddit](https://www.reddit.com/r/RooCode) to share experiences and tips.\n- **GitHub:** Report [issues](https://github.com/RooCodeInc/Roo-Code/issues) or request [features](https://github.com/RooCodeInc/Roo-Code/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop).\n- **X (Twitter):** [Follow @roo_code](https://x.com/roo_code).\n- **Bluesky:** [Follow roocode.bsky.social](https://bsky.app/profile/roocode.bsky.social).\n- **LinkedIn:** [Follow Roo Code](https://www.linkedin.com/company/roo-code).\n\nReady to get started? Click the **Next** button below to begin your journey with Roo Code!\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6178293,
+              "startLine": 75,
+              "endLine": 84
+            },
+            {
+              "content": "\n### Multiple Modes\nRoo Code adapts to your needs with specialized [modes](/basic-usage/using-modes):\n- **Code Mode:** For general-purpose coding tasks\n- **Architect Mode:** For planning and technical leadership\n- **Ask Mode:** For answering questions and providing information\n- **Debug Mode:** For systematic problem diagnosis\n- **Orchestrator Mode:** For managing complex tasks and delegating work\n- **[Custom Modes](/features/custom-modes):** Create unlimited specialized personas for security auditing, performance optimization, documentation, or any other task\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6139733,
+              "startLine": 41,
+              "endLine": 49
+            },
+            {
+              "content": "\n### Customization\nMake Roo Code work your way with:\n- [Custom Instructions](/features/custom-instructions) for personalized behavior\n- [Custom Modes](/features/custom-modes) for specialized tasks\n- [Local Models](/advanced-usage/local-models) for offline use\n- [Auto-Approval Settings](/features/auto-approving-actions) for faster workflows\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.61305964,
+              "startLine": 59,
+              "endLine": 67
+            },
+            {
+              "content": "\n### Smart Tools\nRoo Code comes with powerful [tools](/basic-usage/how-tools-work) that can:\n- Read and write files in your project\n- Execute commands in your VS Code terminal\n- Control a web browser\n- Use external tools via [MCP (Model Context Protocol)](/features/mcp/overview)\n\nMCP extends Roo Code's capabilities by allowing you to add unlimited custom tools. Integrate with external APIs, connect to databases, or create specialized development tools - MCP provides the framework to expand Roo Code's functionality to meet your specific needs.\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.60539377,
+              "startLine": 50,
+              "endLine": 58
+            }
+          ],
+          "expected": [
+            "swagger.json"
+          ]
+        },
+        {
+          "query_id": "query_39",
+          "query": "embeddings summary API",
+          "metrics": {
+            "precision": 0,
+            "recall": 0,
+            "f1_score": 0,
+            "response_time": 90
+          },
+          "retrieved": [
+            {
+              "content": "\n## Key Features\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.7166662,
+              "startLine": 39,
+              "endLine": 40
+            },
+            {
+              "content": "\n## Resources\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.7135185,
+              "startLine": 68,
+              "endLine": 69
+            },
+            {
+              "content": "\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.6917381,
+              "startLine": 0,
+              "endLine": 1
+            },
+            {
+              "content": "\n## Quick Start\n\n1. [Install Roo Code](/getting-started/installing)\n2. [Connect Your AI Provider](/getting-started/connecting-api-provider)\n3. [Try Your First Task](/getting-started/your-first-task)\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.670383,
+              "startLine": 31,
+              "endLine": 38
+            },
+            {
+              "content": "\n# Roo Code Docs\n\nRoo Code is an AI-powered autonomous coding agent that lives in your editor. It helps you code faster and smarter, whether you're starting a new project, maintaining existing code, or learning new technologies.\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6613217,
+              "startLine": 14,
+              "endLine": 19
+            },
+            {
+              "content": "\n### Documentation\n- [Basic Usage Guide](/basic-usage/the-chat-interface)\n- [Advanced Features](/features/auto-approving-actions)\n- [Frequently Asked Questions](/faq)\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6434754,
+              "startLine": 70,
+              "endLine": 74
+            },
+            {
+              "content": "\n### Customization\nMake Roo Code work your way with:\n- [Custom Instructions](/features/custom-instructions) for personalized behavior\n- [Custom Modes](/features/custom-modes) for specialized tasks\n- [Local Models](/advanced-usage/local-models) for offline use\n- [Auto-Approval Settings](/features/auto-approving-actions) for faster workflows\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6434669,
+              "startLine": 59,
+              "endLine": 67
+            },
+            {
+              "content": "---\nsidebar_label: Welcome\ndescription: Learn how to use Roo Code, the autonomous AI coding agent that helps you code faster and smarter in VS Code. Complete guides, tutorials, and documentation.\nkeywords:\n  - Roo Code\n  - AI coding assistant\n  - VS Code extension\n  - autonomous coding agent\n  - AI pair programmer\n  - code generation\n  - documentation\nimage: /img/social-share.jpg\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6382017,
+              "startLine": 0,
+              "endLine": 13
+            },
+            {
+              "content": "\n### Community \u0026 Socials\n- **Discord:** [Join our Discord server](https://discord.gg/roocode) for real-time help and discussions.\n- **Reddit:** [Visit our subreddit](https://www.reddit.com/r/RooCode) to share experiences and tips.\n- **GitHub:** Report [issues](https://github.com/RooCodeInc/Roo-Code/issues) or request [features](https://github.com/RooCodeInc/Roo-Code/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop).\n- **X (Twitter):** [Follow @roo_code](https://x.com/roo_code).\n- **Bluesky:** [Follow roocode.bsky.social](https://bsky.app/profile/roocode.bsky.social).\n- **LinkedIn:** [Follow Roo Code](https://www.linkedin.com/company/roo-code).\n\nReady to get started? Click the **Next** button below to begin your journey with Roo Code!\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.63087356,
+              "startLine": 75,
+              "endLine": 84
+            },
+            {
+              "content": "\n### Multiple Modes\nRoo Code adapts to your needs with specialized [modes](/basic-usage/using-modes):\n- **Code Mode:** For general-purpose coding tasks\n- **Architect Mode:** For planning and technical leadership\n- **Ask Mode:** For answering questions and providing information\n- **Debug Mode:** For systematic problem diagnosis\n- **Orchestrator Mode:** For managing complex tasks and delegating work\n- **[Custom Modes](/features/custom-modes):** Create unlimited specialized personas for security auditing, performance optimization, documentation, or any other task\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.62906826,
+              "startLine": 41,
+              "endLine": 49
+            }
+          ],
+          "expected": [
+            "swagger.json"
+          ]
+        },
+        {
+          "query_id": "query_40",
+          "query": "API error response format",
+          "metrics": {
+            "precision": 0,
+            "recall": 0,
+            "f1_score": 0,
+            "response_time": 97
+          },
+          "retrieved": [
+            {
+              "content": "\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\自定义知识库功能.md",
+              "score": 0.6850656,
+              "startLine": 0,
+              "endLine": 1
+            },
+            {
+              "content": "\n### Documentation\n- [Basic Usage Guide](/basic-usage/the-chat-interface)\n- [Advanced Features](/features/auto-approving-actions)\n- [Frequently Asked Questions](/faq)\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6600882,
+              "startLine": 70,
+              "endLine": 74
+            },
+            {
+              "content": "\n## Key Features\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.657686,
+              "startLine": 39,
+              "endLine": 40
+            },
+            {
+              "content": "\n## Resources\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6559721,
+              "startLine": 68,
+              "endLine": 69
+            },
+            {
+              "content": "\n## Quick Start\n\n1. [Install Roo Code](/getting-started/installing)\n2. [Connect Your AI Provider](/getting-started/connecting-api-provider)\n3. [Try Your First Task](/getting-started/your-first-task)\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6405854,
+              "startLine": 31,
+              "endLine": 38
+            },
+            {
+              "content": "\n# Roo Code Docs\n\nRoo Code is an AI-powered autonomous coding agent that lives in your editor. It helps you code faster and smarter, whether you're starting a new project, maintaining existing code, or learning new technologies.\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.63061374,
+              "startLine": 14,
+              "endLine": 19
+            },
+            {
+              "content": "\n### Community \u0026 Socials\n- **Discord:** [Join our Discord server](https://discord.gg/roocode) for real-time help and discussions.\n- **Reddit:** [Visit our subreddit](https://www.reddit.com/r/RooCode) to share experiences and tips.\n- **GitHub:** Report [issues](https://github.com/RooCodeInc/Roo-Code/issues) or request [features](https://github.com/RooCodeInc/Roo-Code/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop).\n- **X (Twitter):** [Follow @roo_code](https://x.com/roo_code).\n- **Bluesky:** [Follow roocode.bsky.social](https://bsky.app/profile/roocode.bsky.social).\n- **LinkedIn:** [Follow Roo Code](https://www.linkedin.com/company/roo-code).\n\nReady to get started? Click the **Next** button below to begin your journey with Roo Code!\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.62057847,
+              "startLine": 75,
+              "endLine": 84
+            },
+            {
+              "content": "\n### Customization\nMake Roo Code work your way with:\n- [Custom Instructions](/features/custom-instructions) for personalized behavior\n- [Custom Modes](/features/custom-modes) for specialized tasks\n- [Local Models](/advanced-usage/local-models) for offline use\n- [Auto-Approval Settings](/features/auto-approving-actions) for faster workflows\n\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.6149864,
+              "startLine": 59,
+              "endLine": 67
+            },
+            {
+              "content": "\n### Multiple Modes\nRoo Code adapts to your needs with specialized [modes](/basic-usage/using-modes):\n- **Code Mode:** For general-purpose coding tasks\n- **Architect Mode:** For planning and technical leadership\n- **Ask Mode:** For answering questions and providing information\n- **Debug Mode:** For systematic problem diagnosis\n- **Orchestrator Mode:** For managing complex tasks and delegating work\n- **[Custom Modes](/features/custom-modes):** Create unlimited specialized personas for security auditing, performance optimization, documentation, or any other task\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.61299133,
+              "startLine": 41,
+              "endLine": 49
+            },
+            {
+              "content": "---\nsidebar_label: Welcome\ndescription: Learn how to use Roo Code, the autonomous AI coding agent that helps you code faster and smarter in VS Code. Complete guides, tutorials, and documentation.\nkeywords:\n  - Roo Code\n  - AI coding assistant\n  - VS Code extension\n  - autonomous coding agent\n  - AI pair programmer\n  - code generation\n  - documentation\nimage: /img/social-share.jpg\n---\n",
+              "filePath": "G:\\projects\\codebase-embedder\\test\\testdata\\doc_samples\\index.md",
+              "score": 0.61286354,
+              "startLine": 0,
+              "endLine": 13
+            }
+          ],
+          "expected": [
+            "swagger.json"
+          ]
+        }
+      ],
+      "average_metrics": {
+        "precision": 0.043478260869565216,
+        "recall": 0.043478260869565216,
+        "f1_score": 0.043478260869565216,
+        "response_time": 101.30434782608695
+      }
+    }
+  }
+}

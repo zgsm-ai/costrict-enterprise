@@ -1,0 +1,82 @@
+# 集成测试配置文件
+
+# 测试基本信息
+test:
+  name: "嵌入模型和向量数据库对比测试"
+  description: "测试不同嵌入模型和向量数据库对召回的影响"
+
+# 查询配置文件路径
+queries:
+  file_path: "./test/testdata/queries.json"  # 支持JSON和YAML格式
+  # file_path: "./test/testdata/queries.yaml"  # 可选的YAML格式配置
+
+# 测试运行配置
+runtime:
+  log_level: "info"          # 日志级别：debug, info, warn, error
+  parallel: 4                # 并发测试数量
+  timeout: "30m"             # 单个测试超时时间
+  retry: 3                   # 失败测试重试次数
+  metrics_format: ["json"]   # 指标输出格式：json, csv, console
+
+# 嵌入模型配置
+embedders:
+  - name: "gte-modernbert-base"
+    model: "gte-modernbert-base"
+    api_base: "https://costrict.sangfor.com:30443/v1/embeddings"
+    api_key: "sk-xpiL5eRv65f8LKO8Ac9f1f66702c4f769f0794Ea0cF6B6Db"
+    batch_size: 1
+    timeout: 30s
+    max_retries: 1
+    strip_new_lines: true
+
+
+rerank:
+  timeout: 30s
+  max_retries: 1
+  model: "gte-reranker-modernbert-base"
+  api_key: "sk-xpiL5eRv65f8LKO8Ac9f1f66702c4f769f0794Ea0cF6B6Db"
+  api_base: "https://costrict.sangfor.com:30443/v1/rerank"
+
+# 向量数据库配置
+vector_stores:
+  - name: "weaviate-default"
+    type: "weaviate"
+    endpoint: "localhost:8080"
+    batch_size: 100
+    timeout: 60s
+    max_retries: 5
+    class_name: "CodebaseIndex"
+    max_documents: 10
+    
+  - name: "weaviate-alternative"
+    type: "weaviate"
+    endpoint: "localhost:8081"
+    batch_size: 50
+    timeout: 60s
+    max_retries: 5
+    class_name: "CodebaseIndexAlt"
+    max_documents: 10
+
+# 测试场景配置
+scenarios:
+  embedder_comparison:
+    name: "嵌入模型对比测试"
+    description: "使用相同向量数据库，测试不同嵌入模型的召回效果"
+    vector_store: "weaviate-default"
+    embedders: ["gte-modernbert-base", "gte-modernbert-base"]
+    top_k: 5
+    
+  vector_store_comparison:
+    name: "向量数据库对比测试"
+    description: "使用相同嵌入模型，测试不同向量数据库的召回效果"
+    embedders: ["gte-modernbert-base"]
+    vector_stores: ["weaviate-default", "weaviate-alternative"]
+    top_k: 5
+
+# 输出配置
+output:
+  format: ["console", "json", "csv"]  # 支持多种输出格式
+  directory: "./test/results"
+  include_details: true              # 是否包含详细查询结果
+  separate_by_scenario: true         # 按场景类型分别输出结果
+  metrics_only: false               # 是否仅输出指标（不含原始数据）

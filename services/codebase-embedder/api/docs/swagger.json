@@ -1,0 +1,393 @@
+{
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "https"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0",
+    "title": "Codebase Embedder API",
+    "description": "提供代码库嵌入管理、语义搜索和项目摘要功能的服务接口"
+  },
+  "securityDefinitions": {
+    "apiKey": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "apiKey": []
+    }
+  ],
+  "basePath": "/",
+  "paths": {
+    "/codebase-embedder/api/v1/embeddings": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "add_embeddings",
+        "operationId": "add_embeddings",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "clientId",
+                "codebasePath"
+              ],
+              "properties": {
+                "clientId": {
+                  "description": "用户机器ID（如MAC地址）",
+                  "type": "string"
+                },
+                "codebasePath": {
+                  "description": "项目绝对路径",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "description": "提交新的代码嵌入任务",
+        "responses": {
+          "200": {
+            "description": "任务创建成功",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "taskId": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "无效请求参数",
+          "schema": {
+            "$ref": "#/definitions/ErrorResponse"
+          }
+        },
+        "401": {
+          "description": "未授权访问",
+          "schema": {
+            "$ref": "#/definitions/ErrorResponse"
+          }
+        },
+        "500": {
+          "description": "服务器内部错误",
+          "schema": {
+            "$ref": "#/definitions/ErrorResponse"
+          }
+        }
+      },
+      "delete": {
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "delete_embeddings",
+        "operationId": "delete_embeddings",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "用户机器ID（如MAC地址）",
+            "name": "clientId",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "项目绝对路径",
+            "name": "codebasePath",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "string",
+            "name": "filePaths",
+            "in": "formData",
+            "required": true
+          }
+        ],
+        "description": "删除指定代码库的嵌入数据",
+        "responses": {
+          "200": {
+            "description": "删除成功",
+            "schema": {
+              "type": "object"
+            }
+          }
+        },
+        "400": {
+          "description": "无效请求参数",
+          "schema": {
+            "$ref": "#/definitions/ErrorResponse"
+          }
+        },
+        "404": {
+          "description": "嵌入数据不存在",
+          "schema": {
+            "$ref": "#/definitions/ErrorResponse"
+          }
+        },
+        "500": {
+          "description": "服务器内部错误",
+          "schema": {
+            "$ref": "#/definitions/ErrorResponse"
+          }
+        }
+      }
+    },
+    "/codebase-embedder/api/v1/embeddings/summary": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "summary",
+        "operationId": "summary",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "用户机器ID（如MAC地址）",
+            "name": "clientId",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "项目绝对路径",
+            "name": "codebasePath",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "description": "获取代码库摘要信息",
+        "responses": {
+          "200": {
+            "description": "摘要信息",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "embedding": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "lastSyncAt",
+                    "totalFiles",
+                    "totalChunks"
+                  ],
+                  "properties": {
+                    "lastSyncAt": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "totalChunks": {
+                      "type": "integer"
+                    },
+                    "totalFiles": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "lastSyncAt": {
+                  "type": "string"
+                },
+                "totalFiles": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "无效请求参数",
+          "schema": {
+            "$ref": "#/definitions/ErrorResponse"
+          }
+        },
+        "404": {
+          "description": "项目不存在",
+          "schema": {
+            "$ref": "#/definitions/ErrorResponse"
+          }
+        }
+      }
+    },
+    "/codebase-embedder/api/v1/status": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "summary": "服务状态检查",
+        "operationId": "checkStatus",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "服务正常运行",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "ok"
+                },
+                "version": {
+                  "type": "string",
+                  "example": "1.0.0"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "服务异常",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/codebase-embedder/api/v1/search/semantic": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "semanticSearch",
+        "operationId": "semanticSearch",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "用户机器ID（如MAC地址）",
+            "name": "clientId",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "项目绝对路径",
+            "name": "codebasePath",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "查询内容",
+            "name": "query",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "default": 10,
+            "description": "结果返回数量（默认10）",
+            "name": "topK",
+            "in": "query",
+            "allowEmptyValue": true
+          }
+        ],
+        "description": "执行语义代码搜索",
+        "responses": {
+          "200": {
+            "description": "搜索结果",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "list": {
+                  "description": "检索结果列表",
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "content",
+                      "filePath",
+                      "score"
+                    ],
+                    "properties": {
+                      "content": {
+                        "description": "代码片段",
+                        "type": "string"
+                      },
+                      "filePath": {
+                        "description": "文件相对路径",
+                        "type": "string"
+                      },
+                      "score": {
+                        "description": "匹配得分",
+                        "type": "number"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "无效查询参数",
+          "schema": {
+            "$ref": "#/definitions/ErrorResponse"
+          }
+        },
+        "404": {
+          "description": "项目未嵌入",
+          "schema": {
+            "$ref": "#/definitions/ErrorResponse"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "description": "错误码",
+          "example": 400
+        },
+        "message": {
+          "type": "string",
+          "description": "错误信息",
+          "example": "无效的参数"
+        }
+      }
+    }
+  },
+  "x-date": "2025-07-11 09:11:01",
+  "x-description": "This is a goctl generated swagger file.",
+  "x-github": "https://github.com/zeromicro/go-zero",
+  "x-go-zero-doc": "https://go-zero.dev/",
+  "x-goctl-version": "1.8.4"
+}

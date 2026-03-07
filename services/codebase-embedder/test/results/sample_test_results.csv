@@ -1,0 +1,23 @@
+query_id,query,scenario_type,language,precision,recall,f1_score,map,ndcg,response_time,retrieved_count,expected_count
+query_1,type UserService struct,code,go,1.0,1.0,1.0,1.0,1.0,53.0,1,1
+query_2,NewUserService() *UserService,code,go,1.0,1.0,1.0,1.0,1.0,45.0,1,1
+query_3,service.AddUser(,code,go,1.0,1.0,1.0,1.0,1.0,62.0,1,1
+query_4,service.ListUsers(),code,go,1.0,1.0,1.0,1.0,1.0,58.0,1,1
+query_5,class UserService,code,python,1.0,1.0,1.0,1.0,1.0,51.0,1,1
+query_6,add_user(self, user_id, name),code,python,1.0,1.0,1.0,1.0,1.0,67.0,1,1
+query_7,def delete_user(self, user_id),code,python,1.0,1.0,1.0,1.0,1.0,72.0,1,1
+query_8,class UserService {,code,javascript,1.0,1.0,1.0,1.0,1.0,49.0,1,1
+query_9,addUser(id, name),code,javascript,1.0,1.0,1.0,1.0,1.0,55.0,1,1
+query_10,dictionary operations in Python,code,javascript,0.8,1.0,0.8889,0.8,0.85,63.0,5,1
+query_11,自定义知识库,doc,markdown,0.8,1.0,0.8889,0.8,0.85,67.0,2,1
+query_12,AI统一检索接口,doc,markdown,0.8,1.0,0.8889,0.8,0.85,71.0,2,1
+query_21,知识库管理界面功能,doc,markdown,0.8,1.0,0.8889,0.8,0.85,69.0,2,1
+query_22,知识库验收标准,doc,markdown,0.8,1.0,0.8889,0.8,0.85,74.0,2,1
+query_23,检索准确率验收指标,doc,markdown,0.8,1.0,0.8889,0.8,0.85,68.0,2,1
+query_24,平均倒数排名,doc,markdown,0.8,1.0,0.8889,0.8,0.85,65.0,2,1
+query_25,端到端任务成功率,doc,markdown,0.8,1.0,0.8889,0.8,0.85,70.0,2,1
+query_26,What Can Roo Code Do,doc,markdown,1.0,1.0,1.0,1.0,1.0,52.0,1,1
+query_27,For answering questions and providing information,doc,markdown,1.0,1.0,1.0,1.0,1.0,48.0,1,1
+query_28,Smart Tools,doc,markdown,1.0,1.0,1.0,1.0,1.0,54.0,1,1
+query_29,custom modes and tools,doc,markdown,1.0,1.0,1.0,1.0,1.0,59.0,1,1
+query_30,Roo Code community resources,doc,markdown,1.0,1.0,1.0,1.0,1.0,61.0,1,1

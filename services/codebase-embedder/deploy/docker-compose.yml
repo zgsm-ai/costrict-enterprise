@@ -1,0 +1,78 @@
+services:
+  redis:
+    image: redis:7.2.4
+    restart: always
+    environment:
+      TZ: "Asia/Shanghai"
+    volumes:
+      - ${HOME}/redis/data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - shenma
+
+  postgres:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      TZ: "Asia/Shanghai"
+      POSTGRES_DB: "codebase_indexer"
+      POSTGRES_USER: "shenma"
+      POSTGRES_PASSWORD: "shenma"
+    volumes:
+      - ${HOME}/postgres/data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432/tcp"
+    networks:
+      - shenma
+
+  weaviate:
+    image: semitechnologies/weaviate:1.31.0
+    command:
+      - --host
+      - 0.0.0.0
+      - --port
+      - '8080'
+      - --scheme
+      - http
+    ports:
+      - "8080:8080"
+      - "50051:50051"
+    volumes:
+      - ${HOME}/weaviate/data:/var/lib/weaviate
+    restart: always
+    environment:
+      TZ: "Asia/Shanghai"
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+      ENABLE_API_BASED_MODULES: 'true'
+      CLUSTER_HOSTNAME: 'node1'
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: "true"
+      QUERY_DEFAULTS_LIMIT: 20
+      AUTOSCHEMA_ENABLED: "false"
+      ASYNC_INDEXING: "true"
+      DISABLE_TELEMETRY: "true"
+      LOG_FORMAT: text
+      PROMETHEUS_MONITORING_ENABLED: "true"
+    networks:
+      - shenma
+
+  codebase-embedder:
+    image: zgsm/codebase-embedder:latest
+    command:
+      - /app/server
+      - -f
+      - etc/config.yaml
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./etc/:/app/etc/
+    restart: always
+    environment:
+      TZ: "Asia/Shanghai"
+      INDEX_NODE: '1 '
+    networks:
+      - shenma
+
+networks:
+  shenma:
+    driver: bridge

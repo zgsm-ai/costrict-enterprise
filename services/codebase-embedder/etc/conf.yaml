@@ -1,0 +1,103 @@
+Name: codebase-indexer
+Host: 0.0.0.0
+Port: 8888
+#Timeout: 30000 #ms
+Timeout: 300000 #ms，debug使用，300s
+MaxBytes: 104857600 # 100MB
+MaxConns: 100
+Verbose: false
+Mode: dev # dev,test,rt,pre, pro
+DevServer:
+  Enabled: true #health check metrics
+Auth:
+  UserInfoHeader: "x-userinfo"
+
+Database:
+  Driver: postgres
+  DataSource: postgres://shenma:shenma@localhost:5432/codebase_indexer?sslmode=disable
+  AutoMigrate:
+    enable: true
+
+IndexTask:
+  PoolSize: 20
+  QueueSize: 100
+  LockTimeout: 310s
+  EmbeddingTask:
+    MaxConcurrency: 10
+    Timeout: 300s
+    OverlapTokens: 100
+    MaxTokensPerChunk: 1000
+    EnableMarkdownParsing: false
+    EnableOpenAPIParsing: false
+  GraphTask:
+    MaxConcurrency: 10
+    Timeout: 300s
+    ConfFile: "etc/codegraph.yaml"
+
+Cleaner:
+  Cron: "0 0 * * *"
+  CodebaseExpireDays: 3
+
+Redis:
+  Addr: 0.0.0.0:6379
+  DefaultExpiration: 1h
+
+MessageQueue:
+  Type: redis
+
+CodeBaseStore:
+  local:
+    BasePath: /codebase-store
+
+VectorStore:
+  Type: weaviate
+  Timeout: 60s
+  MaxRetries: 5
+  BaseURL: "http://localhost:11380/codebase-indexer/api/v1/snippets/read"
+  Weaviate:
+    MaxDocuments: 20
+    Endpoint: "localhost:8080"
+    BatchSize: 100
+    ClassName: "CodebaseIndex"
+  Embedder:
+    Timeout: 30s
+    MaxRetries: 3
+    BatchSize: 1
+    StripNewLines: true
+    Model: gte-modernbert-base
+    ApiKey: "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJCVS1HUWZvdjk5WnBXckhYbjRGMlZ3U1hXMzBqbTNaY3JFRFVEM1BiaGhBIn0.eyJleHAiOjE3NTA3Mjc1MDEsImlhdCI6MTc1MDI5NTUwMSwiYXV0aF90aW1lIjoxNzUwMjk1NTAwLCJqdGkiOiIwZjY0YmZiYS1mNThkLTQ4MGUtOWQ0OS03MmFiZGNiMGI1OTYiLCJpc3MiOiJodHRwczovL3pnc20uc2FuZ2Zvci5jb20vcmVhbG1zL2d3IiwiYXVkIjoiYWNjb3VudCIsInN1YiI6IjNmYzFlZjg5LTkyZjgtNGIzYy1hY2NjLTBiMDUyNGEzY2RhNCIsInR5cCI6IkJlYXJlciIsImF6cCI6InZzY29kZSIsInNlc3Npb25fc3RhdGUiOiI2YzNkZThlZi00YTVjLTQ5MGEtYWQ4OC03OWU4MjM1YjI4ZjgiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbImh0dHBzOi8vemdzbS5zYW5nZm9yLmNvbSJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsImRlZmF1bHQtcm9sZXMtZ3ciXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBwaG9uZSBlbWFpbCBwcm9maWxlIiwic2lkIjoiNmMzZGU4ZWYtNGE1Yy00OTBhLWFkODgtNzllODIzNWIyOGY4IiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJwaG9uZV9udW1iZXJfdmVyaWZpZWQiOnRydWUsInBob25lX251bWJlciI6Iis4NjEzNDg0NDc3MDMzIiwicHJlZmVycmVkX3VzZXJuYW1lIjoiKzg2MTM0ODQ0NzcwMzMifQ.eTeGp2VqzzUHycQ0wuWawHq54QP-8QStwbBaF5PP1yjgnwwYG6LXc1S-lnK96CR0QlmkW4zl4AjIY_iSK-IB1cxYWe54-wOc6yJAXoZKaN_72HjeQL5cf_npdD_Ym9wLEy3EGegb6_h8uVSfcgbdc_7Ml_A0mBbZmNXabU3im5kfFMfIa_s-A9r3_LYOnoNNwq52UBjQaaNGxT3uGjoNkXIadQZQd4MANMhPfWXXd3NynnM_X7TgWKTPDx9AGiNThGVZgBBst96xKEtSIp6V70lmCCpOzMx07hzXYbGBY2n6BkQoKWAnBH8RiiECa2A3SMA-Hc6IRdSxG4hIkeI9rg"
+    ApiBase: https://zgsm.sangfor.com/v1/embeddings
+  Reranker:
+    Timeout: 10s
+    MaxRetries: 3
+    Model: gte-reranker-modernbert-base
+    ApiKey: "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJCVS1HUWZvdjk5WnBXckhYbjRGMlZ3U1hXMzBqbTNaY3JFRFVEM1BiaGhBIn0.eyJleHAiOjE3NTA3Mjc1MDEsImlhdCI6MTc1MDI5NTUwMSwiYXV0aF90aW1lIjoxNzUwMjk1NTAwLCJqdGkiOiIwZjY0YmZiYS1mNThkLTQ4MGUtOWQ0OS03MmFiZGNiMGI1OTYiLCJpc3MiOiJodHRwczovL3pnc20uc2FuZ2Zvci5jb20vcmVhbG1zL2d3IiwiYXVkIjoiYWNjb3VudCIsInN1YiI6IjNmYzFlZjg5LTkyZjgtNGIzYy1hY2NjLTBiMDUyNGEzY2RhNCIsInR5cCI6IkJlYXJlciIsImF6cCI6InZzY29kZSIsInNlc3Npb25fc3RhdGUiOiI2YzNkZThlZi00YTVjLTQ5MGEtYWQ4OC03OWU4MjM1YjI4ZjgiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbImh0dHBzOi8vemdzbS5zYW5nZm9yLmNvbSJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsImRlZmF1bHQtcm9sZXMtZ3ciXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBwaG9uZSBlbWFpbCBwcm9maWxlIiwic2lkIjoiNmMzZGU4ZWYtNGE1Yy00OTBhLWFkODgtNzllODIzNWIyOGY4IiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJwaG9uZV9udW1iZXJfdmVyaWZpZWQiOnRydWUsInBob25lX251bWJlciI6Iis4NjEzNDg0NDc3MDMzIiwicHJlZmVycmVkX3VzZXJuYW1lIjoiKzg2MTM0ODQ0NzcwMzMifQ.eTeGp2VqzzUHycQ0wuWawHq54QP-8QStwbBaF5PP1yjgnwwYG6LXc1S-lnK96CR0QlmkW4zl4AjIY_iSK-IB1cxYWe54-wOc6yJAXoZKaN_72HjeQL5cf_npdD_Ym9wLEy3EGegb6_h8uVSfcgbdc_7Ml_A0mBbZmNXabU3im5kfFMfIa_s-A9r3_LYOnoNNwq52UBjQaaNGxT3uGjoNkXIadQZQd4MANMhPfWXXd3NynnM_X7TgWKTPDx9AGiNThGVZgBBst96xKEtSIp6V70lmCCpOzMx07hzXYbGBY2n6BkQoKWAnBH8RiiECa2A3SMA-Hc6IRdSxG4hIkeI9rg"
+    ApiBase: https://zgsm.sangfor.com/v1/rerank
+
+Log:
+  Mode: console # console,file,volume
+  ServiceName: "codebase-indexer"
+  Encoding: plain # json,plain
+  Path: "/app/logs"
+  Level: debug # debug,info,error,severe
+  KeepDays: 15
+  MaxSize: 100 # MB per file, take affect when Rotation is size.
+  Rotation: daily # split by day or size
+
+Validation:
+  enabled: true
+  check_content: true
+  fail_on_mismatch: false
+  log_level: "info"
+  max_concurrency: 5
+  skip_patterns: []
+
+TokenLimit:
+  max_running_tasks: 10
+  enabled: true
+
+# 探活接口配置
+HealthCheck:
+  Enabled: true
+  URL: "http://localhost:9001/codebase-indexer/api/v1/index/summary"
+  Timeout: 3s
