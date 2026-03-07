@@ -1,0 +1,158 @@
+# config.yaml
+server:
+  # Port number for the server to listen on
+  serverPort: "8080"
+
+  # Base URL for the application, used for generating callbacks and redirects
+  baseURL: ""
+
+  # Intranet/Extranet access
+  isPrivate: "false"
+
+  http:
+    # Total request timeout. Format: "60s", "5m", "1h". 0 means no timeout.
+    timeout: "60s"
+
+    # Timeout for establishing a TCP connection.
+    dialTimeout: "30s"
+
+    # Interval for sending TCP keep-alive probes on active connections.
+    keepAlive: "30s"
+
+    # Timeout for the TLS handshake (for HTTPS requests).
+    tlsHandshakeTimeout: "10s"
+
+    # Timeout for waiting for the server's response headers after sending the request.
+    responseHeaderTimeout: "30s"
+
+    # --- Connection Pool Settings ---
+    # Maximum number of idle (keep-alive) connections across all hosts.
+    maxIdleConns: 2000
+
+    # Maximum number of idle (keep-alive) connections for a single host.
+    # This is a critical performance parameter for high-concurrency scenarios.
+    maxIdleConnsPerHost: 200
+
+    # Maximum time an idle connection will remain in the pool before being closed.
+    idleConnTimeout: "90s"
+
+# OAuth provider configurations for authentication
+providers:
+  casdoor:
+    # Client ID for OAuth application registration
+    clientID: ""
+
+    # Client secret for OAuth application authentication
+    clientSecret: ""
+
+    # Casdoor server base URL, for callback address
+    baseURL: ""
+
+    # Used to obtain tokens, etc. If provided, it is used, if not provided, the baseURL is used
+    internalURL: ""
+
+# SMS service configuration for verification codes
+sms:
+  # Enable test mode. If "true", SMS won't be sent to real users.
+  enabledTest: "false"
+
+  # Application ID from the SMS provider.
+  appID: ""
+
+  # API Key from the SMS provider, used for signing requests.
+  apiKey: ""
+
+  # Merchant ID, if required by the provider.
+  mchID: ""
+
+  # Pre-approved message template ID for the verification code.
+  templateID: ""
+
+  # API endpoint for the send SMS action.
+  sendURL: ""
+
+# GitHub star synchronization configuration
+syncStar:
+  # Enable or disable star synchronization feature
+  enabled: "false"  # true / false
+
+  # GitHub personal access token for API authentication
+  personalToken: ""
+
+  # GitHub repository owner/organization name
+  owner: "zgsm-ai"
+
+  # GitHub repository name to sync stars from
+  repo: "costrict"
+
+  # Synchronization interval in minutes
+  interval: 1  # minute
+
+# Database connection configuration
+database:
+  # Database type: "mysql" or "postgres"
+  type: "postgres"  # mysql or postgres
+
+  # Database server hostname or IP address
+  host: ""
+
+  # Database server port number
+  port: 5432
+
+  # Database username for authentication
+  username: ""
+
+  # Database password for authentication
+  password: ""
+
+  # Database name to connect to
+  dbname: "auth"
+
+  # Maximum number of idle connections in the pool
+  maxIdleConns: 50
+
+  # Maximum number of open connections to the database
+  maxOpenConns: 300
+
+# Encryption and security configuration
+encrypt:
+  # AES encryption key (must be exactly 32 characters/bytes)
+  aesKey: "pUD8mylndVVK7hTNt56VZMkNrppinbNg"  # need 32 bit
+
+  # Enable RSA encryption. "true" = enabled, "false" = disabled
+  enableRsa: "false"
+
+  # Path to RSA private key file for decryption
+  privateKey: "config/private.pem"
+
+  # Path to RSA public key file for encryption
+  publicKey: "config/public.pem"
+
+# QuotaManager service configuration
+quotaManager:
+  # QuotaManager service base URL
+  baseURL: ""
+
+# Logging configuration
+log:
+  # Log level: "debug", "info", "warn", "error"
+  level: "info"
+
+  # Log file path and name
+  filename: "logs/app.log"
+
+  # Maximum size in MB per log file before rotation
+  maxSize: 100    # Maximum size 100MB per file
+
+  # Maximum number of old log files to keep
+  maxBackups: 10  # Keep 10 backups
+
+  # Maximum number of days to keep old log files
+  maxAge: 30      # Keep for 30 days
+
+  # Compress old log files to save disk space
+  compress: true  # Compress old logs
+
+redirect:
+  uris:
+    "act_2026": "/credit/manager/annual-summary"

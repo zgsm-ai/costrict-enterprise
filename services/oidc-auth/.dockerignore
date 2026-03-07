@@ -1,0 +1,63 @@
+# Git
+.git
+.gitignore
+.gitattributes
+.gitmodules
+
+# Build outputs
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+main
+bin/
+build/
+dist/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+
+# Testing
+*.test
+coverage.txt
+coverage.html
+
+# Documentation
+README.zh-CN.md
+docs/
+*.md
+
+# Development
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+config/config.yaml.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Charts and deployment
+charts/
+k8s/
+deployments/
+
+# Temporary files
+tmp/
+temp/

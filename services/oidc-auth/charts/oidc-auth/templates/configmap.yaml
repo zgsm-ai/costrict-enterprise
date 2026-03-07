@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+      app.kubernetes.io/name: {{ .Chart.Name }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/version: {{ .Chart.Version }}
+      app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  config.yaml: |-
+    server:
+      serverPort: {{ .Values.server.serverPort | quote }}
+      baseURL: {{ .Values.server.baseURL | quote }}
+      isPrivate: {{ .Values.server.isPrivate | default "false" }}
+      http:
+        timeout: {{ .Values.server.http.timeout | quote }}
+        dialTimeout: {{ .Values.server.http.dialTimeout | quote }}
+        keepAlive: {{ .Values.server.http.keepAlive | quote }}
+        tlsHandshakeTimeout: {{ .Values.server.http.tlsHandshakeTimeout | quote }}
+        responseHeaderTimeout: {{ .Values.server.http.responseHeaderTimeout | quote }}
+        maxIdleConns: {{ .Values.server.http.maxIdleConns | quote }}
+        maxIdleConnsPerHost: {{ .Values.server.http.maxIdleConnsPerHost | quote }}
+        idleConnTimeout: {{ .Values.server.http.idleConnTimeout | quote }}
+    providers:
+      casdoor:
+        clientID: {{ .Values.providers.casdoor.clientID | quote }}
+        clientSecret: {{ .Values.providers.casdoor.clientSecret | quote }}
+        baseURL: {{ .Values.providers.casdoor.baseURL | quote }}
+        internalURL: {{ .Values.providers.casdoor.internalURL }}
+    syncStar:
+      enabled: {{ .Values.syncStar.enabled | quote }}
+      personalToken: {{ .Values.syncStar.personalToken | quote }}
+      owner: {{ .Values.syncStar.owner | quote }}
+      repo: {{ .Values.syncStar.repo | quote }}
+      interval: {{ .Values.syncStar.interval }}  # minute
+    database:
+      type: {{ .Values.database.type | quote }}
+      host: {{ .Values.database.host | quote }}
+      port: {{ .Values.database.port }}
+      username: {{ .Values.database.username | quote }}
+      password: {{ .Values.database.password | quote }}
+      dbname: {{ .Values.database.dbname | quote }}
+      maxIdleConns: {{ .Values.database.maxIdleConns }}
+      maxOpenConns: {{ .Values.database.maxOpenConns }}
+    encrypt:
+      aesKey: {{ .Values.encrypt.aesKey | quote }}
+      enableRsa: {{ .Values.encrypt.enableRsa | quote }}
+      privateKey: {{ .Values.encrypt.privateKey | quote }}
+      publicKey: {{ .Values.encrypt.publicKey | quote }}
+    log:
+      level: {{ .Values.log.level | quote }}
+      filename: {{ .Values.log.filename | quote }}
+      maxSize: {{ .Values.log.maxSize }}
+      maxBackups: {{ .Values.log.maxBackups }}
+      maxAge: {{ .Values.log.maxAge }}
+      compress: {{ .Values.log.compress }}
+    sms:
+      enabledTest: {{ .Values.sms.enabledTest | quote }}
+      appID: {{ .Values.sms.appID | quote }}
+      apiKey: {{ .Values.sms.apiKey | quote }}
+      mchID: {{ .Values.sms.mchID | quote }}
+      templateID: {{ .Values.sms.templateID | quote }}
+      sendURL: {{ .Values.sms.sendURL | quote }}

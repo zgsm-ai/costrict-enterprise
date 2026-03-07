@@ -1,0 +1,79 @@
+services:
+  oidc-auth:
+    image: zgsm/oidc-auth:v1.2.0
+    container_name: oidc-auth
+    ports:
+      - "8080:8080"
+    environment:
+      SERVER_BASEURL: "${SERVER_BASEURL}"
+      PROVIDERS_CASDOOR_CLIENTID: "${CASDOOR_CLIENTID}"
+      PROVIDERS_CASDOOR_CLIENTSECRET: "${CASDOOR_CLIENT_SECRET}"
+      PROVIDERS_CASDOOR_BASEURL: "${CASDOOR_BASEURL}"
+      PROVIDERS_CASDOOR_INTERNALURL: "${CASDOOR_INTERNAL_URL}"
+      QUOTAMANAGER_BASEURL: "${QUOTA_BASEURL}"
+      SMS_ENABLEDTEST: "${SMS_ENABLED_TEST:-true}"
+      SMS_CLIENTID: "${SMS_CLIENTID}"
+      SMS_CLIENTSECRET: "${SMS_CLIENT_SECRET}"
+      SMS_TOKENURL: "${SMS_TOKEN_URL}"
+      SMS_SENDURL: "${SMS_SEND_URL}"
+      SYNCSTAR_ENABLED: "${SYNCSTAR_ENABLED:-false}"
+      SYNCSTAR_PERSONALTOKEN: "${GITHUB_TOKEN}"
+      SYNCSTAR_OWNER: "${SYNCSTAR_OWNER}"
+      SYNCSTAR_REPO: "${SYNCSTAR_REPO}"
+      DATABASE_HOST: "${DB_HOST}"
+      DATABASE_DBNAME: "${OIDC_DB_NAME}"
+      DATABASE_PASSWORD: "${DB_PASSWORD}"
+      DATABASE_PORT: 5432
+      DATABASE_USERNAME: "${DB_USER}"
+      ENCRYPT_AESKEY: "${AES_KEY}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      casdoor:
+        condition: service_started
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    environment:
+      POSTGRES_USER: "${DB_USER}"
+      POSTGRES_DB: "${DB_NAME}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    shm_size: 128mb
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  casdoor:
+    image: zgsm/casdoor:v1.1.1
+    container_name: casdoor
+    ports:
+      - "8000:8000"
+    environment:
+      driverName: postgres
+      dataSourceName: "host=${DB_HOST} port=5432 user=${DB_USER} password=${DB_PASSWORD} dbname=${CASDOOR_DB_NAME} sslmode=disable"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - app-network
+    restart: unless-stopped
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
