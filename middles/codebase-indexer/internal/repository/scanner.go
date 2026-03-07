@@ -1,0 +1,563 @@
+// scanner/scanner.go - File Scanner
+package repository
+
+import (
+	"bytes"
+	"fmt"
+	"io/fs"
+	"maps"
+	"os"
+	"path/filepath"
+	"strconv"
+	"strings"
+	"sync"
+	"time"
+
+	"codebase-indexer/internal/config"
+	"codebase-indexer/internal/utils"
+	"codebase-indexer/pkg/codegraph/lang"
+	"codebase-indexer/pkg/codegraph/types"
+	"codebase-indexer/pkg/logger"
+
+	gitignore "github.com/sabhiram/go-gitignore"
+)
+
+type ScannerInterface interface {
+	SetScannerConfig(config *config.ScannerConfig)
+	GetScannerConfig() *config.ScannerConfig
+	LoadIgnoreRules(codebasePath string) *gitignore.GitIgnore
+	LoadFileIgnoreRules(codebasePath string) *gitignore.GitIgnore
+	LoadFolderIgnoreRules(codebasePath string) *gitignore.GitIgnore
+	LoadIncludeFiles() []string
+	ScanCodebase(ignoreConfig *config.IgnoreConfig, codebasePath string) (map[string]string, error)
+	ScanFilePaths(codebasePath string, filePaths []string) (map[string]string, error)
+	ScanDirectory(codebasePath, dirPath string) (map[string]string, error)
+	ScanFile(codebasePath, filePath string) (string, error)
+	LoadIgnoreConfig(codebasePath string) *config.IgnoreConfig
+	CheckIgnoreFile(ignoreConfig *config.IgnoreConfig, codebasePath string, fileInfo *types.FileInfo) (bool, error)
+}
+
+type FileScanner struct {
+	scannerConfig *config.ScannerConfig
+	logger        logger.Logger
+	rwMutex       sync.RWMutex
+}
+
+func NewFileScanner(logger logger.Logger) ScannerInterface {
+	return &FileScanner{
+		scannerConfig: defaultScannerConfig(),
+		logger:        logger,
+	}
+}
+
+// defaultScannerConfig returns default scanner configuration
+func defaultScannerConfig() *config.ScannerConfig {
+	return &config.ScannerConfig{
+		FolderIgnorePatterns: config.DefaultConfigScan.FolderIgnorePatterns,
+		FileIncludePatterns:  config.DefaultConfigScan.FileIncludePatterns,
+		MaxFileSizeKB:        config.DefaultConfigScan.MaxFileSizeKB,
+		MaxFileCount:         config.DefaultConfigScan.MaxFileCount,
+	}
+}
+
+// SetScannerConfig sets the scanner configuration
+func (s *FileScanner) SetScannerConfig(config *config.ScannerConfig) {
+	if config == nil {
+		return
+	}
+	s.rwMutex.Lock()
+	defer s.rwMutex.Unlock()
+	if len(config.FolderIgnorePatterns) > 0 {
+		s.scannerConfig.FolderIgnorePatterns = config.FolderIgnorePatterns
+	}
+	if len(config.FileIncludePatterns) > 0 {
+		s.scannerConfig.FileIncludePatterns = config.FileIncludePatterns
+	}
+	if config.MaxFileSizeKB > 10 && config.MaxFileSizeKB <= 20480 {
+		s.scannerConfig.MaxFileSizeKB = config.MaxFileSizeKB
+	}
+	if config.MaxFileCount > 100 && config.MaxFileCount <= 100000 {
+		s.scannerConfig.MaxFileCount = config.MaxFileCount
+	}
+}
+
+// GetScannerConfig returns current scanner configuration
+func (s *FileScanner) GetScannerConfig() *config.ScannerConfig {
+	s.rwMutex.RLock()
+	defer s.rwMutex.RUnlock()
+	return s.scannerConfig
+}
+
+// LoadIgnoreConfig loads the ignore config
+func (s *FileScanner) LoadIgnoreConfig(codebasePath string) *config.IgnoreConfig {
+	return &config.IgnoreConfig{
+		IgnoreRules:  s.LoadIgnoreRules(codebasePath),
+		IncludeRules: s.LoadIncludeFiles(),
+		MaxFileCount: s.scannerConfig.MaxFileCount,
+		MaxFileSize:  s.scannerConfig.MaxFileSizeKB,
+	}
+}
+
+// CheckIgnoreFile checks if a file should be ignored based on the ignore config
+func (s *FileScanner) CheckIgnoreFile(ignoreConfig *config.IgnoreConfig, codebasePath string, fileInfo *types.FileInfo) (bool, error) {
+	if ignoreConfig == nil || codebasePath == "" || fileInfo == nil {
+		return false, fmt.Errorf("invalid ignore config or codebase path or file info")
+	}
+	maxFileSize := int64(ignoreConfig.MaxFileSize * 1024)
+	ignoreRules := ignoreConfig.IgnoreRules
+	if ignoreRules == nil {
+		return false, fmt.Errorf("ignore rules not loaded")
+	}
+	includeRules := ignoreConfig.IncludeRules
+	fileIncludeMap := utils.StringSlice2Map(includeRules)
+
+	filePath := fileInfo.Path
+	relPath, err := filepath.Rel(codebasePath, filePath)
+	if err != nil {
+		return false, fmt.Errorf("failed to get relative path: %v", err)
+	}
+
+	// If directory, append "/" and skip size check
+	checkPath := relPath
+	if fileInfo.IsDir {
+		checkPath = relPath + "/"
+		if ignoreRules.MatchesPath(checkPath) {
+			s.logger.Debug("ignore file found: %s in codebase %s", checkPath, codebasePath)
+			return true, nil
+		} else {
+			return false, nil
+		}
+	}
+
+	if fileInfo.Size > maxFileSize {
+		// For regular files, check size limit
+		fileSizeKB := float64(fileInfo.Size) / 1024
+		s.logger.Debug("file size exceeded limit: %s (%.2fKB)", filePath, fileSizeKB)
+		return true, nil
+	}
+
+	if ignoreRules.MatchesPath(checkPath) {
+		s.logger.Debug("ignore file found: %s in codebase %s", checkPath, codebasePath)
+		return true, nil
+	}
+
+	// 是文件，检查后缀
+	if !fileInfo.IsDir && len(fileIncludeMap) > 0 {
+		fileExt := filepath.Ext(filePath)
+		if _, ok := fileIncludeMap[fileExt]; ok {
+			return false, nil
+		} else {
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
+// LoadIgnoreRules Load and combine default ignore rules with .gitignore rules
+func (s *FileScanner) LoadIgnoreRules(codebasePath string) *gitignore.GitIgnore {
+	// First create ignore object with default rules
+	// fileIngoreRules := s.scannerConfig.FileIgnorePatterns
+	currentIgnoreRules := s.scannerConfig.FolderIgnorePatterns
+
+	// Read and merge .gitignore file
+	gitignoreRules := s.loadGitignore(codebasePath)
+	if len(gitignoreRules) > 0 {
+		currentIgnoreRules = append(currentIgnoreRules, gitignoreRules...)
+	}
+
+	// Read and merge .coignore file
+	coignoreRules := s.loadCoignore(codebasePath)
+	if len(coignoreRules) > 0 {
+		currentIgnoreRules = append(currentIgnoreRules, coignoreRules...)
+	}
+
+	// Remove duplicate rules
+	uniqueRules := utils.UniqueStringSlice(currentIgnoreRules)
+	// 转义
+	for i, rule := range uniqueRules {
+		// 处理 $
+		uniqueRules[i] = strings.ReplaceAll(rule, "$", `\$`)
+	}
+
+	compiledIgnore := gitignore.CompileIgnoreLines(uniqueRules...)
+
+	return compiledIgnore
+}
+
+// LoadFileIgnoreRules loads file ignore rules from configuration and merges with .gitignore
+func (s *FileScanner) LoadFileIgnoreRules(codebasePath string) *gitignore.GitIgnore {
+	// First create ignore object with default rules
+	currentIgnoreRules := s.scannerConfig.FolderIgnorePatterns
+
+	// Read and merge .gitignore file
+	gitignoreRules := s.loadGitignore(codebasePath)
+	if len(gitignoreRules) > 0 {
+		currentIgnoreRules = append(currentIgnoreRules, gitignoreRules...)
+	}
+
+	// Read and merge .coignore file
+	coignoreRules := s.loadCoignore(codebasePath)
+	if len(coignoreRules) > 0 {
+		currentIgnoreRules = append(currentIgnoreRules, coignoreRules...)
+	}
+
+	// Remove duplicate rules
+	uniqueRules := utils.UniqueStringSlice(currentIgnoreRules)
+
+	compiledIgnore := gitignore.CompileIgnoreLines(uniqueRules...)
+
+	return compiledIgnore
+}
+
+// LoadFolderIgnoreRules loads folder ignore rules from configuration and merges with .gitignore
+func (s *FileScanner) LoadFolderIgnoreRules(codebasePath string) *gitignore.GitIgnore {
+	// First create ignore object with default rules
+	currentIgnoreRules := s.scannerConfig.FolderIgnorePatterns
+
+	// Read and merge .gitignore file
+	gitignoreRules := s.loadGitignore(codebasePath)
+	if len(gitignoreRules) > 0 {
+		currentIgnoreRules = append(currentIgnoreRules, gitignoreRules...)
+	}
+
+	// Read and merge .coignore file
+	coignoreRules := s.loadCoignore(codebasePath)
+	if len(coignoreRules) > 0 {
+		currentIgnoreRules = append(currentIgnoreRules, coignoreRules...)
+	}
+
+	// Remove duplicate rules
+	uniqueRules := utils.UniqueStringSlice(currentIgnoreRules)
+
+	compiledIgnore := gitignore.CompileIgnoreLines(uniqueRules...)
+
+	return compiledIgnore
+}
+
+// loadGitignore reads .gitignore file and returns list of ignore patterns
+func (s *FileScanner) loadGitignore(codebasePath string) []string {
+	var ignores []string
+	ignoreFilePath := filepath.Join(codebasePath, ".gitignore")
+	if content, err := os.ReadFile(ignoreFilePath); err == nil {
+		for _, line := range bytes.Split(content, []byte{'\n'}) {
+			// Skip empty lines and comments
+			trimmedLine := bytes.TrimSpace(line)
+			if len(trimmedLine) > 0 && !bytes.HasPrefix(trimmedLine, []byte{'#'}) {
+				ignores = append(ignores, string(trimmedLine))
+			}
+		}
+	} else {
+		s.logger.Info("no .gitignore file: %v", err)
+	}
+	return ignores
+}
+
+func (s *FileScanner) loadCoignore(codebasePath string) []string {
+	var ignores []string
+	ignoreFilePath := filepath.Join(codebasePath, ".coignore")
+	if content, err := os.ReadFile(ignoreFilePath); err == nil {
+		for _, line := range bytes.Split(content, []byte{'\n'}) {
+			// Skip empty lines and comments
+			trimmedLine := bytes.TrimSpace(line)
+			if len(trimmedLine) > 0 && !bytes.HasPrefix(trimmedLine, []byte{'#'}) {
+				ignores = append(ignores, string(trimmedLine))
+			}
+		}
+	} else {
+		s.logger.Info("no .coignore file: %v", err)
+	}
+	return ignores
+}
+
+// LoadIncludeFiles returns the list of file extensions to include during scanning
+func (s *FileScanner) LoadIncludeFiles() []string {
+	includeFiles := s.scannerConfig.FileIncludePatterns
+
+	treeSitterParsers := lang.GetTreeSitterParsers()
+	for _, l := range treeSitterParsers {
+		if len(includeFiles) == 0 {
+			includeFiles = l.SupportedExts
+		} else {
+			includeFiles = append(includeFiles, l.SupportedExts...)
+		}
+	}
+
+	return includeFiles
+}
+
+// ScanCodebase scans codebase directory and generates hash tree
+func (s *FileScanner) ScanCodebase(ignoreConfig *config.IgnoreConfig, codebasePath string) (map[string]string, error) {
+	s.logger.Info("starting codebase scan: %s", codebasePath)
+	startTime := time.Now()
+
+	hashTree := make(map[string]string)
+	var filesScanned int
+
+	if ignoreConfig == nil || codebasePath == "" {
+		return hashTree, fmt.Errorf("ignoreConfig or codebasePath is nil")
+	}
+	ignore := ignoreConfig.IgnoreRules
+	fileInclude := ignoreConfig.IncludeRules
+	fileIncludeMap := utils.StringSlice2Map(fileInclude)
+	maxFileSizeKB := ignoreConfig.MaxFileSize
+	maxFileSize := int64(maxFileSizeKB * 1024)
+	maxFileCount := ignoreConfig.MaxFileCount
+
+	err := filepath.WalkDir(codebasePath, func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			s.logger.Warn("error accessing file %s: %v", path, err)
+			return nil // Continue scanning other files
+		}
+
+		// Calculate relative path
+		relPath, err := filepath.Rel(codebasePath, path)
+		if err != nil {
+			s.logger.Warn("failed to get relative path for file %s: %v", path, err)
+			return nil
+		}
+
+		if d.IsDir() {
+			// For directories, check if we should skip entire dir
+			// Don't skip root dir (relPath=".") due to ".*" rules
+			if relPath != "." && ignore != nil && ignore.MatchesPath(relPath+"/") {
+				s.logger.Debug("skipping ignored directory: %s", relPath)
+				return fs.SkipDir
+			}
+			return nil
+		}
+
+		// Check if file is excluded by ignore
+		if ignore != nil && ignore.MatchesPath(relPath) {
+			s.logger.Debug("skipping file excluded by ignore: %s", relPath)
+			return nil
+		}
+
+		info, err := d.Info()
+		if err != nil {
+			s.logger.Warn("error getting file info for %s: %v", path, err)
+			return nil
+		}
+
+		// Verify file size doesn't exceed max limit
+		if info.Size() >= maxFileSize {
+			s.logger.Debug("skipping file larger than %dKB: %s (size: %.2f KB)", maxFileSizeKB, relPath, float64(info.Size())/1024)
+			return nil
+		}
+
+		// Verify file extension is supported
+		if len(fileIncludeMap) > 0 {
+			fileExt := filepath.Ext(path)
+			if _, ok := fileIncludeMap[fileExt]; !ok {
+				s.logger.Debug("skipping file with unsupported extension: %s", relPath)
+				return nil
+			}
+		}
+
+		// Calculate file hash
+		hash, err := utils.CalculateFileTimestamp(path)
+		if err != nil {
+			s.logger.Warn("error calculating hash for file %s: %v", path, err)
+			return nil
+		}
+
+		filesScanned++
+		if filesScanned > maxFileCount {
+			return fmt.Errorf("reached maximum file count limit: %d", filesScanned)
+		}
+
+		hashTree[relPath] = strconv.FormatInt(hash, 10)
+
+		return nil
+	})
+
+	if err != nil {
+		// 检查是否是达到文件数上限的错误
+		if err.Error() == fmt.Sprintf("reached maximum file count limit: %d", filesScanned) {
+			s.logger.Warn("reached maximum file count limit: %d, stopping scan, time taken: %v", filesScanned, time.Since(startTime))
+			return hashTree, nil
+		}
+		return nil, fmt.Errorf("failed to scan codebase: %v", err)
+	}
+
+	s.logger.Info("codebase scan completed, %d files scanned, time taken: %v",
+		filesScanned, time.Since(startTime))
+
+	return hashTree, nil
+}
+
+// ScanFilePaths scans file paths and generates hash tree
+func (s *FileScanner) ScanFilePaths(codebasePath string, filePaths []string) (map[string]string, error) {
+	s.logger.Info("starting file paths scan for codebase: %s", codebasePath)
+	filesHashTree := make(map[string]string)
+	for _, filePath := range filePaths {
+		// Check if the file is in this codebase
+		relPath, err := filepath.Rel(codebasePath, filePath)
+		if err != nil {
+			s.logger.Debug("file path %s is not in codebase %s: %v", filePath, codebasePath, err)
+			continue
+		}
+
+		// Check file size and ignore rules
+		fileInfo, err := os.Stat(filePath)
+		if err != nil {
+			s.logger.Warn("failed to get file info: %s, %v", filePath, err)
+			continue
+		}
+
+		// If directory
+		if fileInfo.IsDir() {
+			dirHashTree, err := s.ScanDirectory(codebasePath, filePath)
+			if err != nil {
+				s.logger.Warn("failed to scan directory: %s, %v", filePath, err)
+				continue
+			}
+			maps.Copy(filesHashTree, dirHashTree)
+		} else {
+			fileHash, err := s.ScanFile(codebasePath, filePath)
+			if err != nil {
+				s.logger.Warn("failed to scan file: %s, %v", filePath, err)
+				continue
+			}
+			filesHashTree[relPath] = fileHash
+		}
+	}
+	s.logger.Info("file paths scan completed, scanned %d files", len(filesHashTree))
+
+	return filesHashTree, nil
+}
+
+// ScanDirectory scans directory and generates hash tree
+func (s *FileScanner) ScanDirectory(codebasePath, dirPath string) (map[string]string, error) {
+	s.logger.Info("starting directory scan: %s", dirPath)
+	startTime := time.Now()
+
+	hashTree := make(map[string]string)
+	var filesScanned int
+
+	ignore := s.LoadIgnoreRules(codebasePath)
+	fileInclude := s.LoadIncludeFiles()
+	fileIncludeMap := utils.StringSlice2Map(fileInclude)
+
+	maxFileSizeKB := s.scannerConfig.MaxFileSizeKB
+	maxFileSize := int64(maxFileSizeKB * 1024)
+	err := filepath.WalkDir(dirPath, func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			s.logger.Warn("error accessing file %s: %v", path, err)
+			return nil // Continue scanning other files
+		}
+
+		// Calculate relative path
+		relPath, err := filepath.Rel(codebasePath, path)
+		if err != nil {
+			s.logger.Warn("failed to get relative path for file %s: %v", path, err)
+			return nil
+		}
+
+		if d.IsDir() {
+			// For directories, check if we should skip entire dir
+			// Don't skip root dir (relPath=".") due to ".*" rules
+			if relPath != "." && ignore != nil && ignore.MatchesPath(relPath+"/") {
+				s.logger.Debug("skipping ignored directory: %s", relPath)
+				return fs.SkipDir
+			}
+			return nil
+		}
+
+		// Check if file is excluded by ignore
+		if ignore != nil && ignore.MatchesPath(relPath) {
+			s.logger.Debug("skipping file excluded by ignore: %s", relPath)
+			return nil
+		}
+
+		info, err := d.Info()
+		if err != nil {
+			s.logger.Warn("error getting file info for %s: %v", path, err)
+			return nil
+		}
+
+		// Verify file size doesn't exceed max limit
+		if info.Size() >= maxFileSize {
+			s.logger.Debug("skipping file larger than %dKB: %s (size: %.2f KB)", maxFileSizeKB, relPath, float64(info.Size())/1024)
+			return nil
+		}
+
+		if len(fileIncludeMap) > 0 {
+			if _, ok := fileIncludeMap[relPath]; !ok {
+				s.logger.Debug("skipping file not included: %s", relPath)
+				return nil
+			}
+		}
+
+		// Calculate file hash
+		hash, err := utils.CalculateFileTimestamp(path)
+		if err != nil {
+			s.logger.Warn("error calculating hash for file %s: %v", path, err)
+			return nil
+		}
+
+		filesScanned++
+		if filesScanned > s.scannerConfig.MaxFileCount {
+			return fmt.Errorf("reached maximum file count limit: %d", filesScanned)
+		}
+
+		hashTree[relPath] = strconv.FormatInt(hash, 10)
+
+		return nil
+	})
+
+	if err != nil {
+		// 检查是否是达到文件数上限的错误
+		if err.Error() == fmt.Sprintf("reached maximum file count limit: %d", filesScanned) {
+			s.logger.Warn("reached maximum file count limit: %d, stopping scan, time taken: %v", filesScanned, time.Since(startTime))
+			return hashTree, nil
+		}
+		return nil, fmt.Errorf("failed to scan directory: %v", err)
+	}
+
+	s.logger.Info("directory scan completed, %d files scanned, time taken: %v",
+		filesScanned, time.Since(startTime))
+
+	return hashTree, nil
+}
+
+// ScanFile scans file and generates hash tree
+func (s *FileScanner) ScanFile(codebasePath, filePath string) (string, error) {
+	s.logger.Info("starting file scan: %s", filePath)
+	startTime := time.Now()
+
+	// fileIgnore := s.LoadFileIgnoreRules(codebasePath)
+	ignore := s.LoadIgnoreRules(codebasePath)
+	fileInclude := s.LoadIncludeFiles()
+	fileIncludeMap := utils.StringSlice2Map(fileInclude)
+	maxFileSizeKB := s.scannerConfig.MaxFileSizeKB
+	maxFileSize := int64(maxFileSizeKB * 1024)
+	relPath, err := filepath.Rel(codebasePath, filePath)
+	if err != nil {
+		return "", fmt.Errorf("failed to get relative path: %v", err)
+	}
+	if ignore != nil && ignore.MatchesPath(relPath) {
+		return "", fmt.Errorf("file excluded by ignore")
+	}
+	info, err := os.Stat(filePath)
+	if err != nil {
+		return "", fmt.Errorf("failed to get file info: %v", err)
+	}
+	if info.Size() >= maxFileSize {
+		return "", fmt.Errorf("file larger than %dKB(size: %.2f KB)", maxFileSizeKB, float64(info.Size())/1024)
+	}
+	if len(fileIncludeMap) > 0 {
+		if _, ok := fileIncludeMap[relPath]; !ok {
+			return "", fmt.Errorf("file not included: %s", relPath)
+		}
+	}
+	hash, err := utils.CalculateFileTimestamp(filePath)
+	if err != nil {
+		return "", fmt.Errorf("failed to scan file: %v", err)
+	}
+
+	s.logger.Info("file scan completed, time taken: %v",
+		time.Since(startTime))
+
+	return strconv.FormatInt(hash, 10), nil
+}

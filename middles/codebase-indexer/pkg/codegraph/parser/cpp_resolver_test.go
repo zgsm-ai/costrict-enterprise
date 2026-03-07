@@ -1,0 +1,588 @@
+package parser
+
+import (
+	"codebase-indexer/pkg/codegraph/resolver"
+	"context"
+	"fmt"
+	"regexp"
+	"strings"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+
+	"codebase-indexer/pkg/codegraph/types"
+)
+
+func TestCPPResolver(t *testing.T) {
+
+}
+func TestCPPResolver_ResolveImport(t *testing.T) {
+	logger := initLogger()
+	parser := NewSourceFileParser(logger)
+
+	testCases := []struct {
+		name        string
+		sourceFile  *types.SourceFile
+		wantErr     error
+		description string
+	}{
+		{
+			name: "普通头文件导入",
+			sourceFile: &types.SourceFile{
+				Path: "testdata/cpp/ImportTest.cpp",
+				Content: []byte(`#include "test.h"
+#include "utils/helper.hpp"
+`),
+			},
+			wantErr:     nil,
+			description: "测试普通C++头文件导入",
+		},
+		{
+			name: "系统头文件导入",
+			sourceFile: &types.SourceFile{
+				Path: "testdata/cpp/SystemImportTest.cpp",
+				Content: []byte(`#include <vector>
+#include <string>
+`),
+			},
+			wantErr:     nil,
+			description: "测试系统头文件导入",
+		},
+		{
+			name: "相对路径头文件导入",
+			sourceFile: &types.SourceFile{
+				Path: "testdata/cpp/RelativeImportTest.cpp",
+				Content: []byte(`#include "./local.hpp"
+#include "../common.hpp"
+`),
+			},
+			wantErr:     nil,
+			description: "测试相对路径头文件导入",
+		},
+		{
+			name: "嵌套目录头文件导入",
+			sourceFile: &types.SourceFile{
+				Path: "testdata/cpp/NestedImportTest.cpp",
+				Content: []byte(`#include "nested/dir/deep.hpp"
+`),
+			},
+			wantErr:     nil,
+			description: "测试嵌套目录头文件导入",
+		},
+		{
+			name: "混合引号和尖括号",
+			sourceFile: &types.SourceFile{
+				Path: "testdata/cpp/MixedImportTest.cpp",
+				Content: []byte(`#include "test.h"
+#include <map>
+`),
+			},
+			wantErr:     nil,
+			description: "测试混合引号和尖括号导入",
+		},
+		{
+			name: "using声明导入",
+			sourceFile: &types.SourceFile{
+				Path: "testdata/cpp/UsingImportTest.cpp",
+				Content: []byte(`using namespace std;
+using std::vector;
+using myns::MyClass;
+using myns::MyClass2;
+`),
+			},
+			wantErr:     nil,
+			description: "测试using声明导入",
+		},
+	}
+
+	for _, tt := range testCases {
+		t.Run(tt.name, func(t *testing.T) {
+			res, err := parser.Parse(context.Background(), tt.sourceFile)
+			if tt.wantErr != nil {
+				assert.Error(t, err, tt.description)
+			} else {
+				assert.NoError(t, err, tt.description)
+			}
+			assert.NotNil(t, res)
+			if err == nil {
+				for _, importItem := range res.Imports {
+					fmt.Printf("Import: %s\n", importItem.GetName())
+					assert.NotEmpty(t, importItem.GetName())
+					assert.Equal(t, types.ElementTypeImport, importItem.GetType())
+				}
+			}
+		})
+	}
+}
+
+func TestCPPResolver_ResolveFunction(t *testing.T) {
+	logger := initLogger()
+	parser := NewSourceFileParser(logger)
+
+	testCases := []struct {
+		name        string
+		sourceFile  *types.SourceFile
+		wantErr     error
+		wantFuncs   []resolver.Declaration
+		description string
+	}{
+		{
+			name: "testfunc.cpp 全部函数声明解析",
+			sourceFile: &types.SourceFile{
+				Path:    "testdata/cpp/testfunc.cpp",
+				Content: readFile("testdata/cpp/testfunc.cpp"),
+			},
+			wantErr: nil,
+			wantFuncs: []resolver.Declaration{
+				// 基本类型
+				{Name: "getInt", ReturnType: []string{types.PrimitiveType}, Parameters: []resolver.Parameter{}},
+				{Name: "doNothing", ReturnType: []string{types.PrimitiveType}, Parameters: []resolver.Parameter{}},
+				{Name: "getFloat", ReturnType: []string{types.PrimitiveType}, Parameters: []resolver.Parameter{}},
+
+				// 指针和引用
+				{Name: "getBuffer", ReturnType: []string{types.PrimitiveType}, Parameters: []resolver.Parameter{
+					{Name: "count", Type: []string{types.PrimitiveType}},
+				}},
+				{Name: "getNameRef1", ReturnType: []string{"string"}, Parameters: []resolver.Parameter{}},
+				{Name: "getNameRef2", ReturnType: []string{"string"}, Parameters: []resolver.Parameter{}},
+
+				// 标准模板容器
+				{Name: "getVector", ReturnType: []string{"vector"}, Parameters: []resolver.Parameter{}},
+				{Name: "getMap", ReturnType: []string{"map", "string"}, Parameters: []resolver.Parameter{}},
+
+				// 嵌套模板类型
+				{Name: "getComplexMap", ReturnType: []string{"map", "string", "vector"}, Parameters: []resolver.Parameter{}},
+
+				// 自定义模板类型
+				{Name: "getBox", ReturnType: []string{"Box"}, Parameters: []resolver.Parameter{}},
+				{Name: "getBoxOfVector", ReturnType: []string{"vector"}, Parameters: []resolver.Parameter{}},
+				{
+					Name:       "getComplexMap1",
+					ReturnType: []string{"map", "string", "vector"},
+					Parameters: []resolver.Parameter{
+						{Name: "simpleMap", Type: []string{"map", "string"}},
+						{Name: "names", Type: []string{"vector", "string"}},
+						{Name: "key", Type: []string{"string"}},
+						{Name: "count", Type: []string{types.PrimitiveType}},
+					},
+				},
+
+				// pair 和 tuple 类型
+				{Name: "getPair", ReturnType: []string{"pair", "string"}, Parameters: []resolver.Parameter{}},
+				{Name: "getTuple", ReturnType: []string{"tuple", "string"}, Parameters: []resolver.Parameter{
+					{Name: "count", Type: []string{types.PrimitiveType}}, // 有默认值，断言类型即可
+				}},
+
+				// auto 和 decltype
+				{Name: "getAutoValue", ReturnType: []string{types.PrimitiveType}, Parameters: []resolver.Parameter{}},
+				// {Name: "getAnotherInt", ReturnType: []string{types.PrimitiveType}, Parameters: []resolver.Parameter{}},
+
+				// 带默认参数和命名空间返回值
+				{Name: "getNames", ReturnType: []string{"vector", "map", "string"}, Parameters: []resolver.Parameter{
+					{Name: "count", Type: []string{types.PrimitiveType}}, // 有默认值，断言类型即可
+				}},
+
+				// 带 const 和 noexcept 的返回值
+				{Name: "getConstVector", ReturnType: []string{"vector"}, Parameters: []resolver.Parameter{}},
+
+				// 你补充的 15+ 个函数
+				{Name: "func0", ReturnType: []string{types.PrimitiveType}, Parameters: []resolver.Parameter{}},
+				{Name: "func1", ReturnType: []string{"MyClass"}, Parameters: []resolver.Parameter{
+					{Name: "arg1", Type: []string{"MyStruct"}},
+					{Name: "arg2", Type: []string{types.PrimitiveType}},
+				}},
+				// 泛型函数模板参数名可用T，参数名可用arg1、arg2
+				{Name: "func2", ReturnType: []string{"T"}, Parameters: []resolver.Parameter{
+					{Name: "arg1", Type: []string{"T"}},
+				}},
+				{Name: "func3", ReturnType: []string{"T"}, Parameters: []resolver.Parameter{
+					{Name: "arg1", Type: []string{"T"}},
+					{Name: "arg2", Type: []string{"vector", "T"}},
+				}},
+				{Name: "func4", ReturnType: []string{"string"}, Parameters: []resolver.Parameter{}},
+				{Name: "func5", ReturnType: []string{"vector"}, Parameters: []resolver.Parameter{
+					{Name: "arg1", Type: []string{"string"}},
+				}},
+				{Name: "func6", ReturnType: []string{"MyStruct"}, Parameters: []resolver.Parameter{}},
+				{Name: "func7", ReturnType: []string{"MyClass"}, Parameters: []resolver.Parameter{
+					{Name: "arg1", Type: []string{"MyClass"}},
+					{Name: "arg2", Type: []string{types.PrimitiveType}},
+				}},
+				{Name: "func8", ReturnType: []string{"vector", "T"}, Parameters: []resolver.Parameter{
+					{Name: "arg1", Type: []string{"vector", "T"}},
+				}},
+				{Name: "func9", ReturnType: []string{"MyClass", "map"}, Parameters: []resolver.Parameter{
+					{Name: "arg1", Type: []string{types.PrimitiveType}},
+					{Name: "arg2", Type: []string{"MyClass"}},
+				}},
+				{Name: "func10", ReturnType: []string{types.PrimitiveType}, Parameters: []resolver.Parameter{}},
+				{Name: "func11", ReturnType: []string{"MyClass"}, Parameters: []resolver.Parameter{
+					{Name: "arg1", Type: []string{"MyStruct"}},
+				}},
+				{Name: "func12", ReturnType: []string{"T"}, Parameters: []resolver.Parameter{
+					{Name: "arg1", Type: []string{"T"}},
+					{Name: "arg2", Type: []string{types.PrimitiveType}},
+				}},
+				{Name: "func13", ReturnType: []string{"vector", "string"}, Parameters: []resolver.Parameter{}},
+				{Name: "func14", ReturnType: []string{"vector", "MyClass"}, Parameters: []resolver.Parameter{
+					{Name: "arg1", Type: []string{"vector", "MyClass"}},
+					{Name: "arg2", Type: []string{types.PrimitiveType}},
+				}},
+				{Name: "func15", ReturnType: []string{"vector", "T"}, Parameters: []resolver.Parameter{}},
+				{Name: "func16", ReturnType: []string{"vector", "T"}, Parameters: []resolver.Parameter{
+					{Name: "arg1", Type: []string{"T"}},
+					{Name: "arg2", Type: []string{types.PrimitiveType}},
+				}},
+				{Name: "func17", ReturnType: []string{"MyStruct"}, Parameters: []resolver.Parameter{}},
+				{Name: "func18", ReturnType: []string{types.PrimitiveType}, Parameters: []resolver.Parameter{
+					{Name: "arg1", Type: []string{types.PrimitiveType}},
+				}},
+				{Name: "func19", ReturnType: []string{"vector", "map", "MyClass"}, Parameters: []resolver.Parameter{}},
+			},
+			description: "测试 testfunc.cpp 中所有函数声明的解析",
+		},
+	}
+
+	for _, tt := range testCases {
+		t.Run(tt.name, func(t *testing.T) {
+			res, err := parser.Parse(context.Background(), tt.sourceFile)
+			assert.ErrorIs(t, err, tt.wantErr)
+			assert.NotNil(t, res)
+
+			if err == nil {
+				// 1. 收集所有函数（不考虑重载，直接用名字做唯一键）
+				funcMap := make(map[string]*resolver.Declaration)
+				for _, element := range res.Elements {
+					if fn, ok := element.(*resolver.Function); ok {
+						funcMap[fn.Declaration.Name] = fn.Declaration
+					}
+				}
+				// 2. 逐个比较每个期望的函数
+				for _, wantFunc := range tt.wantFuncs {
+					actualFunc, exists := funcMap[wantFunc.Name]
+					assert.True(t, exists, "未找到函数: %s", wantFunc.Name)
+					if exists {
+						assert.ElementsMatch(t, wantFunc.ReturnType, actualFunc.ReturnType,
+							"函数 %s 的返回值类型不匹配，期望 %v，实际 %v",
+							wantFunc.Name, wantFunc.ReturnType, actualFunc.ReturnType)
+						assert.Equal(t, len(wantFunc.Parameters), len(actualFunc.Parameters),
+							"函数 %s 的参数数量不匹配，期望 %d，实际 %d",
+							wantFunc.Name, len(wantFunc.Parameters), len(actualFunc.Parameters))
+						assert.ElementsMatch(t, wantFunc.Parameters, actualFunc.Parameters,
+							"函数 %s 的参数类型不匹配，期望 %v，实际 %v",
+							wantFunc.Name, wantFunc.Parameters, actualFunc.Parameters)
+					}
+				}
+			}
+		})
+	}
+}
+
+func TestCPPResolver_ResolveCall(t *testing.T) {
+	logger := initLogger()
+	parser := NewSourceFileParser(logger)
+
+	sourceFile := &types.SourceFile{
+		Path:    "testdata/cpp/testcall.cpp",
+		Content: readFile("testdata/cpp/testcall.cpp"),
+	}
+	res, err := parser.Parse(context.Background(), sourceFile)
+	assert.NoError(t, err)
+	assert.NotNil(t, res)
+
+	// Collect all function calls
+	callMap := make(map[string]*resolver.Call)
+	for _, element := range res.Elements {
+		// fmt.Println(element.GetName(),"element name",element.GetType())
+		if call, ok := element.(*resolver.Call); ok {
+			callMap[call.GetName()] = call
+			fmt.Println(call.GetName(), "call name")
+		}
+	}
+
+	// Test cases for different types of function calls
+	testCases := []struct {
+		name          string
+		expectedOwner string
+		paramCount    int
+	}{
+		{"freeFunction", "", 3},          // Free function call (int, double, char)
+		{"nsFunction", "MyNamespace", 3}, // Namespace function call (int, int, int)
+		{"memberFunction", "obj", 2},     // Object member function call (int, double)
+		{"memberFunction1", "ptr", 3},    // Pointer member function call (int, double)
+		{"staticFunction", "MyClass", 2}, // Static member function call (int, int)
+		{"templatedFunction", "", 4},     // Template function call (4 args via generic lambda)
+		{"lambda", "", 3},                // Lambda function call (int, int, int)
+		{"fp", "", 3},                    // Function pointer call (int, double, char)
+		{"obj", "", 4},                   // Function object call (int, int, int, int)
+		{"append", "str", 2},             // Method chaining (first call) (const char*, size_t)
+		{"at", "", 1},                    // Method chaining (second call) (size_t)
+		{"A", "ns", 0},
+		{"B", "ns", 1},
+	}
+
+	// Verify each expected function call
+	for _, tc := range testCases {
+		t.Run(fmt.Sprintf("Call_%s", tc.name), func(t *testing.T) {
+			// For each test case, there might be multiple calls with the same name
+			// (like memberFunction is called twice), so we need to find at least one match
+			found := false
+			for _, call := range callMap {
+				if call.GetName() == tc.name {
+					// If owner is specified, it must match
+					if tc.expectedOwner != "" && !strings.Contains(call.Owner, tc.expectedOwner) {
+						continue
+					}
+					// Verify parameter count
+					assert.Equal(t, tc.paramCount, len(call.Parameters),
+						"Call %s should have %d parameters", tc.name, tc.paramCount)
+					found = true
+					break
+				}
+			}
+			assert.True(t, found, "Call to %s not found", tc.name)
+		})
+	}
+}
+
+func TestCPPResolver_ResolveVariable(t *testing.T) {
+	logger := initLogger()
+	parser := NewSourceFileParser(logger)
+	sourceFile := &types.SourceFile{
+		Path:    "testdata/cpp/testvar.cpp",
+		Content: readFile("testdata/cpp/testvar.cpp"),
+	}
+	res, err := parser.Parse(context.Background(), sourceFile)
+	assert.NoError(t, err)
+	assert.NotNil(t, res)
+
+	// 收集所有变量
+	variableMap := make(map[string]*resolver.Variable)
+	for _, element := range res.Elements {
+		if v, ok := element.(*resolver.Variable); ok {
+			variableMap[v.BaseElement.Name] = v
+		}
+	}
+
+	// 断言部分典型变量
+	type wantVariable struct {
+		Name string
+		Type []string
+	}
+	typicalVars := []wantVariable{
+		{Name: "value", Type: []string{types.PrimitiveType}},
+		{Name: "a", Type: []string{types.PrimitiveType}},
+		{Name: "b", Type: []string{types.PrimitiveType}},
+		{Name: "c", Type: []string{types.PrimitiveType}},
+		{Name: "raw_ptr", Type: []string{types.PrimitiveType}},
+		{Name: "raw_ptr2", Type: []string{types.PrimitiveType}},
+		{Name: "ref_a", Type: []string{types.PrimitiveType}},
+		{Name: "name_ref", Type: []string{"string"}},
+		{Name: "text", Type: []string{"string"}},
+		{Name: "greeting", Type: []string{"string"}},
+		{Name: "pt", Type: []string{"Point"}},
+		{Name: "pt_init", Type: []string{"Point"}},
+		{Name: "counter", Type: []string{types.PrimitiveType}},
+		{Name: "dirty_flag", Type: []string{types.PrimitiveType}},
+		{Name: "version", Type: []string{types.PrimitiveType}},
+		{Name: "nums", Type: []string{types.PrimitiveType}},
+		{Name: "nums_init", Type: []string{types.PrimitiveType}},
+		{Name: "vec", Type: []string{"vector"}},
+		{Name: "vec_init", Type: []string{"vector"}},
+		{Name: "flag", Type: []string{types.PrimitiveType}},
+		{Name: "radius", Type: []string{types.PrimitiveType}},
+		{Name: "x", Type: []string{types.PrimitiveType}},
+		{Name: "dummy", Type: []string{types.PrimitiveType}},
+		{Name: "y", Type: []string{types.PrimitiveType}},
+		{Name: "local_a", Type: []string{types.PrimitiveType}},
+		{Name: "local_b", Type: []string{types.PrimitiveType}},
+		{Name: "local_c", Type: []string{types.PrimitiveType}},
+		{Name: "local_d", Type: []string{types.PrimitiveType}},
+		{Name: "local_const", Type: []string{types.PrimitiveType}},
+		{Name: "local_volatile_flag", Type: []string{types.PrimitiveType}},
+		{Name: "local_ptr", Type: []string{types.PrimitiveType}},
+		{Name: "local_cstr", Type: []string{types.PrimitiveType}},
+		{Name: "local_float_ptr", Type: []string{types.PrimitiveType}},
+		{Name: "local_ref", Type: []string{types.PrimitiveType}},
+		{Name: "local_str_ref", Type: []string{"string"}},
+		{Name: "local_arr", Type: []string{types.PrimitiveType}},
+		{Name: "local_ptr2", Type: []string{types.PrimitiveType}},
+		{Name: "local_ptr3", Type: []string{types.PrimitiveType}},
+		{Name: "local_ref2", Type: []string{types.PrimitiveType}},
+		{Name: "local_arr_init", Type: []string{types.PrimitiveType}},
+		{Name: "local_chars", Type: []string{types.PrimitiveType}},
+		{Name: "local_name", Type: []string{"string"}},
+		{Name: "local_vec", Type: []string{"vector"}},
+		{Name: "data", Type: []string{"ShapeData"}},
+		{Name: "data_ptr", Type: []string{"ShapeData"}},
+		{Name: "w", Type: []string{"Widget"}},
+		{Name: "w_ptr", Type: []string{"Widget"}},
+		{Name: "shape", Type: []string{"IShape"}},
+		{Name: "auto_int", Type: []string{types.PrimitiveType}},
+		{Name: "auto_str", Type: []string{types.PrimitiveType}},
+		{Name: "auto_vec_ref", Type: []string{types.PrimitiveType}},
+		{Name: "loop_i", Type: []string{types.PrimitiveType}},
+		{Name: "loop_j", Type: []string{types.PrimitiveType}},
+		{Name: "loop_k", Type: []string{types.PrimitiveType}},
+		{Name: "loop_u", Type: []string{types.PrimitiveType}},
+		{Name: "loop_v", Type: []string{types.PrimitiveType}},
+		{Name: "temp_pt", Type: []string{"TempPoint"}},
+		{Name: "RED", Type: []string{types.PrimitiveType}},
+		{Name: "GREEN", Type: []string{types.PrimitiveType}},
+		{Name: "BLUE", Type: []string{types.PrimitiveType}},
+		{Name: "PENDING", Type: []string{types.PrimitiveType}},
+		{Name: "RUNNING", Type: []string{types.PrimitiveType}},
+		{Name: "COMPLETED", Type: []string{types.PrimitiveType}},
+		{Name: "NORTH", Type: []string{types.PrimitiveType}},
+		{Name: "SOUTH", Type: []string{types.PrimitiveType}},
+		{Name: "EAST", Type: []string{types.PrimitiveType}},
+		{Name: "WEST", Type: []string{types.PrimitiveType}},
+		{Name: "LOW", Type: []string{types.PrimitiveType}},
+		{Name: "MEDIUM", Type: []string{types.PrimitiveType}},
+		{Name: "HIGH", Type: []string{types.PrimitiveType}},
+		{Name: "SUCCESS", Type: []string{types.PrimitiveType}},
+		{Name: "FAILURE", Type: []string{types.PrimitiveType}},
+		{Name: "TIMEOUT", Type: []string{types.PrimitiveType}},
+		{Name: "MAX_SIZE", Type: []string{types.PrimitiveType}},
+		{Name: "MIN_SIZE", Type: []string{types.PrimitiveType}},
+		{Name: "HTTP", Type: []string{types.PrimitiveType}},
+		{Name: "HTTPS", Type: []string{types.PrimitiveType}},
+		{Name: "FTP", Type: []string{types.PrimitiveType}},
+		{Name: "DISCONNECTED", Type: []string{types.PrimitiveType}},
+		{Name: "CONNECTING", Type: []string{types.PrimitiveType}},
+		{Name: "CONNECTED", Type: []string{types.PrimitiveType}},
+		{Name: "READ", Type: []string{types.PrimitiveType}},
+		{Name: "WRITE", Type: []string{types.PrimitiveType}},
+		{Name: "EXECUTE", Type: []string{types.PrimitiveType}},
+		{Name: "DEBUG", Type: []string{types.PrimitiveType}},
+		{Name: "INFO", Type: []string{types.PrimitiveType}},
+		{Name: "WARNING", Type: []string{types.PrimitiveType}},
+		{Name: "ERROR", Type: []string{types.PrimitiveType}},
+		{Name: "CRITICAL", Type: []string{types.PrimitiveType}},
+		{Name: "MYSQL", Type: []string{types.PrimitiveType}},
+		{Name: "POSTGRESQL", Type: []string{types.PrimitiveType}},
+		{Name: "SQLITE", Type: []string{types.PrimitiveType}},
+		{Name: "ORACLE", Type: []string{types.PrimitiveType}},
+		{Name: "MSSQL", Type: []string{types.PrimitiveType}},
+		{Name: "NONE1", Type: []string{types.PrimitiveType}},
+		{Name: "READ1", Type: []string{types.PrimitiveType}},
+		{Name: "WRITE1", Type: []string{types.PrimitiveType}},
+		{Name: "EXECUTE1", Type: []string{types.PrimitiveType}},
+	}
+
+	for _, want := range typicalVars {
+		v, ok := variableMap[want.Name]
+		assert.True(t, ok, "变量 %s 未被解析", want.Name)
+		if ok {
+			assert.Equal(t, want.Type, v.VariableType, "变量 %s 类型不符", want.Name)
+		}
+	}
+}
+
+func TestCPPResolver_ResolveStruct(t *testing.T) {
+	param := `
+
+		struct Vec2 { float x, y; };
+	`
+
+	reStruct := regexp.MustCompile(`struct\s+(\w+)\s*\{`)
+	matches := reStruct.FindAllStringSubmatch(param, -1)
+
+	for _, match := range matches {
+		// match[0] 是整个匹配（struct Point {...}），match[1] 是结构体名
+		fmt.Println("Struct name:", match[1])
+	}
+}
+
+func TestCPPResolver_ResolveClass(t *testing.T) {
+	logger := initLogger()
+	parser := NewSourceFileParser(logger)
+	sourceFile := &types.SourceFile{
+		Path:    "testdata/cpp/testclass.cpp",
+		Content: readFile("testdata/cpp/testclass.cpp"),
+	}
+	res, err := parser.Parse(context.Background(), sourceFile)
+	assert.NoError(t, err)
+	assert.NotNil(t, res)
+
+	// 期望的类/结构体及其继承
+	expected := map[string][]string{
+		"Animal":         {},
+		"Shape":          {},
+		"Circle":         {"Shape"},
+		"Flyable":        {},
+		"Swimmable":      {},
+		"Duck":           {"Animal", "Flyable", "Swimmable"},
+		"Outer":          {},
+		"Inner":          {},
+		"Box":            {},
+		"LabeledBox":     {"Box", "T"},
+		"Point":          {},
+		"ColoredPoint":   {"Point"},
+		"Config":         {},
+		"MathUtil":       {},
+		"Logger":         {},
+		"Serializable":   {},
+		"User":           {"Logger", "Serializable"},
+		"Position":       {},
+		"Drawable":       {},
+		"Circle1":        {"Position", "Drawable"},
+		"Color":          {},
+		"Status":         {},
+		"Direction":      {},
+		"Priority":       {},
+		"ErrorCode":      {},
+		"NetworkManager": {},
+		"Protocol":       {},
+		"State":          {},
+		"Flags":          {},
+		"LogLevel":       {},
+		"DatabaseType":   {},
+		"FilePermission": {},
+		"Derived1":       {"Outer", "Base", "Inner"},
+		"Derived2":       {"Base1", "Base2"},
+		"MyInt":          {},
+		"B":              {},
+		"C":              {},
+		"D":              {},
+		"String":         {},
+		"A":              {},
+		"PersonAlias":    {},
+		"GenericArray":   {},
+		"TagNode":        {},
+	}
+
+	// 收集所有解析到的Class元素
+	classMap := make(map[string]*resolver.Class)
+	for _, element := range res.Elements {
+		classElem, ok := element.(*resolver.Class)
+		if !ok {
+			continue
+		}
+		classMap[classElem.GetName()] = classElem
+	}
+
+	for name, supers := range expected {
+		classElem, ok := classMap[name]
+		assert.True(t, ok, "未找到类/结构体: %s", name)
+		if ok {
+			// 继承类名断言（顺序不敏感）
+			actualSupers := append([]string{}, classElem.SuperClasses...)
+			assert.ElementsMatch(t, supers, actualSupers, "类/结构体 %s 继承不符", name)
+
+		}
+	}
+}
+
+func TestResolveFile(t *testing.T) {
+	filePath := "testdata/cpp/testclass.cpp"
+	logger := initLogger()
+	parser := NewSourceFileParser(logger)
+	sourceFile := &types.SourceFile{
+		Path:    filePath,
+		Content: readFile(filePath),
+	}
+	res, err := parser.Parse(context.Background(), sourceFile)
+	assert.NoError(t, err)
+	assert.NotEmpty(t, res.Elements)
+}

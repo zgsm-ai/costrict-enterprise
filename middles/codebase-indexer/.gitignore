@@ -1,0 +1,23 @@
+# IDEs
+.vscode
+.idea
+
+# Builds
+bin
+
+# logs
+logs
+.history
+
+.roo
+.zgsm
+test/tmp
+localhost
+tmp/codegraph/*.profile
+.costrict
+.coignore
+.documents
+.cospec
+.cursor
+.claude
+internal/service/*.profile

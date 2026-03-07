@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package codegraphpb;
+
+option go_package = "pkg/codegraph/proto/codegraphpb;codegraphpb";
+
+// ElementType 元素类型枚举，只包含核心类型
+enum ElementType {
+  UNDEFINED = 0;
+  FUNCTION = 1;
+  METHOD = 2;
+  CALL = 3;
+  REFERENCE = 4;
+  CLASS = 5;
+  INTERFACE = 6;
+  VARIABLE = 7;
+  IMPORT = 8;
+  PACKAGE = 9;
+}
+
+enum RelationType {
+  RELATION_UNDEFINED = 0;
+  RELATION_DEFINITION = 1;
+  RELATION_REFERENCE = 2;
+  RELATION_INHERIT = 3;
+  RELATION_IMPLEMENT = 4;
+  RELATION_SUPER_CLASS = 5;
+  RELATION_SUPER_INTERFACE = 6;
+}

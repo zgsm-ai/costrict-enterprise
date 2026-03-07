@@ -1,0 +1,97 @@
+package model
+
+// EmbeddingStatus 语义构建状态常量
+const (
+	EmbeddingStatusInit         = 1 // 初始化
+	EmbeddingStatusUploading    = 2 // 上报中
+	EmbeddingStatusBuilding     = 3 // 构建中
+	EmbeddingStatusUploadFailed = 4 // 上报失败
+	EmbeddingStatusBuildFailed  = 5 // 构建失败
+	EmbeddingStatusSuccess      = 6 // 构建成功
+)
+
+// EmbeddingStatus 语义构建状态常量字符串
+const (
+	EmbeddingStatusInitStr         = "init"
+	EmbeddingStatusUploadingStr    = "uploading"
+	EmbeddingStatusBuildingStr     = "building"
+	EmbeddingStatusUploadFailedStr = "uploadFailed"
+	EmbeddingStatusBuildFailedStr  = "buildFailed"
+	EmbeddingStatusSuccessStr      = "success"
+)
+
+// CodegraphStatus 代码构建状态常量
+const (
+	CodegraphStatusInit     = 1 // 初始化
+	CodegraphStatusBuilding = 2 // 构建中
+	CodegraphStatusFailed   = 3 // 构建失败
+	CodegraphStatusSuccess  = 4 // 构建成功
+)
+
+// CodegraphStatusStr 代码构建状态常量字符串
+const (
+	CodegraphStatusInitStr     = "init"
+	CodegraphStatusBuildingStr = "building"
+	CodegraphStatusFailedStr   = "failed"
+	CodegraphStatusSuccessStr  = "success"
+)
+
+// EventType 事件类型常量
+const (
+	EventTypeUnknown          = "unknown"
+	EventTypeAddFile          = "add_file"          // 创建文件事件
+	EventTypeModifyFile       = "modify_file"       // 更新文件事件
+	EventTypeDeleteFile       = "delete_file"       // 删除文件事件
+	EventTypeRenameFile       = "rename_file"       // 移动文件事件
+	EventTypeOpenWorkspace    = "open_workspace"    // 打开工作区事件
+	EventTypeCloseWorkspace   = "close_workspace"   // 关闭工作区事件
+	EventTypeRebuildWorkspace = "rebuild_workspace" // 重新构建工作区事件
+)
+
+const True = "true"
+
+func GetEmbeddingStatusString(status int) string {
+	switch status {
+	case EmbeddingStatusInit:
+		return EmbeddingStatusInitStr
+	case EmbeddingStatusUploading:
+		return EmbeddingStatusUploadingStr
+	case EmbeddingStatusBuilding:
+		return EmbeddingStatusBuildingStr
+	case EmbeddingStatusUploadFailed:
+		return EmbeddingStatusUploadFailedStr
+	case EmbeddingStatusBuildFailed:
+		return EmbeddingStatusBuildFailedStr
+	case EmbeddingStatusSuccess:
+		return EmbeddingStatusSuccessStr
+	default:
+		return "unknown"
+	}
+}
+
+func GetCodegraphStatusString(status int) string {
+	switch status {
+	case CodegraphStatusInit:
+		return CodegraphStatusInitStr
+	case CodegraphStatusBuilding:
+		return CodegraphStatusBuildingStr
+	case CodegraphStatusFailed:
+		return CodegraphStatusFailedStr
+	case CodegraphStatusSuccess:
+		return CodegraphStatusSuccessStr
+	default:
+		return "unknown"
+	}
+}
+
+func GetExtensionEventTypeMap() map[string]bool {
+	return map[string]bool{
+		EventTypeAddFile:          true,
+		EventTypeModifyFile:       true,
+		EventTypeDeleteFile:       true,
+		EventTypeRenameFile:       true,
+		EventTypeOpenWorkspace:    true,
+		EventTypeCloseWorkspace:   true,
+		EventTypeRebuildWorkspace: true,
+	}
+}

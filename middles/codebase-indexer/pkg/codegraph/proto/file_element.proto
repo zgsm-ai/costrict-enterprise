@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package codegraphpb;
+
+import "pkg/codegraph/proto/types.proto";
+
+option go_package = "pkg/codegraph/proto/codegraphpb;codegraphpb";
+
+// FileElementTable 文件元素表，简化版本
+message FileElementTable {
+  string path = 1;
+  string language = 2;
+  int64 timestamp = 3;
+  repeated Import imports = 4;
+  Package package = 5;
+  repeated Element elements = 6;
+}
+
+// 导入
+message Import {
+  string name = 1;
+  string source = 2;
+  string alias = 3;
+  repeated int32 range = 4;
+}
+
+// 包
+message Package {
+  string name = 1;
+  repeated int32 range = 2;
+}
+
+// Element 代码元素定义
+message Element {
+  string name = 1;
+  bool is_definition = 2;
+  ElementType element_type = 3;
+  repeated int32 range = 4;
+  map<string, bytes> extra_data = 6;
+}

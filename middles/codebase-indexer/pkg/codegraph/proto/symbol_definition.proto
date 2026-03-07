@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package codegraphpb;
+
+import "pkg/codegraph/proto/types.proto";
+
+option go_package = "pkg/codegraph/proto/codegraphpb;codegraphpb";
+
+// SymbolDefinition 符号定义
+message SymbolOccurrence {
+  string name = 1;
+  string language = 2;
+  repeated Occurrence occurrences = 3;
+}
+
+// Definition 定义详情
+message Occurrence {
+  string path = 1;
+  repeated int32 range = 2;
+  ElementType element_type = 3;
+  RelationType relation_type = 4;
+}
