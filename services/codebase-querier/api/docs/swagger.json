@@ -1,0 +1,1105 @@
+{
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "https"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0"
+  },
+  "basePath": "/",
+  "paths": {
+    "/codebase-indexer/api/v1/codebase": {
+      "delete": {
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "delete_codebase",
+        "operationId": "delete_codebase",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "用户机器ID（如MAC地址）",
+            "name": "clientId",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "项目绝对路径",
+            "name": "codebasePath",
+            "in": "formData",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/codebase-indexer/api/v1/codebases/directory": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "codebaseTree",
+        "operationId": "codebaseTree",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "用户机器ID",
+            "name": "clientId",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "项目绝对路径",
+            "name": "codebasePath",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "文件相对路径",
+            "name": "subDir",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "name": "depth",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "name": "includeFiles",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "codebaseId": {
+                  "type": "integer"
+                },
+                "directoryTree": {
+                  "type": "object",
+                  "required": [
+                    "name",
+                    "isDir",
+                    "path",
+                    "size",
+                    "language",
+                    "modTime",
+                    "children"
+                  ],
+                  "properties": {
+                    "children": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "name",
+                          "isDir",
+                          "path",
+                          "size",
+                          "language",
+                          "modTime",
+                          "children"
+                        ],
+                        "properties": {
+                          "children": {
+                            "type": "array",
+                            "items": {
+                              "type": "object"
+                            }
+                          },
+                          "isDir": {
+                            "description": "是否为目录",
+                            "type": "boolean"
+                          },
+                          "language": {
+                            "description": "节点名称",
+                            "type": "string"
+                          },
+                          "modTime": {
+                            "description": "修改时间（可选）",
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "path": {
+                            "type": "string"
+                          },
+                          "size": {
+                            "description": "仅文件有大小",
+                            "type": "integer"
+                          }
+                        }
+                      }
+                    },
+                    "isDir": {
+                      "description": "是否为目录",
+                      "type": "boolean"
+                    },
+                    "language": {
+                      "description": "节点名称",
+                      "type": "string"
+                    },
+                    "modTime": {
+                      "description": "修改时间（可选）",
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "path": {
+                      "type": "string"
+                    },
+                    "size": {
+                      "description": "仅文件有大小",
+                      "type": "integer"
+                    }
+                  }
+                },
+                "name": {
+                  "type": "string"
+                },
+                "rootPath": {
+                  "type": "string"
+                },
+                "totalFiles": {
+                  "type": "integer"
+                },
+                "totalSize": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/codebase-indexer/api/v1/codebases/hash": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "compareCodebases",
+        "operationId": "compareCodebases",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "客户ID",
+            "name": "clientId",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "项目路径",
+            "name": "codebasePath",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "list": {
+                  "description": "项目文件树",
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "path",
+                      "hash"
+                    ],
+                    "properties": {
+                      "hash": {
+                        "description": "文件哈希值",
+                        "type": "string"
+                      },
+                      "path": {
+                        "description": "文件路径",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/codebase-indexer/api/v1/file/structure": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "structure",
+        "operationId": "structure",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "用户机器ID",
+            "name": "clientId",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "项目绝对路径",
+            "name": "codebasePath",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "文件相对路径",
+            "name": "filePath",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "list": {
+                  "description": "关系树列表",
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "name",
+                      "type",
+                      "position",
+                      "content"
+                    ],
+                    "properties": {
+                      "content": {
+                        "description": "代码内容",
+                        "type": "string"
+                      },
+                      "name": {
+                        "description": "节点名字",
+                        "type": "string"
+                      },
+                      "position": {
+                        "description": "代码位置",
+                        "type": "object",
+                        "required": [
+                          "startLine",
+                          "startColumn",
+                          "endLine",
+                          "endColumn"
+                        ],
+                        "properties": {
+                          "endColumn": {
+                            "description": "结束列（从1开始）",
+                            "type": "integer"
+                          },
+                          "endLine": {
+                            "description": "结束行（从1开始）",
+                            "type": "integer"
+                          },
+                          "startColumn": {
+                            "description": "开始列（从1开始）",
+                            "type": "integer"
+                          },
+                          "startLine": {
+                            "description": "开始行（从1开始）",
+                            "type": "integer"
+                          }
+                        }
+                      },
+                      "type": {
+                        "description": "节点类型（definition=定义，reference=引用）",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/codebase-indexer/api/v1/files/content": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "getFileContent",
+        "operationId": "getFileContent",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "用户机器ID",
+            "name": "clientId",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "项目绝对路径",
+            "name": "codebasePath",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "文件相对路径",
+            "name": "filePath",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "default": 1,
+            "description": "开始行（默认1）",
+            "name": "startLine",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "integer",
+            "default": 100,
+            "description": "结束行（默认100，-1=全部）",
+            "name": "endLine",
+            "in": "query",
+            "allowEmptyValue": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/codebase-indexer/api/v1/files/upload": {
+      "post": {
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "syncFiles",
+        "operationId": "syncFiles",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "客户ID",
+            "name": "clientId",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "项目路径",
+            "name": "codebasePath",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "项目名称",
+            "name": "codebaseName",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "额外元数据（JSON字符串）",
+            "name": "extraMetadata",
+            "in": "formData",
+            "allowEmptyValue": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/codebase-indexer/api/v1/index": {
+      "delete": {
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "index",
+        "operationId": "index",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "用户机器ID（如MAC地址）",
+            "name": "clientId",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "项目绝对路径",
+            "name": "codebasePath",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "enum": [
+              "embedding",
+              "codegraph",
+              "all"
+            ],
+            "type": "string",
+            "name": "taskType",
+            "in": "formData",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/codebase-indexer/api/v1/index/summary": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "summary",
+        "operationId": "summary",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "用户机器ID（如MAC地址）",
+            "name": "clientId",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "项目绝对路径",
+            "name": "codebasePath",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "codegraph": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "lastSyncAt",
+                    "totalFiles"
+                  ],
+                  "properties": {
+                    "lastSyncAt": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "totalFiles": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "embedding": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "lastSyncAt",
+                    "totalFiles",
+                    "totalChunks"
+                  ],
+                  "properties": {
+                    "lastSyncAt": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "totalChunks": {
+                      "type": "integer"
+                    },
+                    "totalFiles": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "lastSyncAt": {
+                  "type": "string"
+                },
+                "totalFiles": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/codebase-indexer/api/v1/index/task": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "task",
+        "operationId": "task",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "clientId",
+                "codebasePath",
+                "indexType"
+              ],
+              "properties": {
+                "clientId": {
+                  "description": "用户机器ID（如MAC地址）",
+                  "type": "string"
+                },
+                "codebasePath": {
+                  "description": "项目绝对路径",
+                  "type": "string"
+                },
+                "fileMap": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                },
+                "indexType": {
+                  "type": "string",
+                  "enum": [
+                    "embedding",
+                    "codegraph",
+                    "all"
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "taskId": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/codebase-indexer/api/v1/search/definition": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "definition",
+        "operationId": "definition",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "用户机器ID",
+            "name": "clientId",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "项目绝对路径",
+            "name": "codebasePath",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "文件相对路径",
+            "name": "filePath",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "integer",
+            "description": "开始行",
+            "name": "startLine",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "integer",
+            "description": "结束行",
+            "name": "endLine",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "string",
+            "description": "代码内容",
+            "name": "codeSnippet",
+            "in": "query",
+            "allowEmptyValue": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "list": {
+                  "description": "关系树列表",
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "name",
+                      "content",
+                      "type",
+                      "filePath",
+                      "position"
+                    ],
+                    "properties": {
+                      "content": {
+                        "description": "代码内容",
+                        "type": "string"
+                      },
+                      "filePath": {
+                        "description": "文件相对路径",
+                        "type": "string"
+                      },
+                      "name": {
+                        "description": "节点名",
+                        "type": "string"
+                      },
+                      "position": {
+                        "description": "代码位置",
+                        "type": "object",
+                        "required": [
+                          "startLine",
+                          "startColumn",
+                          "endLine",
+                          "endColumn"
+                        ],
+                        "properties": {
+                          "endColumn": {
+                            "description": "结束列（从1开始）",
+                            "type": "integer"
+                          },
+                          "endLine": {
+                            "description": "结束行（从1开始）",
+                            "type": "integer"
+                          },
+                          "startColumn": {
+                            "description": "开始列（从1开始）",
+                            "type": "integer"
+                          },
+                          "startLine": {
+                            "description": "开始行（从1开始）",
+                            "type": "integer"
+                          }
+                        }
+                      },
+                      "type": {
+                        "description": "节点类型",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/codebase-indexer/api/v1/search/relation": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "relation",
+        "operationId": "relation",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "用户机器ID",
+            "name": "clientId",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "项目绝对路径",
+            "name": "codebasePath",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "文件相对路径",
+            "name": "filePath",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "开始行",
+            "name": "startLine",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "开始列",
+            "name": "startColumn",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "结束行",
+            "name": "endLine",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "结束列",
+            "name": "endColumn",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "符号名（可选）",
+            "name": "symbolName",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "integer",
+            "default": 0,
+            "description": "是否返回代码内容（1=是，0=否，默认0）",
+            "name": "includeContent",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "default": 10,
+            "description": "最大层级数（默认10）",
+            "name": "maxLayer",
+            "in": "query",
+            "allowEmptyValue": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "list": {
+                  "description": "关系树列表",
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "content",
+                      "nodeType",
+                      "filePath",
+                      "position",
+                      "children"
+                    ],
+                    "properties": {
+                      "children": {
+                        "description": "子节点（引用关系）",
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "content",
+                            "nodeType",
+                            "filePath",
+                            "position",
+                            "children"
+                          ],
+                          "properties": {
+                            "children": {
+                              "description": "子节点（引用关系）",
+                              "type": "array",
+                              "items": {
+                                "type": "object"
+                              }
+                            },
+                            "content": {
+                              "description": "代码内容",
+                              "type": "string"
+                            },
+                            "filePath": {
+                              "description": "文件相对路径",
+                              "type": "string"
+                            },
+                            "nodeType": {
+                              "description": "节点类型（definition=定义，reference=引用）",
+                              "type": "string"
+                            },
+                            "position": {
+                              "description": "代码位置",
+                              "type": "object",
+                              "required": [
+                                "startLine",
+                                "startColumn",
+                                "endLine",
+                                "endColumn"
+                              ],
+                              "properties": {
+                                "endColumn": {
+                                  "description": "结束列（从1开始）",
+                                  "type": "integer"
+                                },
+                                "endLine": {
+                                  "description": "结束行（从1开始）",
+                                  "type": "integer"
+                                },
+                                "startColumn": {
+                                  "description": "开始列（从1开始）",
+                                  "type": "integer"
+                                },
+                                "startLine": {
+                                  "description": "开始行（从1开始）",
+                                  "type": "integer"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "content": {
+                        "description": "代码内容",
+                        "type": "string"
+                      },
+                      "filePath": {
+                        "description": "文件相对路径",
+                        "type": "string"
+                      },
+                      "nodeType": {
+                        "description": "节点类型（definition=定义，reference=引用）",
+                        "type": "string"
+                      },
+                      "position": {
+                        "description": "代码位置",
+                        "type": "object",
+                        "required": [
+                          "startLine",
+                          "startColumn",
+                          "endLine",
+                          "endColumn"
+                        ],
+                        "properties": {
+                          "endColumn": {
+                            "description": "结束列（从1开始）",
+                            "type": "integer"
+                          },
+                          "endLine": {
+                            "description": "结束行（从1开始）",
+                            "type": "integer"
+                          },
+                          "startColumn": {
+                            "description": "开始列（从1开始）",
+                            "type": "integer"
+                          },
+                          "startLine": {
+                            "description": "开始行（从1开始）",
+                            "type": "integer"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/codebase-indexer/api/v1/search/semantic": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "semanticSearch",
+        "operationId": "semanticSearch",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "用户机器ID（如MAC地址）",
+            "name": "clientId",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "项目绝对路径",
+            "name": "codebasePath",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "查询内容",
+            "name": "query",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "default": 10,
+            "description": "结果返回数量（默认10）",
+            "name": "topK",
+            "in": "query",
+            "allowEmptyValue": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "list": {
+                  "description": "检索结果列表",
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "content",
+                      "filePath",
+                      "score"
+                    ],
+                    "properties": {
+                      "content": {
+                        "description": "代码片段",
+                        "type": "string"
+                      },
+                      "filePath": {
+                        "description": "文件相对路径",
+                        "type": "string"
+                      },
+                      "score": {
+                        "description": "匹配得分",
+                        "type": "number"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "x-date": "2025-06-25 11:36:45",
+  "x-description": "This is a goctl generated swagger file.",
+  "x-github": "https://github.com/zeromicro/go-zero",
+  "x-go-zero-doc": "https://go-zero.dev/",
+  "x-goctl-version": "1.8.4"
+}

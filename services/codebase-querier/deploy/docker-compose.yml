@@ -1,0 +1,20 @@
+services:
+  codebase-indexer:
+    image: zgsm/codebase-querier:latest
+    command:
+      - /app/server
+      - -f
+      - etc/config.yaml
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./etc/:/app/etc/
+    restart: always
+    environment:
+      TZ: "Asia/Shanghai"
+    networks:
+      - shenma
+
+networks:
+  shenma:
+    driver: bridge

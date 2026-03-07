@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: codebase-indexer
+  namespace: shenma
+spec:
+  endpoints:
+    - interval: 30s
+      port: metrics
+  namespaceSelector:
+    matchNames:
+      - shenma
+  selector:
+    matchLabels:
+      app: codebase-indexer

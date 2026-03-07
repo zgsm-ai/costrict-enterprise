@@ -1,0 +1,52 @@
+# HTTP代理配置
+Proxy:
+  Target:
+    URL: "http://localhost:8080"  # 目标服务地址
+    Timeout: 30s                  # 请求超时时间
+  Rewrite:
+    Enabled: true                 # 是否启用路径重写
+    Rules:
+      - From: "/api/v1/proxy"     # 原始路径前缀
+        To: ""                    # 重写后的路径前缀（空表示移除）
+      # Codebase Querier API 接口代理配置
+      - From: "/codebase-indexer/api/v1/search/relation"
+        To: "/api/v1/search/relation"
+      - From: "/codebase-indexer/api/v1/search/definition"
+        To: "/api/v1/search/definition"
+      - From: "/codebase-indexer/api/v1/file/structure"
+        To: "/api/v1/file/structure"
+      - From: "/codebase-indexer/api/v1/files/content"
+        To: "/api/v1/files/content"
+      - From: "/codebase-indexer/api/v1/codebases/directory"
+        To: "/api/v1/codebases/directory"
+      - From: "/codebase-indexer/api/v1/codebases/hash"
+        To: "/api/v1/codebases/hash"
+      - From: "/codebase-indexer/api/v1/search/semantic"
+        To: "/api/v1/search/semantic"
+      - From: "/codebase-indexer/api/v1/index/summary"
+        To: "/api/v1/index/summary"
+      - From: "/codebase-indexer/api/v1/index/task"
+        To: "/api/v1/index/task"
+      - From: "/codebase-indexer/api/v1/index"
+        To: "/api/v1/index"
+      - From: "/codebase-indexer/api/v1/codebase"
+        To: "/api/v1/codebase"
+      - From: "/codebase-indexer/api/v1/files/upload"
+        To: "/api/v1/files/upload"
+  Headers:
+    PassThrough: true             # 是否透传所有header
+    Exclude:                      # 需要排除的header
+      - "X-Internal-*"
+      - "Authorization"
+    Override:                     # 需要覆盖的header
+      Host: "localhost:8080"
+  # 动态端口配置
+  DynamicPort: true              # 是否启用动态端口
+  PortManagerURL: "http://localhost:8090"  # 端口管理器URL（旧配置，向后兼容）
+  PortManager:                    # 端口管理器配置（新配置）
+    URL: "http://localhost:8090"  # 端口管理器URL
+    Timeout: 10s                  # 请求超时时间
+    CacheExp: 5m                  # 缓存过期时间
+    MaxIdleConns: 10              # 最大空闲连接数
+    MaxIdleConnsPerHost: 5        # 每个主机的最大空闲连接数
+    IdleConnTimeout: 30s          # 空闲连接超时时间

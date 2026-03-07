@@ -1,0 +1,276 @@
+//  goctl api go --api codebase-querier.api --style go_zero  --dir .
+// goctl api swagger --api codebase-querier.api --dir docs --filename swagger
+//go get -u github.com/swaggo/files
+//go get -u github.com/swaggo/gin-swagger
+//package api
+//
+//import "embed"
+//
+////go:embed docs/swagger.json
+//var FS embed.FS
+// go install gorm.io/gen/tools/gentool@latest
+// gentool -db postgres -dsn "host=localhost user=shenma password=shenma dbname=codebase_indexer port=5432 sslmode=disable TimeZone=Asia/Shanghai"   -tables "codebase,index_history,sync_history"   -outPath "./internal/dao/query" -fieldNullable True -fieldWithIndexTag True -fieldWithTypeTag True -modelPkgName model
+syntax = "v1"
+
+type Position {
+	startLine   int `json:"startLine"` // 开始行（从1开始）
+	startColumn int `json:"startColumn"` // 开始列（从1开始）
+	endLine     int `json:"endLine"` // 结束行（从1开始）
+	endColumn   int `json:"endColumn"` // 结束列（从1开始）
+}
+
+type RelationNode {
+	content  string         `json:"content"` // 代码内容
+	nodeType string         `json:"nodeType"` // 节点类型（definition=定义，reference=引用）
+	filePath string         `json:"filePath"` // 文件相对路径
+	position Position       `json:"position"` // 代码位置
+	children []RelationNode `json:"children"` // 子节点（引用关系）
+}
+
+type RelationRequest {
+	clientId       string `form:"clientId"` // 用户机器ID
+	codebasePath   string `form:"codebasePath"` // 项目绝对路径
+	filePath       string `form:"filePath"` // 文件相对路径
+	startLine      int    `form:"startLine"` // 开始行
+	startColumn    int    `form:"startColumn"` // 开始列
+	endLine        int    `form:"endLine"` // 结束行
+	endColumn      int    `form:"endColumn"` // 结束列
+	symbolName     string `form:"symbolName,optional"` // 符号名（可选）
+	includeContent int    `form:"includeContent,default=0"` // 是否返回代码内容（1=是，0=否，默认0）
+	maxLayer       int    `form:"maxLayer,optional,default=10"` // 最大层级数（默认10）
+}
+
+type RelationResponseData {
+	list []RelationNode `json:"list"` // 关系树列表
+}
+
+type DefinitionNode {
+	name     string   `json:"name"` // 节点名
+	content  string   `json:"content"` // 代码内容
+	nodeType string   `json:"type"` // 节点类型
+	filePath string   `json:"filePath"` // 文件相对路径
+	position Position `json:"position"` // 代码位置
+}
+
+type DefinitionRequest {
+	clientId     string `form:"clientId"` // 用户机器ID
+	codebasePath string `form:"codebasePath"` // 项目绝对路径
+	filePath     string `form:"filePath,optional"` // 文件相对路径
+	startLine    int    `form:"startLine,optional"` // 开始行
+	endLine      int    `form:"endLine,optional"` // 结束行
+	codeSnippet  string `form:"codeSnippet,optional"` // 代码内容
+}
+
+type DefinitionResponseData {
+	list []DefinitionNode `json:"list"` // 关系树列表
+}
+
+type StructureRequest {
+	clientId     string `form:"clientId"` // 用户机器ID
+	codebasePath string `form:"codebasePath"` // 项目绝对路径
+	filePath     string `form:"filePath"` // 文件相对路径
+}
+
+type StructreItem {
+	name     string   `json:"name"` // 节点名字
+	itemType string   `json:"type"` // 节点类型（definition=定义，reference=引用）
+	position Position `json:"position"` // 代码位置
+	content  string   `json:"content"` // 代码内容
+}
+
+type StructureResponseData {
+	list []StructreItem `json:"list"` // 关系树列表
+}
+
+@server (
+	prefix: /codebase-indexer
+)
+service codebaseindexer {
+	@handler relation
+	get /api/v1/search/relation (RelationRequest) returns (RelationResponseData)
+
+	@handler definition
+	get /api/v1/search/definition (DefinitionRequest) returns (DefinitionResponseData)
+
+	@handler structure
+	get /api/v1/file/structure (StructureRequest) returns (StructureResponseData)
+}
+
+// 文件内容请求
+type FileContentRequest {
+	clientId     string `form:"clientId"` // 用户机器ID
+	codebasePath string `form:"codebasePath"` // 项目绝对路径
+	filePath     string `form:"filePath"` // 文件相对路径
+	startLine    int    `form:"startLine,optional,default=1"` // 开始行（默认1）
+	endLine      int    `form:"endLine,optional,default=100"` // 结束行（默认100，-1=全部）
+}
+
+// 文件内容请求
+type CodebaseTreeRequest {
+	clientId     string `form:"clientId"` // 用户机器ID
+	codebasePath string `form:"codebasePath"` // 项目绝对路径
+	SubDir       string `form:"subDir"` // 文件相对路径
+	Depth        int    `form:"depth"`
+	IncludeFiles int    `form:"includeFiles"`
+}
+
+type (
+	// CodebaseTreeResponseData 代码库信息响应
+	CodebaseTreeResponseData {
+		codebaseId    int32     `json:"codebaseId"`
+		name          string    `json:"name"`
+		rootPath      string    `json:"rootPath"`
+		totalFiles    int       `json:"totalFiles"`
+		totalSize     int64     `json:"totalSize"`
+		directoryTree *TreeNode `json:"directoryTree"`
+	}
+	// DirNode 目录树节点
+	TreeNode {
+		name     string      `json:"name"`
+		isDir    bool        `json:"isDir,omitempty"` // 是否为目录
+		path     string      `json:"path"`
+		size     int64       `json:"size,omitempty"` // 仅文件有大小
+		language string      `json:"language"` // 节点名称
+		modTime  string      `json:"modTime,omitempty"` // 修改时间（可选）
+		children []*TreeNode `json:"children,omitempty"`
+	}
+)
+
+// 文件上传请求
+type FileUploadRequest {
+	clientId      string `form:"clientId"` // 客户ID
+	codebasePath  string `form:"codebasePath"` // 项目路径
+	codebaseName  string `form:"codebaseName"` // 项目名称
+	extraMetadata string `form:"extraMetadata,optional"` // 额外元数据（JSON字符串）
+//    file file `form:"file"`                                                      // 文件
+}
+
+// 项目对比请求
+type CodebaseHashRequest {
+	clientId     string `form:"clientId"` // 客户ID
+	codebasePath string `form:"codebasePath"` // 项目路径
+}
+
+type CodebaseHash {
+	path string `json:"path"` // 文件路径
+	hash string `json:"hash"` // 文件哈希值
+}
+
+type CodebaseHashResponseData {
+	codebaseTree []CodebaseHash `json:"list"` // 项目文件树
+}
+
+@server (
+	prefix: /codebase-indexer
+)
+service codebaseindexer {
+	// 获取文件内容
+	@handler getFileContent
+	get /api/v1/files/content (FileContentRequest)
+
+	// 文件上传
+	@handler syncFiles
+	post /api/v1/files/upload (FileUploadRequest)
+
+	@handler codebaseTree
+	get /api/v1/codebases/directory (CodebaseTreeRequest) returns (CodebaseTreeResponseData)
+
+	// 项目上传
+	// 项目对比
+	@handler compareCodebases
+	get /api/v1/codebases/hash (CodebaseHashRequest) returns (CodebaseHashResponseData)
+}
+
+type SemanticRequest {
+	clientId     string `form:"clientId"` // 用户机器ID（如MAC地址）
+	codebasePath string `form:"codebasePath"` // 项目绝对路径
+	query        string `form:"query"` // 查询内容
+	topK         int    `form:"topK,optional,default=10"` // 结果返回数量（默认10）
+}
+
+type SemanticFileItem {
+	content  string  `json:"content"` // 代码片段
+	filePath string  `json:"filePath"` // 文件相对路径
+	score    float64 `json:"score"` // 匹配得分
+}
+
+type SemanticResponseData {
+	list []SemanticFileItem `json:"list"` // 检索结果列表
+}
+
+@server (
+	prefix: /codebase-indexer
+)
+service codebaseindexer {
+	@handler semanticSearch
+	get /api/v1/search/semantic (SemanticRequest) returns (SemanticResponseData)
+}
+
+type IndexSummaryRequest {
+	clientId     string `form:"clientId"` // 用户机器ID（如MAC地址）
+	codebasePath string `form:"codebasePath"` // 项目绝对路径
+}
+
+type EmbeddingSummary {
+	status      string `json:"status"`
+	lastIndexAt string `json:"lastSyncAt"`
+	totalFiles  int    `json:"totalFiles"`
+	totalChunks int    `json:"totalChunks"`
+}
+
+type CodeGraphSummary {
+	status     string `json:"status"`
+	lastIndexAt string `json:"lastSyncAt"`
+	totalFiles int    `json:"totalFiles"`
+}
+
+type IndexSummaryResonseData {
+	totalFiles int
+    lastSyncAt string `json:"lastSyncAt"`
+	embedding  EmbeddingSummary `json:"embedding"`
+	codegraph  CodeGraphSummary `json:"codegraph"`
+}
+
+type IndexTaskRequest {
+	clientId     string `json:"clientId"` // 用户机器ID（如MAC地址）
+	codebasePath string `json:"codebasePath"` // 项目绝对路径
+	indexType    string `json:"indexType,options=embedding|codegraph|all"`
+	fileMap      map[string]string `json:"fileMap,optional"`
+}
+
+type IndexTaskResponseData {
+	taskId int `json:"taskId"`
+}
+
+type DeleteIndexRequest {
+	clientId     string `form:"clientId"` // 用户机器ID（如MAC地址）
+	codebasePath string `form:"codebasePath"` // 项目绝对路径
+	indexType    string `form:"taskType,options=embedding|codegraph|all"`
+}
+
+type DeleteIndexResponseData {}
+
+type DeleteCodebaseRequest {
+	clientId     string `form:"clientId"` // 用户机器ID（如MAC地址）
+	codebasePath string `form:"codebasePath"` // 项目绝对路径
+}
+
+type DeleteCodebaseResponseData {}
+
+@server (
+	prefix: /codebase-indexer
+)
+service codebaseindexer {
+	@handler summary
+	get /api/v1/index/summary (IndexSummaryRequest) returns (IndexSummaryResonseData)
+
+	@handler task
+	post /api/v1/index/task (IndexTaskRequest) returns (IndexTaskResponseData)
+
+	@handler index
+	delete /api/v1/index (DeleteIndexRequest) returns (DeleteIndexResponseData)
+
+	@handler delete_codebase
+	delete /api/v1/codebase (DeleteCodebaseRequest) returns (DeleteCodebaseResponseData)
+}
+

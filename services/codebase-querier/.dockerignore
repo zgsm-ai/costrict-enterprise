@@ -1,0 +1,64 @@
+# 常见的Go项目排除项
+**/vendor/
+**/build/
+**/dist/
+**/tmp/
+**/logs/
+**/coverage/
+**/testdata/
+bin/
+test/
+# 构建产物
+deploy
+*.exe
+*.test
+*.prof
+
+# 编辑器和IDE文件
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+*.bak
+
+# 版本控制文件
+.git/
+.gitignore
+.gitmodules
+.idea
+.vscode
+.github/
+
+# 环境配置文件
+.env
+.env.*
+*.env
+
+# 临时文件
+*.tmp
+*.temp
+*.log
+*.out
+*.pid
+*.lock
+
+# 数据库文件
+*.db
+*.sqlite
+*.sqlite3
+
+# 示例
+examples/
+testdata/
+
+# 证书和密钥
+*.pem
+*.key
+*.crt
+*.cer
+*.pfx
+*.p12
+
+# 其他
+**/*.DS_Store
