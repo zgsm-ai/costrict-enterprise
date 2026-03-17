@@ -65,6 +65,25 @@ func (idp *CustomIdProvider) GetToken(code string) (*oauth2.Token, error) {
 	return idp.Config.Exchange(ctx, code)
 }
 
+func getNestedValue(data map[string]interface{}, path string) (interface{}, error) {
+	keys := strings.Split(path, ".")
+	var val interface{} = data
+
+	for _, key := range keys {
+		m, ok := val.(map[string]interface{})
+		if !ok {
+			return nil, fmt.Errorf("path '%s' is not valid: %s is not a map", path, key)
+		}
+
+		val, ok = m[key]
+		if !ok {
+			return nil, fmt.Errorf("key '%s' not found in path '%s'", key, path)
+		}
+	}
+
+	return val, nil
+}
+
 type CustomUserInfo struct {
 	Id          string `mapstructure:"id"`
 	Username    string `mapstructure:"username"`
@@ -137,7 +156,11 @@ func (idp *CustomIdProvider) processUserInfoResponse(dataMap map[string]interfac
 		if v == "" {
 			dataMap[k] = ""
 		} else {
-			dataMap[k] = dataMap[v]
+			val, err := getNestedValue(dataMap, v)
+			if err != nil {
+				return nil, fmt.Errorf("cannot find %s in user from custom provider: %v", v, err)
+			}
+			dataMap[k] = val
 		}
 	}
 
