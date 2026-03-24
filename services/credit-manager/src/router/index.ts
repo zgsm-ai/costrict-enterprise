@@ -62,16 +62,16 @@ const router = createRouter({
             name: 'subscribe',
             component: () => import('@/views/Subscribe/subscribe-page.vue'),
         },
-        {
-            path: '/annual-summary',
-            name: 'annual-summary',
-            component: () => import('@/views/AnnualSummary/annual-summary-page.vue'),
-        },
-        {
-            path: '/annual-summary-cover',
-            name: 'annual-summary-cover',
-            component: () => import('@/views/AnnualSummary/annual-summary-cover.vue'),
-        },
+        // {
+        //     path: '/annual-summary',
+        //     name: 'annual-summary',
+        //     component: () => import('@/views/AnnualSummary/annual-summary-page.vue'),
+        // },
+        // {
+        //     path: '/annual-summary-cover',
+        //     name: 'annual-summary-cover',
+        //     component: () => import('@/views/AnnualSummary/annual-summary-cover.vue'),
+        // },
         {
             path: '/:pathMatch(.*)*',
             name: 'not-found',

@@ -90,7 +90,7 @@
                     </ul>
                 </template>
             </common-card>
-            <common-card
+            <!-- <common-card
                 v-if="isZh"
                 class="mt-3 relative"
             >
@@ -119,7 +119,7 @@
                         </div>
                     </div>
                 </template>
-            </common-card>
+            </common-card> -->
         </template>
     </common-card>
 </template>
@@ -133,9 +133,9 @@ import { useI18n } from 'vue-i18n';
 import CommonCard from '@/components/common-card.vue';
 import { getInviteCode } from '@/api/mods/quota.mod';
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 
-const isZh = computed(() => locale.value === 'zh');
+// const isZh = computed(() => locale.value === 'zh');
 
 const inviteRules = computed(() => [
     {
@@ -175,9 +175,9 @@ const toInvite = async () => {
     }
 };
 
-const toAnnualReport = () => {
-    window.location.href = '/credit/manager/annual-summary';
-};
+// const toAnnualReport = () => {
+//     window.location.href = '/credit/manager/annual-summary';
+// };
 </script>
 
 <style scoped lang="less">
