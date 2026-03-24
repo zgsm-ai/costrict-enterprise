@@ -38,7 +38,7 @@ jobs:
                   else
                     echo "Triggered by branch push, calculating new version..."
                     LATEST_TAG=$(git tag -l "v*.*.*" | sort -V | tail -n1)
-
+                    
                     if [ -z "$LATEST_TAG" ]; then
                       NEW_VERSION="v1.0.0"
                     else
@@ -47,11 +47,11 @@ jobs:
                       MAJOR=$(echo $VERSION_PART | cut -d. -f1)
                       MINOR=$(echo $VERSION_PART | cut -d. -f2)
                       PATCH=$(echo $VERSION_PART | cut -d. -f3)
-
+                      
                       PATCH=$((PATCH + 1))
                       NEW_VERSION="v${MAJOR}.${MINOR}.${PATCH}"
                     fi
-
+                    
                     echo "New version: $NEW_VERSION"
                     echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
                   fi
@@ -79,7 +79,7 @@ jobs:
               with:
                   context: .
                   file: ./Dockerfile
-                  target: STANDARD
+                  target: runner
                   platforms: ${{ matrix.platform }}
                   push: true
                   provenance: false
