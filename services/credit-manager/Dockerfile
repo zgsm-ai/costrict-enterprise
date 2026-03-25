@@ -6,7 +6,7 @@ RUN npm config set registry https://registry.npmmirror.com/
 RUN npm install --frozen-lockfile
 COPY . .
 RUN NODE_OPTIONS="--max-old-space-size=4096" npm run build
-FROM --platform=$BUILDPLATFORM nginx:stable-alpine AS runner
+FROM --platform=$BUILDPLATFORM nginx:1.27.1 AS runner
 
 RUN rm /etc/nginx/conf.d/default.conf
 COPY nginx.conf /etc/nginx/conf.d/
