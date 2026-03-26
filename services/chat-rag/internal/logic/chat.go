@@ -105,6 +105,14 @@ func (l *ChatCompletionLogic) processRequest() (*model.ChatLog, *ds.ProcessedPro
 
 	// Update chat log with processed prompt info
 	l.updateChatLog(chatLog, processedPrompt)
+
+	// Reject requests where any user message has empty content, to avoid model inference errors.
+	for _, msg := range processedPrompt.Messages {
+		if msg.Role == types.RoleUser && isEmptyContent(msg.Content) {
+			return chatLog, processedPrompt, types.NewEmptyMessageContentError()
+		}
+	}
+
 	return chatLog, processedPrompt, nil
 }
 
@@ -210,10 +218,10 @@ func (l *ChatCompletionLogic) ChatCompletion() (resp *types.ChatCompletionRespon
 		l.request.Messages = processedPrompt.Messages
 		chatLog.IsPromptProceed = true
 	} else {
-		err := fmt.Errorf("ChatCompletion failed to process request:\n%w", err)
 		logger.ErrorC(l.ctx, "failed to process request", zap.Error(err))
 		chatLog.AddError(types.ErrServerError, err)
 		chatLog.IsPromptProceed = false
+		return nil, err
 	}
 
 	// Create shared idle tracker for the entire request (both retry and degradation)
@@ -331,10 +339,9 @@ func (l *ChatCompletionLogic) ChatCompletionStream() error {
 		l.request.Messages = processedPrompt.Messages
 		chatLog.IsPromptProceed = true
 	} else {
-		err := fmt.Errorf("ChatCompletionStream failed to process request: %w", err)
 		logger.ErrorC(l.ctx, "failed to process request in streaming", zap.Error(err))
-		chatLog.AddError(types.ErrServerError, err)
 		chatLog.IsPromptProceed = false
+		return l.handleStreamError(err, chatLog)
 	}
 
 	flusher, ok := l.writer.(http.Flusher)
@@ -1332,6 +1339,19 @@ func sanitizeHeaderValue(val string) string {
 		out = out[:maxLen]
 	}
 	return out
+}
+
+func isEmptyContent(content any) bool {
+	if content == nil {
+		return true
+	}
+	switch v := content.(type) {
+	case string:
+		return v == ""
+	case []any:
+		return len(v) == 0
+	}
+	return false
 }
 
 func (l *ChatCompletionLogic) countTokensInMessages(messages []types.Message) int {

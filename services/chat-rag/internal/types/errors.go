@@ -32,7 +32,8 @@ const (
 	ErrQuotaManager ErrorType = "quota-manager"
 	ErrAiGateway    ErrorType = "ai-gateway"
 
-	ErrServerModel ErrorType = "ai_model_error"
+	ErrServerModel     ErrorType = "ai_model_error"
+	ErrInvalidArgument ErrorType = "invalid_argument"
 )
 
 const (
@@ -67,6 +68,9 @@ const (
 
 	ErrCodeInvalidResponseContent = "chat-rag.invalid_response_content"
 	ErrMsgInvalidResponseContent  = "The model is unable to perform inference or makes errors during inference."
+
+	ErrCodeEmptyMessageContent = "chat-rag.empty_message_content"
+	ErrMsgEmptyMessageContent  = "Message content cannot be empty."
 )
 
 type APIError struct {
@@ -139,6 +143,16 @@ func NewHTTPStatusError(statusCode int, bodyStr string) *APIError {
 		Success:    false,
 		StatusCode: statusCode,
 		Type:       string(ErrServerModel),
+	}
+}
+
+func NewEmptyMessageContentError() *APIError {
+	return &APIError{
+		Code:       ErrCodeEmptyMessageContent,
+		Message:    ErrMsgEmptyMessageContent,
+		Success:    false,
+		StatusCode: http.StatusBadRequest,
+		Type:       string(ErrInvalidArgument),
 	}
 }
 
