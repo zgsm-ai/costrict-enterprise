@@ -358,6 +358,13 @@ func (l *ChatCompletionLogic) ChatCompletionStream() error {
 		// No degradation list → single model streaming (non-auto path) with retry
 		maxRetryCount, retryInterval, _, _ := l.getRetryConfig()
 		var lastErr error
+		llmClient, err := client.NewLLMClient(l.svcCtx.Config.LLM, l.svcCtx.Config.LLMTimeout, l.request.Model, l.headers)
+		if err != nil {
+			l.responseHandler.sendSSEError(l.ctx, l.writer, err)
+			chatLog.AddError(types.ErrServerError, err)
+			return fmt.Errorf("LLM client creation failed: %w", err)
+		}
+		llmClient.SetTools(processedPrompt.Tools)
 		for attempt := 0; attempt <= maxRetryCount; attempt++ {
 			logger.InfoC(l.ctx, "single-model retry(stream): attempting model",
 				zap.String("model", l.request.Model),
@@ -365,14 +372,6 @@ func (l *ChatCompletionLogic) ChatCompletionStream() error {
 				zap.Int("maxRetries", maxRetryCount),
 			)
 
-			llmClient, err := client.NewLLMClient(l.svcCtx.Config.LLM, l.svcCtx.Config.LLMTimeout, l.request.Model, l.headers)
-			if err != nil {
-				lastErr = err
-				l.responseHandler.sendSSEError(l.ctx, l.writer, err)
-				chatLog.AddError(types.ErrServerError, err)
-				return fmt.Errorf("LLM client creation failed: %w", err)
-			}
-			llmClient.SetTools(processedPrompt.Tools)
 			l.streamCommitted = false
 
 			err = l.handleStreamingWithTools(l.ctx, llmClient, flusher, chatLog, MaxToolCallDepth, idleTracker)
@@ -421,6 +420,15 @@ func (l *ChatCompletionLogic) ChatCompletionStream() error {
 			l.writer.Header().Set(types.HeaderSelectLLm, modelName)
 		}
 
+		llmClient, err := client.NewLLMClient(l.svcCtx.Config.LLM, l.svcCtx.Config.LLMTimeout, modelName, l.headers)
+		if err != nil {
+			lastErr = err
+			logger.WarnC(l.ctx, "degradation(stream): failed to create llm client",
+				zap.String("model", modelName), zap.Error(err))
+			continue
+		}
+		llmClient.SetTools(processedPrompt.Tools)
+
 		attempt := 0
 		for attempt <= maxRetryCount {
 			logger.InfoC(l.ctx, "degradation(stream): attempting model",
@@ -431,14 +439,6 @@ func (l *ChatCompletionLogic) ChatCompletionStream() error {
 
 			l.request.Model = modelName
 			l.streamCommitted = false
-			llmClient, err := client.NewLLMClient(l.svcCtx.Config.LLM, l.svcCtx.Config.LLMTimeout, modelName, l.headers)
-			if err != nil {
-				lastErr = err
-				logger.WarnC(l.ctx, "degradation(stream): failed to create llm client",
-					zap.String("model", modelName), zap.Error(err))
-				break
-			}
-			llmClient.SetTools(processedPrompt.Tools)
 
 			err = l.handleStreamingWithTools(l.ctx, llmClient, flusher, chatLog, MaxToolCallDepth, idleTracker)
 			if err == nil {
@@ -1029,6 +1029,13 @@ func (l *ChatCompletionLogic) callModelWithRetry(modelName string, params types.
 		sharedTracker = timeout.NewIdleTracker(totalIdleTimeout)
 	}
 
+	llmClient, err := client.NewLLMClient(l.svcCtx.Config.LLM, l.svcCtx.Config.LLMTimeout, modelName, l.headers)
+	if err != nil {
+		logger.WarnC(l.ctx, "single-model retry: failed to create llm client",
+			zap.String("model", modelName), zap.Error(err))
+		return nilResp, err
+	}
+
 	var lastErr error
 
 	for attempt := 0; attempt <= maxRetryCount; attempt++ {
@@ -1037,13 +1044,6 @@ func (l *ChatCompletionLogic) callModelWithRetry(modelName string, params types.
 			zap.Int("attempt", attempt+1),
 			zap.Int("maxRetries", maxRetryCount),
 		)
-
-		llmClient, err := client.NewLLMClient(l.svcCtx.Config.LLM, l.svcCtx.Config.LLMTimeout, modelName, l.headers)
-		if err != nil {
-			logger.WarnC(l.ctx, "single-model retry: failed to create llm client",
-				zap.String("model", modelName), zap.Error(err))
-			return nilResp, err
-		}
 
 		// Use the shared idle tracker instead of creating a new one
 		timerCtx, timerCancel, idleTimer := timeout.NewIdleTimer(l.ctx, idleTimeout, sharedTracker)

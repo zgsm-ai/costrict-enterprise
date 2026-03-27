@@ -7,8 +7,10 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/zgsm-ai/chat-rag/internal/config"
@@ -18,6 +20,31 @@ import (
 	"github.com/zgsm-ai/chat-rag/internal/utils"
 	"go.uber.org/zap"
 )
+
+var (
+	sharedHTTPClient     *http.Client
+	sharedHTTPClientOnce sync.Once
+)
+
+// getSharedHTTPClient returns a singleton http.Client with connection pooling enabled.
+// The Transport is shared across all LLMClient instances to allow TCP connection reuse.
+func getSharedHTTPClient(responseHeaderTimeout time.Duration) *http.Client {
+	sharedHTTPClientOnce.Do(func() {
+		sharedHTTPClient = &http.Client{
+			Transport: &http.Transport{
+				DialContext: (&net.Dialer{
+					Timeout:   30 * time.Second,
+					KeepAlive: 30 * time.Second,
+				}).DialContext,
+				MaxIdleConns:          100,
+				MaxIdleConnsPerHost:   100,
+				IdleConnTimeout:       90 * time.Second,
+				ResponseHeaderTimeout: responseHeaderTimeout,
+			},
+		}
+	})
+	return sharedHTTPClient
+}
 
 // LLMInterface defines the interface for LLM clients
 type LLMInterface interface {
@@ -63,17 +90,10 @@ func NewLLMClient(llmConfig config.LLMConfig, timeoutConfig config.LLMTimeoutCon
 		idleTimeout = 30 * time.Second
 	}
 
-	// Create HTTP client with idle timeout as ResponseHeaderTimeout
-	httpClient := &http.Client{
-		Transport: &http.Transport{
-			ResponseHeaderTimeout: idleTimeout,
-		},
-	}
-
 	return &LLMClient{
 		modelName:              modelName,
 		endpoint:               llmConfig.Endpoint,
-		httpClient:             httpClient,
+		httpClient:             getSharedHTTPClient(idleTimeout),
 		headers:                headers,
 		idleTimeout:            idleTimeout,
 		timeoutConfig:          timeoutConfig,
