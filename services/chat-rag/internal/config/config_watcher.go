@@ -5,7 +5,9 @@ import (
 	"reflect"
 	"strings"
 	"sync"
+	"time"
 
+	"github.com/mitchellh/mapstructure"
 	"github.com/nacos-group/nacos-sdk-go/v2/clients/config_client"
 	"github.com/nacos-group/nacos-sdk-go/v2/vo"
 	"github.com/spf13/viper"
@@ -99,6 +101,75 @@ func (h *GenericConfigHandler) GetConfig() interface{} {
 	return h.configPtr
 }
 
+// parseFlexibleTime parses time string with flexible formats and auto-completion
+// Supports:
+// - YYYY-MM-DD (auto-completed to YYYY-MM-DDT00:00:00 using server local timezone)
+// - YYYY-MM-DDTHH (auto-completed to YYYY-MM-DDTHH:00:00 using server local timezone)
+// - YYYY-MM-DDTHH:MM (auto-completed to YYYY-MM-DDTHH:MM:00 using server local timezone)
+// - YYYY-MM-DDTHH:MM:SS (parsed using server local timezone)
+// - YYYY-MM-DD HH:MM (space separator, same as above)
+// - YYYY-MM-DDTHH:MM:SS+ZZ:ZZ or YYYY-MM-DDTHH:MM+ZZ:ZZ (with timezone, used as-is for backward compatibility)
+func parseFlexibleTime(timeStr string) (time.Time, error) {
+	// Check for empty input
+	if timeStr == "" {
+		return time.Time{}, fmt.Errorf("time string is empty")
+	}
+
+	// Try parsing RFC3339 format (complete format with timezone)
+	if t, err := time.Parse(time.RFC3339, timeStr); err == nil {
+		return t, nil
+	}
+
+	// Try parsing without seconds but with timezone: YYYY-MM-DDTHH:MM+ZZ:ZZ
+	if t, err := time.Parse("2006-01-02T15:04-07:00", timeStr); err == nil {
+		return t, nil
+	}
+
+	// Auto-completion logic: use server local timezone (time.Local)
+	var completeStr string
+	separator := " " // Default to space separator for auto-completed formats
+
+	if len(timeStr) == 10 {
+		// YYYY-MM-DD
+		completeStr = timeStr + " 00:00:00"
+	} else if len(timeStr) == 13 {
+		// YYYY-MM-DD T HH (separator is either 'T' or ' ')
+		if timeStr[10] == 'T' || timeStr[10] == ' ' {
+			separator = string(timeStr[10])
+			completeStr = timeStr + ":00:00"
+		} else {
+			return time.Time{}, fmt.Errorf("invalid time format: %s", timeStr)
+		}
+	} else if len(timeStr) == 16 {
+		// YYYY-MM-DD T HH:MM (separator is either 'T' or ' ')
+		if timeStr[10] == 'T' || timeStr[10] == ' ' {
+			separator = string(timeStr[10])
+			completeStr = timeStr + ":00"
+		} else {
+			return time.Time{}, fmt.Errorf("invalid time format: %s", timeStr)
+		}
+	} else if len(timeStr) == 19 {
+		// YYYY-MM-DD T HH:MM:SS (separator is either 'T' or ' ')
+		if timeStr[10] == 'T' || timeStr[10] == ' ' {
+			separator = string(timeStr[10])
+			completeStr = timeStr
+		} else {
+			return time.Time{}, fmt.Errorf("invalid time format: %s", timeStr)
+		}
+	} else {
+		return time.Time{}, fmt.Errorf("invalid time format: %s", timeStr)
+	}
+
+	// Set layout based on separator
+	layout := "2006-01-02T15:04:05"
+	if separator == " " {
+		layout = "2006-01-02 15:04:05"
+	}
+
+	// Parse the completed string using server local timezone
+	return time.ParseInLocation(layout, completeStr, time.Local)
+}
+
 // unmarshalYAMLContent 解析YAML内容
 func unmarshalYAMLContent(content string, target interface{}) error {
 	v := viper.New()
@@ -107,7 +178,27 @@ func unmarshalYAMLContent(content string, target interface{}) error {
 		return fmt.Errorf("failed to read config: %w", err)
 	}
 
-	if err := v.Unmarshal(target); err != nil {
+	// Set up decode hook for flexible time parsing
+	decodeHook := mapstructure.ComposeDecodeHookFunc(
+		// String to time.Time with flexible parsing
+		func(f reflect.Type, t reflect.Type, data interface{}) (interface{}, error) {
+			if f.Kind() != reflect.String {
+				return data, nil
+			}
+			if t != reflect.TypeOf(time.Time{}) {
+				return data, nil
+			}
+
+			timeStr, ok := data.(string)
+			if !ok {
+				return data, nil
+			}
+
+			return parseFlexibleTime(timeStr)
+		},
+	)
+
+	if err := v.Unmarshal(target, viper.DecodeHook(decodeHook)); err != nil {
 		return fmt.Errorf("failed to unmarshal config: %w", err)
 	}
 

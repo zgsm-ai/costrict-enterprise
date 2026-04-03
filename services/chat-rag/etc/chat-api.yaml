@@ -111,3 +111,55 @@ chatMetrics:
 requestVerify:
   enabled: false
   enabledTimeVerify: false
+
+# 代金券活动配置
+voucher_activity:
+  # 是否启用代金券活动功能
+  enabled: false
+  # 签名密钥（用于生成和验证兑换码，请妥善保管）
+  signingKey: "your-secret-signing-key-change-this-in-production"
+  # 活动列表（支持多个活动）
+  activities:
+    # 活动1 - 新年活动
+    - keyword: "新年代金券"  # 活动关键字，用户发送此关键字可触发兑换活动
+      creditAmount: 100  # 每个兑换码包含的 credit 数量
+      voucherExpiryDays: 30  # 兑换码过期天数（从生成之日算起）
+      # 活动开始时间（支持多种格式：YYYY-MM-DD、YYYY-MM-DDTHH、YYYY-MM-DDTHH:MM、YYYY-MM-DDTHH:MM:SS）
+      startTime: "2024-01-01T00:00"
+      # 活动结束时间（支持多种格式：YYYY-MM-DD、YYYY-MM-DDTHH、YYYY-MM-DDTHH:MM、YYYY-MM-DDTHH:MM:SS）
+      endTime: "2024-02-29T23:59"
+      totalQuota: 10000  # 兑换总量限制
+      # 兑换成功返回模板（Go template 格式）
+      # 支持变量：
+      #   {{.VoucherCode}} - 兑换码
+      #   {{.Config.CreditAmount}} - credit 数量
+      #   {{.Config.VoucherExpiryDays}} - 过期天数
+      successTemplate: |
+        🎉 恭喜您成功领取新年代金券！
+        兑换码：{{.VoucherCode}}
+        可获得：{{.Config.CreditAmount}} credit
+        有效期：{{.Config.VoucherExpiryDays}} 天
+        请在有效期内使用。
+      # 已领取过的文案（Go template 格式）
+      alreadyRedeemedMessage: "您已经领取过新年代金券了，每人限领一次哦~"
+      # 兑换码过期文案（Go template 格式）
+      expiredMessage: "抱歉，新年代金券活动已结束，请关注后续活动。"
+      # 兑换额度用尽文案（Go template 格式）
+      quotaExhaustedMessage: "抱歉，新年代金券已发放完毕，请关注后续活动。"
+
+    # 活动2 - 春节活动（示例）
+    - keyword: "春节代金券"
+      creditAmount: 200
+      voucherExpiryDays: 45
+      startTime: "2024-02-01T00:00"
+      endTime: "2024-02-15T23:59"
+      totalQuota: 5000
+      successTemplate: |
+        🧧 恭喜您成功领取春节代金券！
+        兑换码：{{.VoucherCode}}
+        可获得：{{.Config.CreditAmount}} credit
+        有效期：{{.Config.VoucherExpiryDays}} 天
+        新春快乐！
+      alreadyRedeemedMessage: "您已经领取过春节代金券了，每人限领一次哦~"
+      expiredMessage: "抱歉，春节代金券活动已结束。"
+      quotaExhaustedMessage: "抱歉，春节代金券已发放完毕。"

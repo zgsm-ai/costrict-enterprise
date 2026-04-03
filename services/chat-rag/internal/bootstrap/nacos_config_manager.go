@@ -13,10 +13,11 @@ import (
 
 // NacosConfigResult holds the result of Nacos configuration initialization
 type NacosConfigResult struct {
-	RulesConfig          *config.RulesConfig
-	ToolsConfig          *config.ToolConfig
-	PreciseContextConfig *config.PreciseContextConfig
-	RouterConfig         *config.RouterConfig
+	RulesConfig           *config.RulesConfig
+	ToolsConfig           *config.ToolConfig
+	PreciseContextConfig  *config.PreciseContextConfig
+	RouterConfig          *config.RouterConfig
+	VoucherActivityConfig *config.VoucherActivityConfig
 }
 
 // NacosConfigMetadata holds metadata for Nacos configuration registration
@@ -213,6 +214,18 @@ func getNacosConfigMetadata() []NacosConfigMetadata {
 					logger.Info("Router configuration updated",
 						zap.Bool("enabled", routerConfig.Enabled),
 						zap.String("strategy", routerConfig.Strategy))
+				}
+			},
+		},
+		{
+			DataId:     "voucher_activity",
+			ConfigType: &config.VoucherActivityConfig{},
+			UpdateFunc: func(svc *ServiceContext, data interface{}) {
+				if voucherActivityConfig, ok := data.(*config.VoucherActivityConfig); ok {
+					svc.updateVoucherActivityConfig(voucherActivityConfig)
+					logger.Info("Voucher activity configuration updated",
+						zap.Bool("enabled", voucherActivityConfig.Enabled),
+						zap.Int("activities_count", len(voucherActivityConfig.Activities)))
 				}
 			},
 		},

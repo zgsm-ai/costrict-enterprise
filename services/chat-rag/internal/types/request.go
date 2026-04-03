@@ -50,7 +50,7 @@ const (
 	HeaderCaller        = "x-caller"
 	HeaderTaskId        = "zgsm-task-id"
 	HeaderClientId      = "zgsm-client-id"
-	HeaderClientIde     = "zgsm-client-ide"
+	HeaderClientIde     = "x-costrict-idea"
 	HeaderClientOS      = "X-Stainless-OS"
 	HeaderLanguage      = "Accept-Language"
 	HeaderAuthorization = "authorization"

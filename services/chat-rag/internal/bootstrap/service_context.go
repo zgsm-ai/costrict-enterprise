@@ -26,6 +26,7 @@ type ServiceContext struct {
 	// Services
 	LoggerService  service.LogRecordInterface
 	MetricsService service.MetricsInterface
+	VoucherService *service.VoucherService
 
 	// Utilities
 	TokenCounter *tokenizer.TokenCounter
@@ -92,6 +93,7 @@ func (svc *ServiceContext) initialize() error {
 		svc.initializeLoggerService,
 		svc.initializeRedisClient,
 		svc.initializeNacosConfig,
+		svc.initializeVoucherService,
 		svc.initializeToolExecutor,
 		svc.initializeRouterStrategy,
 		svc.startNacosConfigWatching,
@@ -193,11 +195,15 @@ func (svc *ServiceContext) initializeNacosConfig() error {
 	if nacosResult.RouterConfig == nil {
 		return fmt.Errorf("nacos router configuration is nil")
 	}
+	if nacosResult.VoucherActivityConfig == nil {
+		return fmt.Errorf("nacos voucher activity configuration is nil")
+	}
 
 	svc.Config.Rules = nacosResult.RulesConfig
 	svc.Config.Tools = nacosResult.ToolsConfig
 	svc.Config.PreciseContextConfig = nacosResult.PreciseContextConfig
 	svc.Config.Router = nacosResult.RouterConfig
+	svc.Config.VoucherActivityConfig = nacosResult.VoucherActivityConfig
 
 	// Apply router defaults after loading from Nacos
 	config.ApplyRouterDefaults(&svc.Config)
@@ -222,6 +228,20 @@ func (svc *ServiceContext) initializeToolExecutor() error {
 func (svc *ServiceContext) initializeRouterStrategy() error {
 	// Strategy will be initialized lazily by router package to avoid circular dependency
 	logger.Info("Router strategy initialization deferred to first use")
+	return nil
+}
+
+// initializeVoucherService initializes the voucher service
+func (svc *ServiceContext) initializeVoucherService() error {
+	// Get signing key from VoucherActivityConfig
+	signingKey := svc.Config.VoucherActivityConfig.SigningKey
+	if signingKey == "" {
+		return fmt.Errorf("VoucherActivityConfig.SigningKey is not configured")
+	}
+
+	// Create voucher service
+	svc.VoucherService = service.NewVoucherService(signingKey)
+	logger.Info("Voucher service initialized successfully")
 	return nil
 }
 
@@ -415,4 +435,12 @@ func (svc *ServiceContext) updateRouterConfig(routerConfig *config.RouterConfig)
 	// Clear cached router strategy so it will be recreated on next use with new config
 	svc.SetRouterStrategy(nil)
 	logger.Info("Router configuration updated, strategy cache cleared")
+}
+
+func (svc *ServiceContext) updateVoucherActivityConfig(newConfig *config.VoucherActivityConfig) {
+	svc.mu.Lock()
+	defer svc.mu.Unlock()
+	svc.Config.VoucherActivityConfig = newConfig
+	svc.initializeVoucherService()
+	logger.Info("Voucher activity configuration updated")
 }

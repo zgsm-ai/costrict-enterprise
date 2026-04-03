@@ -1,5 +1,7 @@
 package config
 
+import "time"
+
 // ParameterSource Parameter source enumeration
 type ParameterSource string
 
@@ -131,10 +133,11 @@ type AgentMatchConfig struct {
 }
 
 type FromNacos struct {
-	Rules                *RulesConfig
-	Tools                *ToolConfig
-	Router               *RouterConfig
-	PreciseContextConfig *PreciseContextConfig
+	Rules                 *RulesConfig
+	Tools                 *ToolConfig
+	Router                *RouterConfig
+	PreciseContextConfig  *PreciseContextConfig
+	VoucherActivityConfig *VoucherActivityConfig
 }
 
 // Config holds all service configuration
@@ -174,6 +177,41 @@ type Config struct {
 
 	// Request verification configuration
 	RequestVerify RequestVerifyConfig `mapstructure:"requestVerify" yaml:"requestVerify"`
+}
+
+// VoucherActivity holds individual voucher activity configuration
+type VoucherActivity struct {
+	Keyword                string    `mapstructure:"keyword" yaml:"keyword"`                               // Activity keyword (unique identifier)
+	CreditAmount           float64   `mapstructure:"creditAmount" yaml:"creditAmount"`                     // Credit amount to redeem
+	VoucherExpiryDays      int       `mapstructure:"voucherExpiryDays" yaml:"voucherExpiryDays"`           // Voucher expiry days
+	StartTime              time.Time `mapstructure:"startTime" yaml:"startTime"`                           // Activity start time
+	EndTime                time.Time `mapstructure:"endTime" yaml:"endTime"`                               // Activity end time
+	TotalQuota             int       `mapstructure:"totalQuota" yaml:"totalQuota"`                         // Total redemption quota
+	SuccessTemplate        string    `mapstructure:"successTemplate" yaml:"successTemplate"`               // Success response template (Go template format)
+	AlreadyRedeemedMessage string    `mapstructure:"alreadyRedeemedMessage" yaml:"alreadyRedeemedMessage"` // Already redeemed message (Go template format)
+	ExpiredMessage         string    `mapstructure:"expiredMessage" yaml:"expiredMessage"`                 // Expired message (Go template format)
+	QuotaExhaustedMessage  string    `mapstructure:"quotaExhaustedMessage" yaml:"quotaExhaustedMessage"`   // Quota exhausted message (Go template format)
+}
+
+// VoucherActivityConfig holds voucher activity configuration
+type VoucherActivityConfig struct {
+	Enabled    bool              `mapstructure:"enabled" yaml:"enabled"`       // Activity enable flag
+	SigningKey string            `mapstructure:"signingKey" yaml:"signingKey"` // Voucher code signing key
+	Activities []VoucherActivity `mapstructure:"activities" yaml:"activities"` // List of voucher activities
+}
+
+// VoucherRedemptionRecord holds user redemption record for Redis storage
+type VoucherRedemptionRecord struct {
+	UserID         string    // User ID (UUID)
+	UserName       string    // User name
+	VoucherCode    string    // Voucher code
+	RedemptionTime time.Time // Redemption time
+}
+
+// ActivityStatistics holds activity statistics for Redis storage
+type ActivityStatistics struct {
+	TotalRedeemed  int // Total redeemed count
+	RemainingQuota int // Remaining quota
 }
 
 // RouterConfig holds router related configuration

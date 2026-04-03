@@ -167,6 +167,7 @@ func (l *ChatCompletionLogic) updateChatLog(chatLog *model.ChatLog, processedPro
 
 func (l *ChatCompletionLogic) logCompletion(chatLog *model.ChatLog) {
 	chatLog.Latency.TotalLatency = time.Since(chatLog.Timestamp).Milliseconds()
+	chatLog.Params.RoutedModel = l.request.Model
 	if l.svcCtx.LoggerService != nil {
 		l.svcCtx.LoggerService.LogAsync(chatLog, l.headers)
 	}

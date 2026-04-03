@@ -11,9 +11,9 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/zgsm-ai/chat-rag/internal/api"
 	"github.com/zgsm-ai/chat-rag/internal/bootstrap"
 	"github.com/zgsm-ai/chat-rag/internal/config"
-	"github.com/zgsm-ai/chat-rag/internal/handler"
 	"github.com/zgsm-ai/chat-rag/internal/logger"
 	"go.uber.org/zap"
 )
@@ -34,7 +34,7 @@ func main() {
 	ctx := bootstrap.NewServiceContext(c)
 
 	// Register routes
-	handler.RegisterHandlers(router, ctx)
+	api.RegisterHandlers(router, ctx)
 
 	// Create HTTP server with graceful shutdown support
 	server := &http.Server{

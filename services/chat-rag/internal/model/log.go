@@ -42,8 +42,9 @@ type ToolCall struct {
 
 // RequestParams represents the request parameters for a chat completion
 type RequestParams struct {
-	Model     string                 `json:"model"`
-	LlmParams types.LLMRequestParams `json:"llm_params"`
+	Model       string                 `json:"model"`
+	RoutedModel string                 `json:"routed_model,omitempty"`
+	LlmParams   types.LLMRequestParams `json:"llm_params"`
 }
 
 // ChatLog represents a single chat completion log entry

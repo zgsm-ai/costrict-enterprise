@@ -23,6 +23,9 @@ type RedisInterface interface {
 	// GetHash retrieves all field-value pairs from a Redis hash
 	GetHash(ctx context.Context, key string) (map[string]string, error)
 
+	// HashLen returns the number of fields in a hash
+	HashLen(ctx context.Context, key string) (int64, error)
+
 	// GetString retrieves a string value by key
 	GetString(ctx context.Context, key string) (string, error)
 
@@ -135,6 +138,22 @@ func (c *RedisClient) GetHash(ctx context.Context, key string) (map[string]strin
 	}
 
 	return values, nil
+}
+
+// HashLen returns the number of fields in a hash
+func (c *RedisClient) HashLen(ctx context.Context, key string) (int64, error) {
+	if c.client == nil {
+		if err := c.Connect(ctx); err != nil {
+			return 0, fmt.Errorf("redis client not connected and failed to reconnect: %w", err)
+		}
+	}
+
+	length, err := c.client.HLen(ctx, key).Result()
+	if err != nil {
+		return 0, fmt.Errorf("failed to get hash length from Redis: %w", err)
+	}
+
+	return length, nil
 }
 
 // GetString retrieves a string value by key
