@@ -446,6 +446,7 @@
             "enterInvoiceTitle": "请输入发票抬头",
             "taxNumberTooLong": "纳税人识别号不能超过18位",
             "taxNumberDigitsOnly": "纳税人识别号只能包含数字",
+            "taxNumberFormatInvalid": "纳税人识别号须为18位数字和大写字母",
             "invoiceTitleEmpty": "发票抬头不能为空"
         },
         "submitSuccess": "提交申请成功",

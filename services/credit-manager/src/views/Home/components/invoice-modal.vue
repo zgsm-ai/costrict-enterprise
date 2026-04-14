@@ -358,14 +358,9 @@ const formRules = computed(() => {
 
         rules.taxNumber = {
             validator: (rule: FormItemRule, value: string) => {
-                if (value && value.length > 18) {
+                if (value && !/^[0-9A-Z]{18}$/.test(value)) {
                     showTaxNumberFeedback.value = true;
-                    return new Error(t('invoiceModal.validation.taxNumberTooLong'));
-                }
-                // 验证如果填写了纳税人识别号，只能是数字
-                if (value && !/^\d+$/.test(value)) {
-                    showTaxNumberFeedback.value = true;
-                    return new Error(t('invoiceModal.validation.taxNumberDigitsOnly'));
+                    return new Error(t('invoiceModal.validation.taxNumberFormatInvalid'));
                 }
                 showTaxNumberFeedback.value = false;
 

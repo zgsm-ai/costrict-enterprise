@@ -445,6 +445,7 @@
             "enterInvoiceTitle": "Please enter invoice title",
             "taxNumberTooLong": "Tax identification number cannot exceed 18 digits",
             "taxNumberDigitsOnly": "Tax identification number can only contain digits",
+            "taxNumberFormatInvalid": "Tax identification number must be 18 alphanumeric characters (digits and uppercase letters)",
             "invoiceTitleEmpty": "Invoice title cannot be empty"
         },
         "submitSuccess": "Application submitted successfully",
