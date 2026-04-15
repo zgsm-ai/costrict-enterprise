@@ -129,6 +129,8 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
+    permissions:
+      contents: write  # 允许读写 Release
     
     steps:
     - name: Download all artifacts

@@ -29,7 +29,7 @@ func fetchRemoteConfig(pkgName string) error {
 	u := utils.NewUpgrader(pkgName, utils.UpgradeConfig{
 		BaseUrl: fmt.Sprintf("%s/costrict", GetBaseURL()),
 		BaseDir: getCostrictDir(),
-	})
+	}, nil)
 
 	pkg, upgraded, err := u.UpgradePackage(nil)
 	if err != nil {
