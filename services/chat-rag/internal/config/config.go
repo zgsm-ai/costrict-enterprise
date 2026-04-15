@@ -24,6 +24,7 @@ const (
 // LLMConfig
 type LLMConfig struct {
 	Endpoint            string
+	ApiKey              string   `mapstructure:"apiKey" yaml:"apiKey"`
 	FuncCallingModels   []string
 	ChunkMetricsEnabled bool
 }
@@ -84,9 +85,22 @@ type GenericToolParameter struct {
 	Source ParameterSource `yaml:"source"`
 }
 
+// LogS3Config holds S3/MinIO storage configuration for log archival
+type LogS3Config struct {
+	Endpoint  string `mapstructure:"endpoint" yaml:"endpoint"`
+	Bucket    string `mapstructure:"bucket" yaml:"bucket"`
+	AccessKey string `mapstructure:"accessKey" yaml:"accessKey"`
+	SecretKey string `mapstructure:"secretKey" yaml:"secretKey"`
+	UseSSL    bool   `mapstructure:"useSSL" yaml:"useSSL"`
+	Region    string `mapstructure:"region" yaml:"region"`
+}
+
 // LogConfig holds logging configuration
 type LogConfig struct {
 	LogFilePath string
+	// StorageType controls where logs are persisted: "disk" (default) or "s3"
+	StorageType string     `mapstructure:"storageType" yaml:"storageType"`
+	S3          LogS3Config `mapstructure:"s3" yaml:"s3"`
 	// LogScanIntervalSec   int
 	// ClassifyModel        string
 	// EnableClassification bool

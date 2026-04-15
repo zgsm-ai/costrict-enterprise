@@ -14,6 +14,7 @@ import (
 	"github.com/zgsm-ai/chat-rag/internal/config"
 	"github.com/zgsm-ai/chat-rag/internal/logger"
 	"github.com/zgsm-ai/chat-rag/internal/model"
+	"github.com/zgsm-ai/chat-rag/internal/storage"
 	"go.uber.org/zap"
 )
 
@@ -56,8 +57,10 @@ type LogRecordInterface interface {
 	Stop()
 	// LogAsync logs a chat completion asynchronously
 	LogAsync(logs *model.ChatLog, headers *http.Header)
-	// LogSync logs a chat completion synchronously
+	// SetMetricsService sets the metrics service
 	SetMetricsService(metricsService MetricsInterface)
+	// SetStorageBackend injects the storage backend for log persistence
+	SetStorageBackend(backend storage.StorageBackend)
 }
 
 // LoggerRecordService handles logging operations
@@ -68,8 +71,9 @@ type LoggerRecordService struct {
 	// classifyModel  string
 	// llmClient            client.LLMInterface
 
-	logFilePath    string // Permanent storage log directory path
-	metricsService MetricsInterface
+	logFilePath     string // Permanent storage log directory path
+	storageBackend  storage.StorageBackend
+	metricsService  MetricsInterface
 	deptClient     client.DepartmentInterface
 	instanceID     string
 	// enableClassification bool
@@ -125,12 +129,20 @@ func (ls *LoggerRecordService) SetMetricsService(metricsService MetricsInterface
 	ls.metricsService = metricsService
 }
 
+// SetStorageBackend injects the storage backend used for log persistence
+func (ls *LoggerRecordService) SetStorageBackend(backend storage.StorageBackend) {
+	ls.storageBackend = backend
+}
+
 // Start starts the logger service
 func (ls *LoggerRecordService) Start() error {
 	logger.Info("==> Start logger")
-	// Ensure permanent log directory exists
-	if err := os.MkdirAll(ls.logFilePath, 0755); err != nil {
-		return fmt.Errorf("failed to create permanent log directory: %w", err)
+	// Only create the base log directory for backward compatibility when no storage backend is set.
+	// When a StorageBackend is injected, directory creation (if applicable) is handled by the backend itself.
+	if ls.storageBackend == nil {
+		if err := os.MkdirAll(ls.logFilePath, 0755); err != nil {
+			return fmt.Errorf("failed to create permanent log directory: %w", err)
+		}
 	}
 
 	// Temp directory creation is no longer needed since we write directly to permanent storage
@@ -562,9 +574,6 @@ func (ls *LoggerRecordService) saveLogToPermanentStorage(chatLog *model.ChatLog)
 	// Get and sanitize username for filesystem usage
 	username := ls.sanitizeFilename(chatLog.Identity.UserName, "unknown")
 
-	// Create hierarchical directory path
-	dateDir := filepath.Join(ls.logFilePath, yearMonth, day, username)
-
 	// Timestamp for filename: yyyymmdd-HHMMSS_requestID.json
 	timestamp := chatLog.Timestamp.Format("20060102-150405")
 	requestId := chatLog.Identity.RequestID
@@ -573,10 +582,10 @@ func (ls *LoggerRecordService) saveLogToPermanentStorage(chatLog *model.ChatLog)
 	}
 	filename := fmt.Sprintf("%s_%s_%d.json", timestamp, requestId, ls.generateRandomNumber())
 
-	// Full file path
-	logFile := filepath.Join(dateDir, filename)
+	// Build the storage key as a relative path (works for both disk and S3)
+	storageKey := filepath.Join(yearMonth, day, username, filename)
 
-	// Convert to pretty JSON using the extracted method
+	// Convert to pretty JSON
 	jsonStr, err := chatLog.ToPrettyJSON()
 	if err != nil {
 		logger.Error("Failed to marshal log for permanent storage",
@@ -585,19 +594,34 @@ func (ls *LoggerRecordService) saveLogToPermanentStorage(chatLog *model.ChatLog)
 		return
 	}
 
-	// Create new file instead of appending
-	if err := ls.writeLogToFile(logFile, jsonStr, os.O_CREATE|os.O_WRONLY); err != nil {
-		logger.Error("Failed to write log to permanent storage",
-			zap.Error(err),
-		)
-		return
+	data := []byte(jsonStr)
+	data = append(data, '\n') // trailing newline for consistency
+
+	// Write via storage backend if available, otherwise fall back to direct file write
+	if ls.storageBackend != nil {
+		if err := ls.storageBackend.Write(storageKey, data); err != nil {
+			logger.Error("Failed to write log to storage backend",
+				zap.String("key", storageKey),
+				zap.Error(err),
+			)
+			return
+		}
+		logger.Info("Log saved in storage", zap.String("key", storageKey))
+	} else {
+		// Backward compatibility: direct file write when no backend is injected
+		logFile := filepath.Join(ls.logFilePath, storageKey)
+		if err := ls.writeLogToFile(logFile, jsonStr, os.O_CREATE|os.O_WRONLY); err != nil {
+			logger.Error("Failed to write log to permanent storage",
+				zap.Error(err),
+			)
+			return
+		}
+		logger.Info("Log saved in storage", zap.String("fileName", logFile))
 	}
 
-	logger.Info("Log saved in storage", zap.String("fileName", logFile))
-
-	// Report metrics only after successful file write
+	// Report metrics — storageKey is already relative, suitable for both disk and S3 modes
 	if ls.metricsReporter != nil {
-		relativeLogFile := ls.logPathForMetrics(logFile)
+		relativeLogFile := ls.logPathForMetrics(storageKey)
 		var e string = ""
 		if len(chatLog.Error) > 0 {
 			// first item's first key
@@ -611,23 +635,31 @@ func (ls *LoggerRecordService) saveLogToPermanentStorage(chatLog *model.ChatLog)
 }
 
 func (ls *LoggerRecordService) logPathForMetrics(logFile string) string {
-	relativeLogFile, err := filepath.Rel(ls.logFilePath, logFile)
-	if err != nil {
-		logger.Warn("Failed to derive relative log path for metrics report",
-			zap.String("logFile", logFile),
-			zap.String("logRoot", ls.logFilePath),
-			zap.Error(err),
-		)
-		return logFile
-	}
+	// When using StorageBackend, the key is already relative — use it directly.
+	// For backward compatibility (absolute paths from direct file write), derive the relative path.
+	var relativeLogFile string
+	if filepath.IsAbs(logFile) {
+		var err error
+		relativeLogFile, err = filepath.Rel(ls.logFilePath, logFile)
+		if err != nil {
+			logger.Warn("Failed to derive relative log path for metrics report",
+				zap.String("logFile", logFile),
+				zap.String("logRoot", ls.logFilePath),
+				zap.Error(err),
+			)
+			return logFile
+		}
 
-	if relativeLogFile == ".." || strings.HasPrefix(relativeLogFile, ".."+string(filepath.Separator)) {
-		logger.Warn("Derived log path escaped log root; keeping original path for metrics report",
-			zap.String("logFile", logFile),
-			zap.String("logRoot", ls.logFilePath),
-			zap.String("relativeLogFile", relativeLogFile),
-		)
-		return logFile
+		if relativeLogFile == ".." || strings.HasPrefix(relativeLogFile, ".."+string(filepath.Separator)) {
+			logger.Warn("Derived log path escaped log root; keeping original path for metrics report",
+				zap.String("logFile", logFile),
+				zap.String("logRoot", ls.logFilePath),
+				zap.String("relativeLogFile", relativeLogFile),
+			)
+			return logFile
+		}
+	} else {
+		relativeLogFile = logFile
 	}
 
 	if len(relativeLogFile) > metricsLocalLogPathMaxBytes {

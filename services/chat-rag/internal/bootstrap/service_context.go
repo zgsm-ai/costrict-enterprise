@@ -11,6 +11,7 @@ import (
 	"github.com/zgsm-ai/chat-rag/internal/functions"
 	"github.com/zgsm-ai/chat-rag/internal/logger"
 	"github.com/zgsm-ai/chat-rag/internal/service"
+	"github.com/zgsm-ai/chat-rag/internal/storage"
 	"github.com/zgsm-ai/chat-rag/internal/tokenizer"
 	"go.uber.org/zap"
 )
@@ -19,6 +20,9 @@ import (
 // Fields are exported for backward compatibility while maintaining thread safety through update methods
 type ServiceContext struct {
 	Config config.Config
+
+	// Storage
+	StorageBackend storage.StorageBackend
 
 	// Clients
 	RedisClient client.RedisInterface
@@ -90,6 +94,7 @@ func (svc *ServiceContext) initialize() error {
 	initializers := []func() error{
 		svc.initializeTokenCounter,
 		svc.initializeMetricsService,
+		svc.initializeStorage,
 		svc.initializeLoggerService,
 		svc.initializeRedisClient,
 		svc.initializeNacosConfig,
@@ -137,10 +142,45 @@ func (svc *ServiceContext) initializeMetricsService() error {
 	return nil
 }
 
+// initializeStorage creates the storage backend based on configuration.
+// Must be called before initializeLoggerService so the backend is ready for injection.
+func (svc *ServiceContext) initializeStorage() error {
+	storageType := svc.Config.Log.StorageType
+	if storageType == "" {
+		storageType = "disk"
+	}
+
+	switch storageType {
+	case "disk":
+		svc.StorageBackend = storage.NewDiskStorage(svc.Config.Log.LogFilePath)
+	case "s3":
+		s3Cfg := storage.S3Config{
+			Endpoint:  svc.Config.Log.S3.Endpoint,
+			Bucket:    svc.Config.Log.S3.Bucket,
+			AccessKey: svc.Config.Log.S3.AccessKey,
+			SecretKey: svc.Config.Log.S3.SecretKey,
+			UseSSL:    svc.Config.Log.S3.UseSSL,
+			Region:    svc.Config.Log.S3.Region,
+		}
+		backend, err := storage.NewS3Storage(s3Cfg)
+		if err != nil {
+			return fmt.Errorf("failed to initialize S3 storage: %w", err)
+		}
+		svc.StorageBackend = backend
+	default:
+		return fmt.Errorf("unknown storage type: %q (supported: disk, s3)", storageType)
+	}
+
+	logger.Info("Storage backend initialized successfully",
+		zap.String("type", storageType))
+	return nil
+}
+
 // initializeLoggerService initializes and starts the logger service
 func (svc *ServiceContext) initializeLoggerService() error {
 	svc.LoggerService = service.NewLogRecordService(svc.Config)
 	svc.LoggerService.SetMetricsService(svc.MetricsService)
+	svc.LoggerService.SetStorageBackend(svc.StorageBackend)
 
 	if err := svc.LoggerService.Start(); err != nil {
 		return fmt.Errorf("failed to start logger service: %w", err)
@@ -280,6 +320,14 @@ func (svc *ServiceContext) startNacosConfigWatching() error {
 func (svc *ServiceContext) cleanupOnError() {
 	logger.Info("Cleaning up partially initialized components due to initialization error")
 
+	// Close storage backend if it was created
+	if svc.StorageBackend != nil {
+		if err := svc.StorageBackend.Close(); err != nil {
+			logger.Error("Failed to close storage backend during cleanup",
+				zap.Error(err))
+		}
+	}
+
 	// Stop logger service if it was started
 	if svc.LoggerService != nil {
 		svc.LoggerService.Stop()
@@ -320,6 +368,7 @@ func (svc *ServiceContext) Stop() error {
 			fn   func(context.Context) error
 		}{
 			{"logger service", svc.shutdownLoggerService},
+			{"storage backend", svc.shutdownStorageBackend},
 			{"Nacos connection", svc.shutdownNacosConnection},
 			{"Redis connection", svc.shutdownRedisConnection},
 		}
@@ -358,6 +407,23 @@ func (svc *ServiceContext) shutdownLoggerService(ctx context.Context) error {
 	logger.Info("Stopping logger service...")
 	svc.LoggerService.Stop()
 	logger.Info("Logger service stopped")
+	return nil
+}
+
+// shutdownStorageBackend closes the storage backend
+func (svc *ServiceContext) shutdownStorageBackend(ctx context.Context) error {
+	if svc.StorageBackend == nil {
+		return nil
+	}
+
+	logger.Info("Closing storage backend...")
+	if err := svc.StorageBackend.Close(); err != nil {
+		logger.Error("Failed to close storage backend",
+			zap.Error(err))
+		return err
+	}
+
+	logger.Info("Storage backend closed successfully")
 	return nil
 }
 

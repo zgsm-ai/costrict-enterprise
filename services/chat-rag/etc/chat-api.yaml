@@ -5,6 +5,16 @@ Port: 8888
 # Logging configuration
 Log:
   LogFilePath: "logs/"
+  # Storage type: "disk" (default) or "s3"
+  storageType: "disk"
+  # S3/MinIO configuration (required when storageType is "s3")
+  s3:
+    endpoint: "localhost:9000"
+    bucket: "chat-rag-logs"
+    accessKey: "minioadmin"
+    secretKey: "minioadmin"
+    useSSL: false
+    region: ""
 
 # Department configuration
 DepartmentApiEndpoint: "http://localhost:1234/work_id?work_id="

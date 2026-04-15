@@ -11,6 +11,7 @@ import (
 	gomock "github.com/golang/mock/gomock"
 	model "github.com/zgsm-ai/chat-rag/internal/model"
 	service "github.com/zgsm-ai/chat-rag/internal/service"
+	storage "github.com/zgsm-ai/chat-rag/internal/storage"
 )
 
 // MockLoggerInterface is a mock of LoggerInterface interface.
@@ -58,6 +59,18 @@ func (m *MockLoggerInterface) SetMetricsService(metricsService service.MetricsIn
 func (mr *MockLoggerInterfaceMockRecorder) SetMetricsService(metricsService interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetMetricsService", reflect.TypeOf((*MockLoggerInterface)(nil).SetMetricsService), metricsService)
+}
+
+// SetStorageBackend mocks base method.
+func (m *MockLoggerInterface) SetStorageBackend(backend storage.StorageBackend) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "SetStorageBackend", backend)
+}
+
+// SetStorageBackend indicates an expected call of SetStorageBackend.
+func (mr *MockLoggerInterfaceMockRecorder) SetStorageBackend(backend interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetStorageBackend", reflect.TypeOf((*MockLoggerInterface)(nil).SetStorageBackend), backend)
 }
 
 // Start mocks base method.

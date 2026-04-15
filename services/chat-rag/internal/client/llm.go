@@ -85,6 +85,13 @@ func NewLLMClient(llmConfig config.LLMConfig, timeoutConfig config.LLMTimeoutCon
 		return nil, fmt.Errorf("NewLLMClient llmEndpoint cannot be empty")
 	}
 
+	// If a static ApiKey is configured, override the Authorization header
+	if llmConfig.ApiKey != "" {
+		cloned := headers.Clone()
+		cloned.Set("Authorization", "Bearer "+llmConfig.ApiKey)
+		headers = &cloned
+	}
+
 	idleTimeout := time.Duration(timeoutConfig.IdleTimeoutMs) * time.Millisecond
 	if idleTimeout <= 0 {
 		idleTimeout = 30 * time.Second
