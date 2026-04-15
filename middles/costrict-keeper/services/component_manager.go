@@ -354,7 +354,7 @@ func (cm *ComponentManager) UpgradeAll() error {
 	u := utils.NewUpgrader("", utils.UpgradeConfig{
 		BaseDir: env.CostrictDir,
 	}, nil)
-	u.CleanupOldVersions()
+	u.CleanupOlders(3)
 	return nil
 }
 

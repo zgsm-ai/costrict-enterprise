@@ -1,4 +1,4 @@
-package client
+package misc
 
 import (
 	"costrict-keeper/cmd/root"
