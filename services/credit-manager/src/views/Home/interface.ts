@@ -25,6 +25,7 @@ export interface PricingPlan {
     price: number;
     originalPrice?: number;
     description: string;
+    creditsTip?: string;
     buttonText: string;
     buttonType: 'download' | 'purchase';
     showTrafficLabel?: boolean;

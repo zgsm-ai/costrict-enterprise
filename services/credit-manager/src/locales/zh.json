@@ -243,7 +243,7 @@
     },
     "pricingPlans": {
         "personalFree": {
-            "title": "个人免费版",
+            "title": "免费版",
             "description": "官方赠送的 Credit，有效期视情况而定",
             "buttonText": "下载使用",
             "features": {
@@ -293,7 +293,8 @@
         "freeCodeCompletion": "免费代码补全，有限使用次数",
         "freeCodeReview": "免费代码审查，无限使用",
         "advancedModelAvailable": "高级模型可用",
-        "creditFeatureWithoutBonus": "{total} Credits（约等于{estimated}次请求）"
+        "creditFeatureWithoutBonus": "{total} Credits（约等于{estimated}次请求）",
+        "moreStableAdvancedServices": "更稳定的高级服务"
     },
     "subscriptionSection": {
         "subscriptionTitle": "订阅信息",
@@ -310,7 +311,10 @@
         "orderTime": "下单时间",
         "validityPeriod": "过期时间",
         "invoiceStatus": "发票状态",
-        "firstRechargeDiscount": "首次充值优惠"
+        "firstRechargeDiscount": "首次充值优惠",
+        "freeActivityTip": "参加活动可获取更多Credits",
+        "totalCredits": "{credits} Credits",
+        "freeCreditsTip": "免费额度200 Credits起"
     },
     "homePageUi": {
         "personalInfo": "个人信息",

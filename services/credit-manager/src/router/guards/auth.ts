@@ -3,34 +3,32 @@ import { authService } from '@/services/auth';
 import { PUBLIC_ROUTES } from '@/router';
 import { tokenManager } from '@/utils/token';
 
+const AUTH_REDIRECT_KEY = 'auth_redirect';
+
 export function setupAuthGuard(router: Router) {
     router.beforeEach(async (to, from, next) => {
         try {
             // 处理年度总结封面页的特殊逻辑
-            if (to.path === '/annual-summary-cover') {
-                // 先尝试认证（包括从 URL 获取 token 等逻辑）
-                const authResult = await authService.authenticate();
-
-                if (authResult.success) {
-                    // 认证成功，重定向到年度总结页面
-                    next('/annual-summary');
-                } else {
-                    // 认证失败，让页面正常加载（静态封面页）
-                    next();
-                }
-                return;
-            }
+            // if (to.path === '/annual-summary-cover') {
+            //     const authResult = await authService.authenticate(router);
+            //     if (authResult.success) {
+            //         next('/annual-summary');
+            //     } else {
+            //         next();
+            //     }
+            //     return;
+            // }
 
             // 检查是否为公开路由或登录页面
             if (PUBLIC_ROUTES.includes(to.path) || to.path === '/login') {
                 next();
                 return;
             }
+
             // 检查是否已经认证过
             const isAuthenticated = await authService.isAuthenticated();
 
             if (isAuthenticated) {
-                // 已经认证，直接放行
                 next();
                 return;
             }
@@ -40,26 +38,27 @@ export function setupAuthGuard(router: Router) {
 
             // 在后台进行认证，不阻塞页面渲染
             authService
-                .authenticate()
+                .authenticate(router)
                 .then((authResult) => {
                     if (!authResult.success) {
-                        // 认证失败，重定向到登录页
+                        // 记录目标路径，登录后跳回
+                        localStorage.setItem(AUTH_REDIRECT_KEY, to.fullPath);
                         router.replace('/login');
                     }
                 })
                 .catch((error) => {
                     console.error('Background authentication error:', error);
+                    localStorage.setItem(AUTH_REDIRECT_KEY, to.fullPath);
                     router.replace('/login');
                 });
         } catch (error) {
             console.error('Authentication error:', error);
+            localStorage.setItem(AUTH_REDIRECT_KEY, to.fullPath);
             next('/login');
         }
     });
 
     router.afterEach((to) => {
-        // 在路由导航完成后，检查并清理URL中的state参数
-        // 这确保了即使在其他地方有导航操作，state参数也会被清理
         if (to.query.state !== undefined) {
             tokenManager.cleanUrlState();
         }

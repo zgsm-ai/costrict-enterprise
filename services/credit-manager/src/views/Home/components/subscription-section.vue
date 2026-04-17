@@ -82,7 +82,13 @@
                         {{ plan.description }}
                     </div>
                     <div
-                        class="content-version__item-btn h-10 text-center leading-10 mt-6 rounded-sm"
+                        v-if="plan.creditsTip"
+                        class="content-version__item-credits text-sm mt-2 original-price__tips"
+                    >
+                        {{ plan.creditsTip }}
+                    </div>
+                    <div
+                        class="content-version__item-btn h-10 text-center leading-10 mt-5 rounded-sm"
                         :class="{
                             'btn-purchase': plan.buttonType === 'purchase',
                             'btn-download': plan.buttonType !== 'purchase',
@@ -113,6 +119,13 @@
                             </div>
                         </li>
                     </ul>
+                    <div
+                        v-if="index === 0"
+                        class="free-activity-tip text-xs mt-4 cursor-pointer"
+                        @click="toActivityPage"
+                    >
+                        {{ t('subscriptionSection.freeActivityTip') }}
+                    </div>
                 </div>
             </div>
         </div>
@@ -349,6 +362,10 @@ const toBillingDocs = () => {
     window.open('https://docs.costrict.ai/billing/purchase');
 };
 
+const toActivityPage = () => {
+    router.push('/?tab=activity');
+};
+
 // 加载配额类型数据
 const loadQuotaTypes = async () => {
     const { code, data } = await getQuotaTypes();
@@ -451,6 +468,10 @@ const handleInvoiceSubmitted = () => {
                 -webkit-background-clip: text;
                 -webkit-text-fill-color: transparent;
                 background-clip: text;
+            }
+
+            .free-activity-tip {
+                color: #2a7fff;
             }
         }
 

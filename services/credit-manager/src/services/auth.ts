@@ -1,6 +1,9 @@
 import { tokenManager } from '@/utils/token';
 import { userService, type UserInfo } from './user';
 import { getUserToken } from '@/api/mods/quota.mod';
+import type { Router } from 'vue-router';
+
+const AUTH_REDIRECT_KEY = 'auth_redirect';
 
 export interface AuthResult {
     success: boolean;
@@ -21,7 +24,7 @@ export class AuthService {
         return this.userStore;
     }
 
-    async authenticate(): Promise<AuthResult> {
+    async authenticate(router?: Router): Promise<AuthResult> {
         // 避免重复认证
         if (this.isAuthenticating) {
             return { success: false, error: 'Authentication in progress' };
@@ -38,13 +41,23 @@ export class AuthService {
             // 1. 检查 hashToken
             const hashToken = tokenManager.getHashToken();
 
+            let result: AuthResult;
             if (hashToken) {
-                // 处理 hashToken 认证流程
-                return await this.handleHashTokenAuth(hashToken);
+                result = await this.handleHashTokenAuth(hashToken);
             } else {
-                // 处理常规认证流程
-                return await this.handleRegularAuth();
+                result = await this.handleRegularAuth();
             }
+
+            // 认证成功后处理跳转
+            if (result.success && router) {
+                const redirectPath = localStorage.getItem(AUTH_REDIRECT_KEY);
+                if (redirectPath) {
+                    localStorage.removeItem(AUTH_REDIRECT_KEY);
+                    router.replace(redirectPath);
+                }
+            }
+
+            return result;
         } catch (error) {
             console.error('Authentication failed:', error);
             const userStore = await this.getUserStore();
@@ -105,6 +118,14 @@ export class AuthService {
 
             // 获取用户信息
             const userInfo = await userService.fetchUserInfo();
+
+            // 验证用户信息完整性，确保真正登录成功
+            // 避免过期 token 返回 200 但数据不完整的情况
+            // if (!userInfo || !userInfo.userId || !userInfo.userName) {
+            //     const userStore = await this.getUserStore();
+            //     userStore.setAuthError('Invalid user data');
+            //     return { success: false, error: 'Invalid user data' };
+            // }
 
             // 更新用户状态
             const userStore = await this.getUserStore();

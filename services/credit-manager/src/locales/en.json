@@ -292,7 +292,8 @@
         "purchaseButtonText": "Buy it now",
         "freeCodeCompletion": "Free code completion, limited uses.",
         "freeCodeReview": "Free code review, unlimited use",
-        "advancedModelAvailable": "Premium models available"
+        "advancedModelAvailable": "Premium models available",
+        "moreStableAdvancedServices": "More Stable, Advanced Services"
     },
     "subscriptionSection": {
         "subscriptionTitle": "Subscription Information",
@@ -309,7 +310,9 @@
         "orderTime": "Order Time",
         "validityPeriod": "Validity Period",
         "invoiceStatus": "Invoice Status",
-        "firstRechargeDiscount": "First recharge discount"
+        "firstRechargeDiscount": "First recharge discount",
+        "totalCredits": "{credits} Credits",
+        "freeCreditsTip": "Free 200+ Credits"
     },
     "homePageUi": {
         "personalInfo": "Personal Information",

@@ -111,14 +111,15 @@ export const generatePricingPlansFromAPI = (
         title: t('pricingPlans.personalFree.title'),
         price: 0,
         description: t('pricingPlans.personalFree.description'),
+        creditsTip: t('subscriptionSection.freeCreditsTip'),
         buttonText: t('pricingPlans.personalFree.buttonText'),
         buttonType: 'download',
         showTrafficLabel: false,
         features: [
-            {
-                text: t('pricingPlans.personalFree.features.newUserCredits'),
-                available: true,
-            },
+            // {
+            //     text: t('pricingPlans.personalFree.features.newUserCredits'),
+            //     available: true,
+            // },
             {
                 text: t('pricingPlans.personalFree.features.freeCodeCompletion'),
                 available: true,
@@ -148,6 +149,7 @@ export const generatePricingPlansFromAPI = (
                     ? quotaType.original_amount
                     : undefined,
             description: t('pricingPlans.creditUnit'),
+            creditsTip: t('subscriptionSection.totalCredits', { credits: quotaType.credit_count }),
             buttonText: t('pricingPlans.purchaseButtonText'),
             buttonType: 'purchase' as const,
             showTrafficLabel: true,
@@ -178,6 +180,10 @@ export const generatePricingPlansFromAPI = (
                     text: t('pricingPlans.advancedModelAvailable'),
                     available: true,
                 },
+                ...index === quotaTypes.length - 1 ? [{
+                    text: t('pricingPlans.moreStableAdvancedServices'),
+                    available: true,
+                }] : [],
             ],
             clickEvent() {
                 router.push({
