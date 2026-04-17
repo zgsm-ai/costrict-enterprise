@@ -30,7 +30,7 @@ const (
 
 // Binding account related
 const (
-	LoginSuccessPath       = "/credit/manager/"
+	LoginSuccessPath       = "/credit/manager"
 	LoginCallbackURI       = "/oidc-auth/api/v1/plugin/login/callback"
 	WebLoginCallbackURI    = "/oidc-auth/api/v1/manager/login/callback"
 	BindAccountBindURI     = "/credit/manager/"

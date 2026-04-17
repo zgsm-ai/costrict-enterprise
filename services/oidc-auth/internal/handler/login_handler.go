@@ -14,6 +14,7 @@ import (
 	"github.com/zgsm-ai/oidc-auth/internal/providers"
 	"github.com/zgsm-ai/oidc-auth/internal/repository"
 	"github.com/zgsm-ai/oidc-auth/pkg/errs"
+	"github.com/zgsm-ai/oidc-auth/pkg/log"
 	"github.com/zgsm-ai/oidc-auth/pkg/response"
 	"github.com/zgsm-ai/oidc-auth/pkg/utils"
 )
@@ -184,7 +185,31 @@ func (s *Server) callbackHandler(c *gin.Context) {
 			fmt.Errorf("%s: %v", errs.ErrInfoUpdateUserInfo, err))
 		return
 	}
-	c.Redirect(http.StatusFound, providerInstance.GetEndpoint(false)+constants.LoginSuccessPath)
+
+	// Generate the final token pair and update DB, so firstGetToken only needs to query
+	deviceIndex := findDeviceIndex(user, parameterCarrier.MachineCode, parameterCarrier.VscodeVersion)
+	if deviceIndex == -1 {
+		response.HandleError(c, http.StatusUnauthorized, errs.ErrTokenInvalid,
+			fmt.Errorf("device not found for machine_code=%s, vscode_version=%s", parameterCarrier.MachineCode, parameterCarrier.VscodeVersion))
+		return
+	}
+	tokenPair, err := generateTokenPair(ctx, user, deviceIndex)
+	if err != nil {
+		response.HandleError(c, http.StatusInternalServerError, errs.ErrTokenGenerate,
+			fmt.Errorf("failed to generate token pair: %v", err))
+		return
+	}
+	user.Devices[deviceIndex].Status = constants.LoginStatusLoggedIn
+	if err := updateUserAndSave(ctx, user, deviceIndex, tokenPair); err != nil {
+		response.HandleError(c, http.StatusInternalServerError, errs.ErrUpdateInfo,
+			fmt.Errorf("failed to update user with final token: %v", err))
+		return
+	}
+
+	tokenHash := utils.HashToken(tokenPair.AccessToken)
+	redirectURL := providerInstance.GetEndpoint(false) + constants.LoginSuccessPath + "?state=" + tokenHash
+	log.Info(c, "login success, redirect to: %s, state: %s", redirectURL, tokenHash)
+	c.Redirect(http.StatusFound, redirectURL)
 }
 
 // GetUserByOauth Use the code to exchange for a token and generate user information
