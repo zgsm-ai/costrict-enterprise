@@ -457,7 +457,7 @@ const handleInvoiceSubmitted = () => {
                 color: rgba(255, 255, 255, 0.7);
 
                 &__tips {
-                    background: linear-gradient(102deg, #00ffb7 3%, #ffffff 68%, #ffffff 100%);
+                    background: linear-gradient(91deg, #00ffb7, #fff 31%, #c5dbff 150%);
                     -webkit-background-clip: text;
                     -webkit-text-fill-color: transparent;
                 }
