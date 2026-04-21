@@ -3,7 +3,6 @@
         <div class="text-center text-[28px] font-semibold">{{ t('rewardPlan.title') }}</div>
 
         <div class="mt-8">
-            <p>{{ t('rewardPlan.introTitle') }}</p>
             <p>
                 {{ t('rewardPlan.introContent') }}
             </p>
@@ -11,60 +10,12 @@
 
         <!-- 邀请人展示 -->
         <template v-if="!isInvite">
-            <!-- 规则说明 -->
-            <reward-card
-                :title="t('rewardPlan.rulesTitle')"
-                class="mt-10"
-            >
-                <template #content>
-                    <p>
-                        {{ t('rewardPlan.rules.rule1')
-                        }}<span class="credit-unit">{{ t('rewardPlan.rules.rule1NewUser') }}</span
-                        >{{ t('rewardPlan.rules.rule1Inviter')
-                        }}<span class="credit-unit">{{
-                            t('rewardPlan.rules.rule1InviterCredits')
-                        }}</span
-                        >{{ t('rewardPlan.rules.rule1End') }}
-                    </p>
-                    <div class="mt-1">
-                        <p>
-                            {{ t('rewardPlan.rules.rule2') }}
-                        </p>
-                        <p class="ml-4">
-                            <span class="opacity-70">a. </span>
-                            {{ t('rewardPlan.rules.rule2a')
-                            }}<span class="credit-unit">{{
-                                t('rewardPlan.rules.rule2aCredits')
-                            }}</span
-                            >{{ t('rewardPlan.rules.rule2aTotal')
-                            }}<span class="credit-unit">{{
-                                t('rewardPlan.rules.rule2aTotalCredits')
-                            }}</span
-                            >{{ t('rewardPlan.rules.rule2aEnd') }}
-                        </p>
-                        <p class="ml-4">
-                            <span class="opacity-70">b. </span>
-                            {{ t('rewardPlan.rules.rule2b')
-                            }}<span class="credit-unit">{{
-                                t('rewardPlan.rules.rule2bCredits')
-                            }}</span
-                            >{{ t('rewardPlan.rules.rule2bTotal')
-                            }}<span class="credit-unit">{{
-                                t('rewardPlan.rules.rule2bTotalCredits')
-                            }}</span
-                            >{{ t('rewardPlan.rules.rule2bEnd') }}
-                        </p>
-                    </div>
-                    <p class="mt-1">{{ t('rewardPlan.rules.rule3') }}</p>
-                </template>
-            </reward-card>
-
             <!-- 邀请码 -->
             <reward-card
                 :title="
                     inviteCode ? t('rewardPlan.invitationCode') : t('rewardPlan.invitationMethod')
                 "
-                class="mt-6"
+                class="mt-10"
                 v-if="inviteCode"
             >
                 <template
@@ -103,6 +54,14 @@
                             >
                                 {{ t('rewardPlan.copyLink') }}
                             </n-button>
+                        </div>
+                        <p class="text-xs opacity-70 mt-1">
+                            {{ t('rewardPlan.copyLinkHint') }}
+                        </p>
+                        <div class="mt-4">
+                            <p>{{ t('rewardPlan.rules.rule1') }}</p>
+                            <p class="mt-1">{{ t('rewardPlan.rules.rule2') }}</p>
+                            <p class="mt-1">{{ t('rewardPlan.rules.rule3') }}</p>
                         </div>
                     </template>
                 </template>
@@ -217,7 +176,7 @@
             <!-- 邀请码 -->
             <reward-card
                 :title="t('rewardPlan.invitationCode')"
-                class="mt-6"
+                class="mt-10"
                 :text="t('rewardPlan.invitationCodeText')"
             >
                 <template #label>
@@ -248,54 +207,14 @@
                             {{ t('rewardPlan.copyLink') }}
                         </n-button>
                     </div>
-                </template>
-            </reward-card>
-
-            <!-- 规则说明 -->
-            <reward-card
-                :title="t('rewardPlan.rulesTitle')"
-                class="mt-10"
-            >
-                <template #content>
-                    <p>
-                        {{ t('rewardPlan.rules.rule1')
-                        }}<span class="credit-unit">{{ t('rewardPlan.rules.rule1NewUser') }}</span
-                        >{{ t('rewardPlan.rules.rule1Inviter')
-                        }}<span class="credit-unit">{{
-                            t('rewardPlan.rules.rule1InviterCredits')
-                        }}</span
-                        >{{ t('rewardPlan.rules.rule1End') }}
+                    <p class="text-xs opacity-70 mt-1">
+                        {{ t('rewardPlan.copyLinkHint') }}
                     </p>
-                    <div class="mt-1">
-                        <p>
-                            {{ t('rewardPlan.rules.rule2') }}
-                        </p>
-                        <p class="ml-4">
-                            <span class="opacity-70">a. </span>
-                            {{ t('rewardPlan.rules.rule2a')
-                            }}<span class="credit-unit">{{
-                                t('rewardPlan.rules.rule2aCredits')
-                            }}</span
-                            >{{ t('rewardPlan.rules.rule2aTotal')
-                            }}<span class="credit-unit">{{
-                                t('rewardPlan.rules.rule2aTotalCredits')
-                            }}</span
-                            >{{ t('rewardPlan.rules.rule2aEnd') }}
-                        </p>
-                        <p class="ml-4">
-                            <span class="opacity-70">b. </span>
-                            {{ t('rewardPlan.rules.rule2b')
-                            }}<span class="credit-unit">{{
-                                t('rewardPlan.rules.rule2bCredits')
-                            }}</span
-                            >{{ t('rewardPlan.rules.rule2bTotal')
-                            }}<span class="credit-unit">{{
-                                t('rewardPlan.rules.rule2bTotalCredits')
-                            }}</span
-                            >{{ t('rewardPlan.rules.rule2bEnd') }}
-                        </p>
+                    <div class="mt-4">
+                        <p>{{ t('rewardPlan.rules.rule1') }}</p>
+                        <p class="mt-1">{{ t('rewardPlan.rules.rule2') }}</p>
+                        <p class="mt-1">{{ t('rewardPlan.rules.rule3') }}</p>
                     </div>
-                    <p class="mt-1">{{ t('rewardPlan.rules.rule3') }}</p>
                 </template>
             </reward-card>
         </template>
