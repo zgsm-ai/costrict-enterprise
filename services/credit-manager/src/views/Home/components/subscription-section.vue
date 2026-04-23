@@ -62,30 +62,31 @@
                     <div class="content-version__item-title text-base">
                         {{ plan.title }}
                     </div>
-                    <div class="content-version__item-price flex items-center text-3xl mt-3">
-                        <span class="price-unit ml-[-8px]">￥</span>
-                        <span class="price">{{ plan.price }}</span>
-                        <span
-                            v-if="plan.isFirstPurchase"
-                            class="text-xs ml-2 mt-2 original-price__tips"
-                            >{{ t('subscriptionSection.firstRechargeDiscount') }}</span
-                        >
-                        <span
-                            v-if="plan.originalPrice"
-                            class="original-price text-line-through text-base mt-2"
-                            :class="plan.isFirstPurchase ? 'ml-1' : 'ml-2.5'"
-                        >
-                            ￥{{ plan.originalPrice }}
-                        </span>
-                    </div>
-                    <div class="content-version__item-desc mt-2.5 text-xs">
-                        {{ plan.description }}
-                    </div>
                     <div
-                        v-if="plan.creditsTip"
-                        class="content-version__item-credits text-sm mt-2 original-price__tips"
+                        class="content-version__item-price flex items-center justify-between text-3xl mt-3"
                     >
-                        {{ plan.creditsTip }}
+                        <div class="flex items-center">
+                            <span class="price-unit ml-[-8px]">￥</span>
+                            <span class="price">{{ plan.price }}</span>
+                            <span
+                                v-if="plan.isFirstPurchase"
+                                class="text-xs ml-2 mt-2 original-price__tips"
+                                >{{ t('subscriptionSection.firstRechargeDiscount') }}</span
+                            >
+                            <span
+                                v-if="plan.originalPrice"
+                                class="original-price text-line-through text-base mt-2"
+                                :class="plan.isFirstPurchase ? 'ml-1' : 'ml-2.5'"
+                            >
+                                ￥{{ plan.originalPrice }}
+                            </span>
+                        </div>
+                        <span
+                            v-if="plan.creditsTip"
+                            class="content-version__item-credits text-base original-price__tips"
+                        >
+                            {{ plan.creditsTip }}
+                        </span>
                     </div>
                     <div
                         class="content-version__item-btn h-10 text-center leading-10 mt-5 rounded-sm"

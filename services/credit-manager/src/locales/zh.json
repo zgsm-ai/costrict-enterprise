@@ -312,10 +312,10 @@
         "orderTime": "下单时间",
         "validityPeriod": "过期时间",
         "invoiceStatus": "发票状态",
-        "firstRechargeDiscount": "首次充值优惠",
+        "firstRechargeDiscount": "首充优惠",
         "freeActivityTip": "参加活动可获取更多Credits",
         "totalCredits": "{credits} Credits",
-        "freeCreditsTip": "免费额度200 Credits起"
+        "freeCreditsTip": "免费额度 500 Credits起"
     },
     "homePageUi": {
         "personalInfo": "个人信息",
