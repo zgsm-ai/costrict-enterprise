@@ -155,12 +155,13 @@ func (svc *ServiceContext) initializeStorage() error {
 		svc.StorageBackend = storage.NewDiskStorage(svc.Config.Log.LogFilePath)
 	case "s3":
 		s3Cfg := storage.S3Config{
-			Endpoint:  svc.Config.Log.S3.Endpoint,
-			Bucket:    svc.Config.Log.S3.Bucket,
-			AccessKey: svc.Config.Log.S3.AccessKey,
-			SecretKey: svc.Config.Log.S3.SecretKey,
-			UseSSL:    svc.Config.Log.S3.UseSSL,
-			Region:    svc.Config.Log.S3.Region,
+			Endpoint:        svc.Config.Log.S3.Endpoint,
+			Bucket:          svc.Config.Log.S3.Bucket,
+			AccessKey:       svc.Config.Log.S3.AccessKey,
+			SecretKey:       svc.Config.Log.S3.SecretKey,
+			UseSSL:          svc.Config.Log.S3.UseSSL,
+			Region:          svc.Config.Log.S3.Region,
+			SkipBucketCheck: svc.Config.Log.S3.SkipBucketCheck,
 		}
 		backend, err := storage.NewS3Storage(s3Cfg)
 		if err != nil {

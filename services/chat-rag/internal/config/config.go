@@ -87,12 +87,13 @@ type GenericToolParameter struct {
 
 // LogS3Config holds S3/MinIO storage configuration for log archival
 type LogS3Config struct {
-	Endpoint  string `mapstructure:"endpoint" yaml:"endpoint"`
-	Bucket    string `mapstructure:"bucket" yaml:"bucket"`
-	AccessKey string `mapstructure:"accessKey" yaml:"accessKey"`
-	SecretKey string `mapstructure:"secretKey" yaml:"secretKey"`
-	UseSSL    bool   `mapstructure:"useSSL" yaml:"useSSL"`
-	Region    string `mapstructure:"region" yaml:"region"`
+	Endpoint        string `mapstructure:"endpoint" yaml:"endpoint"`
+	Bucket          string `mapstructure:"bucket" yaml:"bucket"`
+	AccessKey       string `mapstructure:"accessKey" yaml:"accessKey"`
+	SecretKey       string `mapstructure:"secretKey" yaml:"secretKey"`
+	UseSSL          bool   `mapstructure:"useSSL" yaml:"useSSL"`
+	Region          string `mapstructure:"region" yaml:"region"`
+	SkipBucketCheck bool   `mapstructure:"skipBucketCheck" yaml:"skipBucketCheck"`
 }
 
 // LogConfig holds logging configuration
