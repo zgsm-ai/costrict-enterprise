@@ -138,6 +138,13 @@ func (h *ResponseHandler) extractStreamingData(rawLine string) (content string, 
 		}
 		if cachedTokens, ok := usageData["cached_tokens"].(float64); ok {
 			usage.CachedTokens = int(cachedTokens)
+		} else {
+			// 如果直接从usageData获取cached_tokens失败，尝试从prompt_tokens_details中获取
+			if promptTokensDetails, ok := usageData["prompt_tokens_details"].(map[string]interface{}); ok {
+				if cachedTokens, ok := promptTokensDetails["cached_tokens"].(float64); ok {
+					usage.CachedTokens = int(cachedTokens)
+				}
+			}
 		}
 	}
 
