@@ -74,15 +74,18 @@ func NewS3Storage(cfg S3Config) (*S3Storage, error) {
 // Write persists data as an object with the given key in the configured bucket.
 // The object is stored with content type "application/json".
 // ChatLog JSON payloads are typically 1-50 KB so single-part upload is sufficient.
-func (s *S3Storage) Write(key string, data []byte) error {
+func (s *S3Storage) Write(key string, data []byte) (*WriteInfo, error) {
 	reader := bytes.NewReader(data)
-	_, err := s.client.PutObject(context.Background(), s.bucket, key, reader, int64(len(data)), minio.PutObjectOptions{
+	info, err := s.client.PutObject(context.Background(), s.bucket, key, reader, int64(len(data)), minio.PutObjectOptions{
 		ContentType: "application/json",
 	})
 	if err != nil {
-		return fmt.Errorf("s3 storage: failed to write object %q: %w", key, err)
+		return nil, fmt.Errorf("s3 storage: failed to write object %q: %w", key, err)
 	}
-	return nil
+	return &WriteInfo{
+		FilePath:  info.Key,
+		ETag:      info.ETag,
+	}, nil
 }
 
 // Close is a no-op for S3Storage because the minio-go client does not hold

@@ -17,7 +17,7 @@ func TestWrite_BasicContent(t *testing.T) {
 	key := "hello.txt"
 	data := []byte("hello, disk storage")
 
-	if err := ds.Write(key, data); err != nil {
+	if _, err := ds.Write(key, data); err != nil {
 		t.Fatalf("Write(%q) returned error: %v", key, err)
 	}
 
@@ -37,7 +37,7 @@ func TestWrite_NestedKeyCreatesDirectories(t *testing.T) {
 	key := "2026-04/03/user/file.json"
 	data := []byte(`{"event":"test"}`)
 
-	if err := ds.Write(key, data); err != nil {
+	if _, err := ds.Write(key, data); err != nil {
 		t.Fatalf("Write(%q) returned error: %v", key, err)
 	}
 
@@ -69,10 +69,10 @@ func TestWrite_OverwriteExistingFile(t *testing.T) {
 	original := []byte("original content")
 	updated := []byte("updated content")
 
-	if err := ds.Write(key, original); err != nil {
+	if _, err := ds.Write(key, original); err != nil {
 		t.Fatalf("first Write(%q) returned error: %v", key, err)
 	}
-	if err := ds.Write(key, updated); err != nil {
+	if _, err := ds.Write(key, updated); err != nil {
 		t.Fatalf("second Write(%q) returned error: %v", key, err)
 	}
 
@@ -104,13 +104,13 @@ func TestWrite_PathTraversalRejected(t *testing.T) {
 	}
 
 	for _, key := range traversalKeys {
-		if err := ds.Write(key, []byte("exploit")); err == nil {
+		if _, err := ds.Write(key, []byte("exploit")); err == nil {
 			t.Errorf("Write(%q) should have returned an error for path traversal, but got nil", key)
 		}
 	}
 
 	// Verify that a valid nested key still works.
-	if err := ds.Write("safe/nested/file.txt", []byte("ok")); err != nil {
+	if _, err := ds.Write("safe/nested/file.txt", []byte("ok")); err != nil {
 		t.Errorf("Write with safe key returned unexpected error: %v", err)
 	}
 }
@@ -126,7 +126,7 @@ func TestWrite_AbsoluteKeyRejected(t *testing.T) {
 	}
 
 	for _, key := range absKeys {
-		if err := ds.Write(key, []byte("data")); err == nil {
+		if _, err := ds.Write(key, []byte("data")); err == nil {
 			t.Errorf("Write(%q) should have returned an error for absolute key, but got nil", key)
 		}
 	}
@@ -146,7 +146,7 @@ func TestWrite_SymlinkEscapeRejected(t *testing.T) {
 	ds := NewDiskStorage(storageDir)
 
 	// Attempt to write through the symlink — should be rejected.
-	err := ds.Write("linked/evil.json", []byte("escape attempt"))
+	_, err := ds.Write("linked/evil.json", []byte("escape attempt"))
 	if err == nil {
 		t.Fatal("Write through symlink pointing outside base path should have been rejected, but got nil")
 	}

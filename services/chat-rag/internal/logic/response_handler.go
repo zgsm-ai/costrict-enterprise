@@ -136,6 +136,9 @@ func (h *ResponseHandler) extractStreamingData(rawLine string) (content string, 
 		if totalTokens, ok := usageData["total_tokens"].(float64); ok {
 			usage.TotalTokens = int(totalTokens)
 		}
+		if cachedTokens, ok := usageData["cached_tokens"].(float64); ok {
+			usage.CachedTokens = int(cachedTokens)
+		}
 	}
 
 	return

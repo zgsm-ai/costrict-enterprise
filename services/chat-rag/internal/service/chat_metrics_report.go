@@ -9,6 +9,7 @@ import (
 
 	"github.com/zgsm-ai/chat-rag/internal/logger"
 	"github.com/zgsm-ai/chat-rag/internal/model"
+	"github.com/zgsm-ai/chat-rag/internal/storage"
 	"go.uber.org/zap"
 )
 
@@ -55,7 +56,11 @@ type Label struct {
 	Model              string `json:"model,omitempty"`
 	RoutedModel        string `json:"routed_model,omitempty"`
 	TaskID             string `json:"task_id,omitempty"`
-	LocalLogPath       string `json:"local_log_path,omitempty"`
+	// LocalLogPath holds the log file path on disk (DiskStorage) or the S3 object key.
+	LocalLogPath string `json:"local_log_path,omitempty"`
+	// StorageVersionID holds the S3 object version ID assigned by the storage backend.
+	// Empty when using DiskStorage or when S3 versioning is not enabled on the bucket.
+	StorageVersionID string `json:"storage_version_id,omitempty"`
 }
 
 // MetricsReport 表示完整的指标上报数据
@@ -67,14 +72,16 @@ type MetricsReport struct {
 	Label           Label           `json:"label"`
 }
 
-// ReportMetrics 上报聊天指标,errors 为了防止并发问题,单独处理
-func (mr *ChatMetricsReporter) ReportMetrics(chatLog *model.ChatLog, localLogPath string, errors ...string) {
+// ReportMetrics 上报聊天指标,errors 为了防止并发问题,单独处理。
+// writeInfo 由 StorageBackend.Write 返回，携带文件路径和 S3 版本号等元数据；
+// 传 nil 时按空值处理。
+func (mr *ChatMetricsReporter) ReportMetrics(chatLog *model.ChatLog, writeInfo *storage.WriteInfo, errors ...string) {
 	if mr.ReportUrl == "" {
 		logger.Debug("metrics report url is empty, skip reporting")
 		return
 	}
 
-	report := mr.convertChatLogToReport(chatLog, localLogPath, errors...)
+	report := mr.convertChatLogToReport(chatLog, writeInfo, errors...)
 
 	if err := mr.sendReport(report, chatLog.Identity.AuthToken); err != nil {
 		logger.Error("failed to report metrics", zap.String("request_id", chatLog.Identity.RequestID), zap.Error(err))
@@ -82,12 +89,16 @@ func (mr *ChatMetricsReporter) ReportMetrics(chatLog *model.ChatLog, localLogPat
 }
 
 // convertChatLogToReport 将 ChatLog 转换为 MetricsReport
-func (mr *ChatMetricsReporter) convertChatLogToReport(chatLog *model.ChatLog, localLogPath string, errors ...string) *MetricsReport {
+func (mr *ChatMetricsReporter) convertChatLogToReport(chatLog *model.ChatLog, writeInfo *storage.WriteInfo, errors ...string) *MetricsReport {
+	label := mr.buildLabel(chatLog)
+	if writeInfo != nil {
+		label.LocalLogPath = writeInfo.FilePath
+	}
 	report := &MetricsReport{
 		RequestID:       chatLog.Identity.RequestID,
 		RequestMetrics:  mr.buildRequestMetrics(chatLog),
 		ResponseMetrics: mr.buildResponseMetrics(chatLog, errors),
-		Label:           mr.buildLabel(chatLog, localLogPath),
+		Label:           label,
 	}
 
 	if chatLog.Identity.UserInfo != nil && chatLog.Identity.UserInfo.EmployeeNumber != "" {
@@ -129,7 +140,7 @@ func (mr *ChatMetricsReporter) buildResponseMetrics(chatLog *model.ChatLog, erro
 		Duration:         float64(chatLog.Latency.TotalLatency),
 		PromptTokens:     chatLog.Usage.PromptTokens,
 		CompletionTokens: chatLog.Usage.CompletionTokens,
-		CacheTokens:      0, // 默认为0，如果后续有缓存tokens数据可以添加
+		CacheTokens:      chatLog.Usage.CachedTokens, // 缓存
 	}
 
 	// 首token时长 (ms)
@@ -164,13 +175,12 @@ func (mr *ChatMetricsReporter) buildResponseMetrics(chatLog *model.ChatLog, erro
 }
 
 // buildLabel 构建标签
-func (mr *ChatMetricsReporter) buildLabel(chatLog *model.ChatLog, localLogPath string) Label {
+func (mr *ChatMetricsReporter) buildLabel(chatLog *model.ChatLog) Label {
 	label := Label{
 		ClientVersion: chatLog.Identity.ClientVersion,
 		Model:         chatLog.Params.Model,
 		RoutedModel:   chatLog.Params.RoutedModel,
 		TaskID:        chatLog.Identity.TaskID,
-		LocalLogPath:  localLogPath,
 	}
 
 	// 请求时间 - 使用chatLog的时间戳
@@ -236,4 +246,3 @@ func (mr *ChatMetricsReporter) sendReport(report *MetricsReport, authToken strin
 
 	return nil
 }
-

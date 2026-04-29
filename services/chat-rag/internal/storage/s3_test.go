@@ -109,7 +109,7 @@ func TestS3Storage_Integration_WriteAndVerify(t *testing.T) {
 	key := "integration-test/hello.json"
 	data := []byte(`{"msg":"hello from integration test"}`)
 
-	if err := s.Write(key, data); err != nil {
+	if _, err := s.Write(key, data); err != nil {
 		t.Fatalf("Write(%q) returned error: %v", key, err)
 	}
 

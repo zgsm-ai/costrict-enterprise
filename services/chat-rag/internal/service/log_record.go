@@ -71,9 +71,9 @@ type LoggerRecordService struct {
 	// classifyModel  string
 	// llmClient            client.LLMInterface
 
-	logFilePath     string // Permanent storage log directory path
-	storageBackend  storage.StorageBackend
-	metricsService  MetricsInterface
+	logFilePath    string // Permanent storage log directory path
+	storageBackend storage.StorageBackend
+	metricsService MetricsInterface
 	deptClient     client.DepartmentInterface
 	instanceID     string
 	// enableClassification bool
@@ -597,15 +597,19 @@ func (ls *LoggerRecordService) saveLogToPermanentStorage(chatLog *model.ChatLog)
 	data := []byte(jsonStr)
 	data = append(data, '\n') // trailing newline for consistency
 
-	// Write via storage backend if available, otherwise fall back to direct file write
+	// Write via storage backend if available, otherwise fall back to direct file write.
+	// writeInfo carries the file path / S3 version-id returned by the backend.
+	var writeInfo *storage.WriteInfo
 	if ls.storageBackend != nil {
-		if err := ls.storageBackend.Write(storageKey, data); err != nil {
+		info, err := ls.storageBackend.Write(storageKey, data)
+		if err != nil {
 			logger.Error("Failed to write log to storage backend",
 				zap.String("key", storageKey),
 				zap.Error(err),
 			)
 			return
 		}
+		writeInfo = info
 		logger.Info("Log saved in storage", zap.String("key", storageKey))
 	} else {
 		// Backward compatibility: direct file write when no backend is injected
@@ -616,63 +620,22 @@ func (ls *LoggerRecordService) saveLogToPermanentStorage(chatLog *model.ChatLog)
 			)
 			return
 		}
+		writeInfo = &storage.WriteInfo{FilePath: storageKey} 
 		logger.Info("Log saved in storage", zap.String("fileName", logFile))
 	}
 
-	// Report metrics — storageKey is already relative, suitable for both disk and S3 modes
+	// Report metrics — pass writeInfo so the reporter can record the log path and S3 version-id.
 	if ls.metricsReporter != nil {
-		relativeLogFile := ls.logPathForMetrics(storageKey)
 		var e string = ""
 		if len(chatLog.Error) > 0 {
 			// first item's first key
-			for key, _ := range chatLog.Error[0] {
+			for key := range chatLog.Error[0] {
 				e = string(key)
 				break
 			}
 		}
-		go ls.metricsReporter.ReportMetrics(chatLog, relativeLogFile, e) // async report metrics with log path relative to the log root
+		go ls.metricsReporter.ReportMetrics(chatLog, writeInfo, e) // async report metrics
 	}
-}
-
-func (ls *LoggerRecordService) logPathForMetrics(logFile string) string {
-	// When using StorageBackend, the key is already relative — use it directly.
-	// For backward compatibility (absolute paths from direct file write), derive the relative path.
-	var relativeLogFile string
-	if filepath.IsAbs(logFile) {
-		var err error
-		relativeLogFile, err = filepath.Rel(ls.logFilePath, logFile)
-		if err != nil {
-			logger.Warn("Failed to derive relative log path for metrics report",
-				zap.String("logFile", logFile),
-				zap.String("logRoot", ls.logFilePath),
-				zap.Error(err),
-			)
-			return logFile
-		}
-
-		if relativeLogFile == ".." || strings.HasPrefix(relativeLogFile, ".."+string(filepath.Separator)) {
-			logger.Warn("Derived log path escaped log root; keeping original path for metrics report",
-				zap.String("logFile", logFile),
-				zap.String("logRoot", ls.logFilePath),
-				zap.String("relativeLogFile", relativeLogFile),
-			)
-			return logFile
-		}
-	} else {
-		relativeLogFile = logFile
-	}
-
-	if len(relativeLogFile) > metricsLocalLogPathMaxBytes {
-		truncatedLogFile := truncateUTF8ByBytes(relativeLogFile, metricsLocalLogPathMaxBytes)
-		logger.Warn("Relative log path exceeded metrics limit and was truncated",
-			zap.String("relativeLogFile", relativeLogFile),
-			zap.String("truncatedLogFile", truncatedLogFile),
-			zap.Int("maxBytes", metricsLocalLogPathMaxBytes),
-		)
-		return truncatedLogFile
-	}
-
-	return relativeLogFile
 }
 
 func truncateUTF8ByBytes(s string, maxBytes int) string {
