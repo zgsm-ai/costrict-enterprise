@@ -57,8 +57,9 @@ export interface InvoiceModalFormData {
     title: string;
     taxNumber: string;
     address: string;
-    phone: string;
+    companyPhone: string;
     bank: string;
     bankAccount: string;
     email: string;
+    phone: string;
 }

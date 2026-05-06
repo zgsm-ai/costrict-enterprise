@@ -239,6 +239,7 @@ export interface PostCreateInvoiceReq {
     bank_name?: string;
     bank_account?: string;
     receive_email: string;
+    phone?: string;
     order_id: string;
     invoice_content: string;
 }

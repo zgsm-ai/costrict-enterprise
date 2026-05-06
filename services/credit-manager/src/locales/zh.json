@@ -405,8 +405,9 @@
             "special": "增值税专用发票"
         },
         "invoiceTitle": {
-            "label": "发票抬头",
+            "label": "发票抬头：",
             "companyPlaceholder": "请输入企业/单位全称",
+            "personalPlaceholder": "请输入真实姓名",
             "personalValue": "个人"
         },
         "taxNumber": {
@@ -419,7 +420,7 @@
         },
         "phone": {
             "label": "企业注册电话：",
-            "placeholder": "请输入号码"
+            "placeholder": "请输入电话号码"
         },
         "bank": {
             "label": "开户银行：",
@@ -428,6 +429,10 @@
         "bankAccount": {
             "label": "银行账号：",
             "placeholder": "请输入银行账号"
+        },
+        "mobile": {
+            "label": "电话号码：",
+            "placeholder": "请输入电话号码"
         },
         "email": {
             "label": "收票邮箱：",
@@ -449,10 +454,18 @@
             "enterEmail": "请输入收票邮箱",
             "emailFormatInvalid": "请输入正确的邮箱格式",
             "enterInvoiceTitle": "请输入发票抬头",
+            "enterTaxNumber": "请输入纳税人识别号",
             "taxNumberTooLong": "纳税人识别号不能超过18位",
             "taxNumberDigitsOnly": "纳税人识别号只能包含数字",
             "taxNumberFormatInvalid": "纳税人识别号须为18位数字和大写字母",
-            "invoiceTitleEmpty": "发票抬头不能为空"
+            "invoiceTitleEmpty": "发票抬头不能为空",
+            "invoiceTitleInvalid": "请输入有效的真实姓名",
+            "enterMobile": "请输入电话号码",
+            "mobileFormatInvalid": "请输入正确的电话号码格式",
+            "enterAddress": "请输入企业注册地址",
+            "enterCompanyPhone": "请输入企业注册电话",
+            "enterBank": "请输入开户银行",
+            "enterBankAccount": "请输入银行账号"
         },
         "submitSuccess": "提交申请成功",
         "submitFailed": "提交申请失败"

@@ -403,8 +403,9 @@
             "special": "VAT Special Invoice"
         },
         "invoiceTitle": {
-            "label": "Invoice Title",
+            "label": "Invoice Title:",
             "companyPlaceholder": "Please enter the full name of the company/organization",
+            "personalPlaceholder": "Please enter your real name",
             "personalValue": "Personal"
         },
         "taxNumber": {
@@ -427,6 +428,10 @@
             "label": "Bank Account:",
             "placeholder": "Please enter the bank account"
         },
+        "mobile": {
+            "label": "Phone Number:",
+            "placeholder": "Please enter your phone number"
+        },
         "email": {
             "label": "Invoice Email:",
             "placeholder": "Please enter your email address, electronic invoices will be sent to this email"
@@ -447,10 +452,18 @@
             "enterEmail": "Please enter invoice email",
             "emailFormatInvalid": "Please enter a valid email format",
             "enterInvoiceTitle": "Please enter invoice title",
+            "enterTaxNumber": "Please enter tax identification number",
             "taxNumberTooLong": "Tax identification number cannot exceed 18 digits",
             "taxNumberDigitsOnly": "Tax identification number can only contain digits",
             "taxNumberFormatInvalid": "Tax identification number must be 18 alphanumeric characters (digits and uppercase letters)",
-            "invoiceTitleEmpty": "Invoice title cannot be empty"
+            "invoiceTitleEmpty": "Invoice title cannot be empty",
+            "invoiceTitleInvalid": "Please enter a valid real name",
+            "enterMobile": "Please enter phone number",
+            "mobileFormatInvalid": "Please enter a valid phone number format",
+            "enterAddress": "Please enter company registration address",
+            "enterCompanyPhone": "Please enter company registration phone",
+            "enterBank": "Please enter bank name",
+            "enterBankAccount": "Please enter bank account"
         },
         "submitSuccess": "Application submitted successfully",
         "submitFailed": "Failed to submit application"

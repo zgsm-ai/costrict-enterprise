@@ -5,10 +5,21 @@ import vue from '@vitejs/plugin-vue';
 import viteCompression from 'vite-plugin-compression';
 import vueDevTools from 'vite-plugin-vue-devtools';
 import tailwindcss from '@tailwindcss/vite';
+import { viteMockServe } from 'vite-plugin-mock';
 
 // https://vite.dev/config/
-export default defineConfig({
-    plugins: [vue(), viteCompression(), vueDevTools(), tailwindcss()],
+export default defineConfig(({ command, mode }) => ({
+    plugins: [
+        vue(),
+        viteCompression(),
+        vueDevTools(),
+        tailwindcss(),
+        viteMockServe({
+            mockPath: 'mock',
+            enable: command === 'serve' && mode === 'mock',
+            watchFiles: true,
+        }),
+    ],
     base: '/credit/manager',
     resolve: {
         alias: {
@@ -20,33 +31,33 @@ export default defineConfig({
         host: true,
         proxy: {
             '/quota-manager': {
-                target: 'https://costrict.sangfor.com:30443',
+                target: 'https://zgsmtest.cn:30443/',
                 // target: 'https://zgsm.sangfor.com',
                 // target: 'http://10.48.19.1:8099',
                 changeOrigin: true,
                 secure: false,
             },
             '/oidc-auth': {
-                target: 'https://costrict.sangfor.com:30443',
+                target: 'https://zgsmtest.cn:30443/',
                 // target: 'https://zgsm.sangfor.com',
                 // target: 'http://10.48.19.11:8080',
                 changeOrigin: true,
                 secure: false,
             },
             '/quota-order-manager': {
-                target: 'https://costrict.sangfor.com:30443',
+                target: 'https://zgsmtest.cn:30443/',
                 // target: 'https://zgsm.sangfor.com',
                 // target: 'http://10.48.19.11:8080',
                 changeOrigin: true,
                 secure: false,
             },
             '/operational_activities': {
-                target: 'https://costrict.sangfor.com:30443',
-                // target: 'https://zgsm.sangfor.com',
+                // target: 'https://costrict.sangfor.com:30443',
+                target: 'https://zgsm.sangfor.com',
                 // target: 'http://10.48.19.11:8080',
                 changeOrigin: true,
                 secure: false,
-            }
+            },
         },
     },
-});
+}));
