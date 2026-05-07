@@ -385,7 +385,7 @@ func (l *ChatCompletionLogic) ChatCompletionStream() error {
 				return l.handleStreamError(err, chatLog)
 			}
 
-			retryable := isRetryableAPIError(err)
+			retryable := l.isSameModelRetryableError(err)
 			logger.WarnC(l.ctx, "single-model retry(stream): attempt failed before first token",
 				zap.String("model", l.request.Model),
 				zap.Bool("retryable", retryable),
@@ -452,7 +452,7 @@ func (l *ChatCompletionLogic) ChatCompletionStream() error {
 				return l.handleStreamError(err, chatLog)
 			}
 
-			retryable := isRetryableAPIError(err)
+			retryable := l.isSameModelRetryableError(err)
 			logger.WarnC(l.ctx, "degradation(stream): attempt failed before first token",
 				zap.String("model", modelName),
 				zap.Bool("retryable", retryable),
@@ -478,6 +478,13 @@ func (l *ChatCompletionLogic) ChatCompletionStream() error {
 
 		// If the error is context canceled, stop trying other models
 		if errors.Is(lastErr, context.Canceled) || errors.Is(l.ctx.Err(), context.Canceled) {
+			break
+		}
+		if !l.isDegradationSwitchableError(lastErr) {
+			logger.WarnC(l.ctx, "degradation(stream): non-switchable error, stopping degradation",
+				zap.String("model", modelName),
+				zap.Error(lastErr),
+			)
 			break
 		}
 	}
@@ -1061,7 +1068,7 @@ func (l *ChatCompletionLogic) callModelWithRetry(modelName string, params types.
 		}
 
 		lastErr = err
-		retryable := isRetryableAPIError(err)
+		retryable := l.isSameModelRetryableError(err)
 		logger.WarnC(l.ctx, "single-model retry: attempt failed",
 			zap.String("model", modelName),
 			zap.Bool("retryable", retryable),
@@ -1134,6 +1141,13 @@ func (l *ChatCompletionLogic) callWithDegradation(params types.LLMRequestParams,
 			)
 			return nilResp, err
 		}
+		if !l.isDegradationSwitchableError(err) {
+			logger.WarnC(l.ctx, "degradation: non-switchable error, stopping degradation",
+				zap.String("model", modelName),
+				zap.Error(err),
+			)
+			return nilResp, err
+		}
 
 		logger.WarnC(l.ctx, "degradation: model failed, moving to next",
 			zap.String("model", modelName),
@@ -1143,24 +1157,120 @@ func (l *ChatCompletionLogic) callWithDegradation(params types.LLMRequestParams,
 	return nilResp, lastErr
 }
 
-// isRetryableAPIError returns true when we should retry the same model: timeout/network/5xx
-func isRetryableAPIError(err error) bool {
+// isSameModelRetryableError returns true when the same model may recover by retrying.
+func (l *ChatCompletionLogic) isSameModelRetryableError(err error) bool {
 	if err == nil {
 		return false
 	}
-	if errors.Is(err, context.Canceled) {
+	if errors.Is(err, context.Canceled) || errors.Is(l.ctx.Err(), context.Canceled) {
 		return false
 	}
+	if l.isContextLengthError(err) {
+		return false
+	}
+
+	if _, ok := err.(*types.IdleTimeoutError); ok {
+		return true
+	}
+
 	if apiErr, ok := err.(*types.APIError); ok {
-		if apiErr.StatusCode >= http.StatusInternalServerError ||
-			apiErr.Code == types.ErrCodeServerBusy ||
-			apiErr.Code == types.ErrCodeModelServiceUnavailable {
+		switch apiErr.Code {
+		case types.ErrCodeContextExceeded,
+			types.ErrCodeUnauthorized,
+			types.ErrCodeEmptyMessageContent,
+			types.ErrCodeModelUnavailable:
+			return false
+		case types.ErrCodeServerBusy,
+			types.ErrCodeNetworkError:
 			return true
 		}
+
+		switch apiErr.StatusCode {
+		case http.StatusRequestTimeout:
+			return true
+		case http.StatusBadRequest,
+			http.StatusUnauthorized,
+			http.StatusForbidden,
+			http.StatusNotFound,
+			http.StatusTooManyRequests:
+			return false
+		}
+		return apiErr.StatusCode >= http.StatusInternalServerError
+	}
+
+	return true
+}
+
+// isDegradationSwitchableError returns true when auto mode should try the next model.
+func (l *ChatCompletionLogic) isDegradationSwitchableError(err error) bool {
+	if err == nil {
 		return false
 	}
-	// fallback: retry once for non-APIError
+	if errors.Is(err, context.Canceled) || errors.Is(l.ctx.Err(), context.Canceled) {
+		return false
+	}
+	if l.isContextLengthError(err) {
+		return false
+	}
+
+	if _, ok := err.(*types.IdleTimeoutError); ok {
+		return true
+	}
+
+	if apiErr, ok := err.(*types.APIError); ok {
+		switch apiErr.Code {
+		case types.ErrCodeContextExceeded,
+			types.ErrCodeUnauthorized,
+			types.ErrCodeEmptyMessageContent:
+			return false
+		}
+
+		switch apiErr.StatusCode {
+		case http.StatusBadRequest:
+			return isModelCompatibilityError(apiErr)
+		case http.StatusUnauthorized, http.StatusForbidden:
+			return false
+		case http.StatusRequestTimeout, http.StatusTooManyRequests:
+			return true
+		}
+
+		switch apiErr.Code {
+		case types.ErrCodeModelServiceUnavailable,
+			types.ErrCodeModelUnavailable,
+			types.ErrCodeTooManyRequests,
+			types.ErrCodeServerBusy,
+			types.ErrCodeNetworkError,
+			types.ErrCodeInvalidResponseContent:
+			return true
+		}
+
+		return apiErr.StatusCode >= http.StatusInternalServerError
+	}
+
 	return true
+}
+
+func isModelCompatibilityError(err error) bool {
+	if err == nil {
+		return false
+	}
+	errMsg := strings.ToLower(err.Error())
+	compatibilitySignals := []string{
+		"reasoning_content",
+		"thinking is enabled",
+		"tool call",
+		"tool_call",
+		"function call",
+		"function_call",
+		"unsupported tool",
+		"unsupported function",
+	}
+	for _, signal := range compatibilitySignals {
+		if strings.Contains(errMsg, signal) {
+			return true
+		}
+	}
+	return false
 }
 
 // handleRawModeStream handles raw mode streaming by directly passing through LLM response
@@ -1229,6 +1339,7 @@ func (l *ChatCompletionLogic) handleRawModeStream(
 				}
 			}
 
+			l.streamCommitted = true
 			if _, err := fmt.Fprintf(l.writer, "%s\n\n", llmResp.ResonseLine); err != nil {
 				return err
 			}
@@ -1239,17 +1350,7 @@ func (l *ChatCompletionLogic) handleRawModeStream(
 	})
 
 	if err != nil {
-		if l.isContextLengthError(err) {
-			logger.ErrorC(ctx, "Input context too long in raw mode", zap.Error(err))
-			lengthErr := types.NewContextTooLongError()
-			l.responseHandler.sendSSEError(ctx, l.writer, lengthErr)
-			chatLog.AddError(types.ErrContextExceeded, lengthErr)
-			return nil
-		}
-
-		l.responseHandler.sendSSEError(ctx, l.writer, err)
-		chatLog.AddError(types.ErrApiError, err)
-		return nil
+		return err
 	}
 
 	// Check if we received any valid content (same logic as completeStreamResponse)
@@ -1259,11 +1360,7 @@ func (l *ChatCompletionLogic) handleRawModeStream(
 	if trimmedContent == "" {
 		logger.WarnC(ctx, "[raw mode] detected invalid or empty response")
 
-		// Send error response
-		noContentErr := types.NewInvaildResponseContentError()
-		l.responseHandler.sendSSEError(ctx, l.writer, noContentErr)
-		chatLog.AddError(types.ErrApiError, noContentErr)
-		return nil
+		return types.NewInvaildResponseContentError()
 	}
 
 	// Record statistics and total latency
