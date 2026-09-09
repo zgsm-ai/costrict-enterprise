@@ -39,6 +39,7 @@
 
             <n-layout-content class="content-area ml-2">
                 <div class="page-content">
+                    <MaintenanceState v-if="menuBlocked" />
                     <!-- 个人信息 -->
                     <section
                         class="info"
@@ -90,7 +91,7 @@
                     <!-- 订阅 -->
                     <section
                         class="subscription"
-                        v-if="activeMenuKey === 'subscription'"
+                        v-if="activeMenuKey === 'subscription' && !menuBlocked"
                     >
                         <div class="info-title text-white text-xl mb-9">
                             {{ t('homePageUi.subscription') }}
@@ -110,7 +111,7 @@
                     <!-- 用量统计 -->
                     <section
                         class="usage"
-                        v-if="activeMenuKey === 'usage'"
+                        v-if="activeMenuKey === 'usage' && !menuBlocked"
                     >
                         <div class="info-title text-white text-xl mb-9">
                             {{ t('homePageUi.usageStatistics') }}
@@ -289,7 +290,9 @@ import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 // import { useRouter } from 'vue-router';
 import { NLayout, NLayoutSider, NLayoutContent, NLayoutHeader, NMenu } from 'naive-ui';
+import { useMaintenanceStore } from '@/store/maintenance';
 import CommonCard from '@/components/common-card.vue';
+import MaintenanceState from '@/components/maintenance-state.vue';
 import CreditTransferModal from '@/views/Home/credit-transfer-modal.vue';
 import CreditCodeModal from './credit-code-modal.vue';
 import ProfileSection from './components/profile-section.vue';
@@ -320,6 +323,9 @@ const {
     markMenuAsLoaded,
     resetUsageMenuLoadedState,
 } = useMenu();
+
+const maintenance = useMaintenanceStore();
+const menuBlocked = computed(() => maintenance.isTabBlocked(activeMenuKey.value));
 
 // 使用个人信息hook
 const {
@@ -413,7 +419,7 @@ const updateCreditModalShow = (status: boolean) => {
 
 // 根据菜单加载相应的数据
 const loadMenuData = async (menuKey: MenuKey) => {
-    if (!isTokenInitialized.value) return;
+    if (!isTokenInitialized.value || maintenance.isTabBlocked(menuKey)) return;
 
     setMenuLoading(menuKey, true);
 
@@ -461,6 +467,15 @@ watch(
         immediate: true,
     },
 );
+
+watch(menuBlocked, (blocked) => {
+    if (blocked) {
+        showCreditTransferModal.value = false;
+        showCreditCodeModal.value = false;
+    } else {
+        void loadMenuData(activeMenuKey.value);
+    }
+});
 
 // 监听菜单切换，加载相应数据
 watch(activeMenuKey, (newKey) => {

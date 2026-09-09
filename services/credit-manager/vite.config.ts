@@ -37,6 +37,11 @@ export default defineConfig(({ command, mode }) => {
             port: 9527,
             host: true,
             proxy: {
+                '/costrict-static': {
+                    target: proxyTarget('PROXY_TARGET_STATIC', 'https://zgsm.sangfor.com'),
+                    changeOrigin: true,
+                    secure: false,
+                },
                 '/quota-manager': {
                     target: proxyTarget('PROXY_TARGET_QUOTA', 'https://zgsmtest.cn:30443/'),
                     changeOrigin: true,

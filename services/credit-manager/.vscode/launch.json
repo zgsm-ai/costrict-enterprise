@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "启动开发服务",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "npm run dev -- --port 9527 --strictPort --open /credit/manager/",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "启动开发服务（Mock）",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "npm run dev:mock -- --port 9527 --strictPort --open /credit/manager/",
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

@@ -78,9 +78,9 @@ service.interceptors.response.use(
         }
         messageInstance.error(
             messageText ||
-            error.response?.data?.message ||
-            error.message ||
-            t('common.request.networkError'),
+                error.response?.data?.message ||
+                error.message ||
+                t('common.request.networkError'),
             {
                 duration: 5000,
             },
@@ -107,4 +107,13 @@ export const put = <T = unknown>(url: string, data?: unknown): Promise<T> => {
 
 export const del = <T = unknown>(url: string, params?: unknown): Promise<T> => {
     return request({ method: 'DELETE', url, params });
+};
+
+// 公共静态公告不携带登录凭证，也不使用业务接口的响应包装和登录跳转。
+export const getStaticJson = async <T>(url: string): Promise<T> => {
+    const response = await axios.get<T>(url, {
+        timeout: 10000,
+        params: { _t: Date.now() },
+    });
+    return response.data;
 };

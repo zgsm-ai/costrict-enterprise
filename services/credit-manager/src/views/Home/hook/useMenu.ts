@@ -4,7 +4,8 @@
 import { ref, watch, h, computed, type ComputedRef } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
-import { type MenuOption } from 'naive-ui';
+import { useMessage, type MenuOption } from 'naive-ui';
+import { useMaintenanceStore } from '@/store/maintenance';
 import MenuIcons from '../components/menu-icons.vue';
 import newIcons from '@/assets/new.svg';
 
@@ -13,6 +14,8 @@ export type MenuKey = 'profile' | 'subscription' | 'usage' | 'activity';
 
 export function useMenu() {
     const { t, locale } = useI18n();
+    const maintenance = useMaintenanceStore();
+    const message = useMessage();
     const route = useRoute();
     const router = useRouter();
 
@@ -131,7 +134,13 @@ export function useMenu() {
 
     // 处理菜单选择
     const handleMenuSelect = (key: string) => {
-        activeMenuKey.value = key as MenuKey;
+        maintenance.now = Date.now();
+        if (maintenance.isTabBlocked(key)) {
+            message.warning(
+                t('maintenance.unavailable', { end: maintenance.announcement?.end_time }),
+            );
+            return;
+        }
         // 更新URL参数，同时清除state参数
         const filteredQuery = Object.fromEntries(
             Object.entries(route.query).filter(([param]) => param !== 'state'),

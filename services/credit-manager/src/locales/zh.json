@@ -1,4 +1,14 @@
 {
+    "maintenance": {
+        "title": "系统维护中",
+        "time": "维护时间（北京时间）：{start} 至 {end}",
+        "quota": "配额影响：{description}",
+        "order": "订单影响：{description}",
+        "unavailable": "该页面在维护期间暂不可用，请于 {end}（北京时间）后重试。",
+        "loading": "正在检查系统状态…",
+        "back": "返回个人信息",
+        "noImpact": "用量统计和订阅功能可正常使用。"
+    },
     "creditCodeModal": {
         "title": "Credit转出&转入",
         "codeLabel": "兑换码：",

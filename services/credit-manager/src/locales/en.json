@@ -1,4 +1,14 @@
 {
+    "maintenance": {
+        "title": "System maintenance",
+        "time": "Maintenance window (UTC+8): {start} – {end}",
+        "quota": "Quota impact: {description}",
+        "order": "Order impact: {description}",
+        "unavailable": "This page is temporarily unavailable during maintenance. Please try again after {end} (UTC+8).",
+        "loading": "Checking system status…",
+        "back": "Back to profile",
+        "noImpact": "Usage statistics and subscriptions remain available."
+    },
     "creditCodeModal": {
         "title": "Credit transfer",
         "codeLabel": "Redemption Code:",

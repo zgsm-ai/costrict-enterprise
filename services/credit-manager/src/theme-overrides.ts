@@ -147,6 +147,10 @@ export const themeOverrides: GlobalThemeOverrides = {
         boxShadowFocus: '#1770E6',
     },
     Alert: {
+        colorWarning: 'rgba(255, 255, 255, 0.06)',
+        borderWarning: '1px solid rgba(255, 255, 255, 0.2)',
+        titleTextColorWarning: '#fff',
+        contentTextColorWarning: 'rgba(255, 255, 255, 0.8)',
         color: 'rgba(255, 255, 255, 0.06)',
         border: '1px solid rgba(255, 255, 255, 0.2)',
         titleTextColor: '#fff',
