@@ -128,6 +128,8 @@ https://<oidc-auth-host>/oidc-auth/api/v1/webhooks/github
 
 生产环境建议通过 Secret 环境变量注入 Webhook Secret，不要将密钥直接提交到 values 文件。
 
+本地或部署后联调可使用 [GitHub Star Webhook 模拟脚本及使用说明](scripts/README.md)。
+
 
 ## Kubernetes 部署
 

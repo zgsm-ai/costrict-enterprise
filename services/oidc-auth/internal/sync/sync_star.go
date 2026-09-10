@@ -177,18 +177,20 @@ func (s *SyncStar) Stargazers() error {
 		processedMap[p.GitHubID] = p
 	}
 
-	for i, u := range users {
+	updates := make([]repository.GithubStarUpdate, 0, len(users))
+	for _, u := range users {
+		marker := ""
 		if _, ok := processedMap[u.GithubID]; ok {
-			users[i].GithubStar = fmt.Sprintf("%s.%s", s.Owner, s.Repo)
-		} else {
-			users[i].GithubStar = ""
+			marker = fmt.Sprintf("%s.%s", s.Owner, s.Repo)
 		}
+		updates = append(updates, repository.GithubStarUpdate{
+			GithubID: u.GithubID, GithubStar: marker,
+		})
 	}
 
-	err = repository.GetDB().BatchUpsert(ctx, users, constants.DBIndexField)
-	//errs = repository.GetDB().BatchUpsert(ctx, processedData, constants.DBIndexField)  // chose to use users instead of processedData
+	err = repository.GetDB().BatchUpdateGithubStars(ctx, updates)
 	if err != nil {
-		log.Error(nil, "Failed to batch upsert stargazers: %v", err)
+		log.Error(nil, "Failed to batch update GitHub star status: %v", err)
 		return err
 	}
 	return nil

@@ -129,6 +129,8 @@ https://<oidc-auth-host>/oidc-auth/api/v1/webhooks/github
 
 In production, inject the webhook secret through a secret-backed environment variable instead of committing it to a values file.
 
+For manual testing, see the [GitHub Star webhook simulator and usage guide (Chinese)](scripts/README.md).
+
 ## Kubernetes Deployment
 
 ```bash

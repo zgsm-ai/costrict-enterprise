@@ -332,6 +332,45 @@ func (d *Database) BatchUpsert(ctx context.Context, models any, uniqueField stri
 	})
 }
 
+// GithubStarUpdate contains only the identity used for matching and its star marker.
+type GithubStarUpdate struct {
+	GithubID   string
+	GithubStar string
+}
+
+// BatchUpdateGithubStars updates existing users without writing a stale AuthUser
+// snapshot over concurrent login, device, or invite-code changes. Matching the
+// current github_id also avoids applying a result to a user whose binding changed.
+func (d *Database) BatchUpdateGithubStars(ctx context.Context, updates []GithubStarUpdate) error {
+	groups := make(map[string][]string)
+	for _, update := range updates {
+		if update.GithubID == "" {
+			continue
+		}
+		groups[update.GithubStar] = append(groups[update.GithubStar], update.GithubID)
+	}
+	if len(groups) == 0 {
+		return nil
+	}
+
+	return d.withTransaction(ctx, func(tx *gorm.DB) error {
+		for marker, ids := range groups {
+			for start := 0; start < len(ids); start += batchUpsertSize {
+				end := start + batchUpsertSize
+				if end > len(ids) {
+					end = len(ids)
+				}
+				if err := tx.WithContext(ctx).Model(&AuthUser{}).
+					Where("github_id IN ?", ids[start:end]).
+					UpdateColumn("github_star", marker).Error; err != nil {
+					return fmt.Errorf("failed to update GitHub star batch starting at index %d: %w", start, err)
+				}
+			}
+		}
+		return nil
+	})
+}
+
 // UpdateGithubStar updates only the synchronized repository marker for a GitHub user.
 func (d *Database) UpdateGithubStar(ctx context.Context, githubID, repository string, starred bool) (int64, error) {
 	query := d.db.WithContext(ctx).Model(&AuthUser{}).Where("github_id = ?", githubID)
