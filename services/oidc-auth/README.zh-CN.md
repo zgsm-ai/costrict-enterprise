@@ -107,6 +107,9 @@ docker run -d \
 |                   | `SYNCSTAR_OWNER` | 仓库所有者                 | `zgsm-ai` |
 |                   | `SYNCSTAR_REPO` | 仓库名称                  | `zgsm` |
 |                   | `SYNCSTAR_INTERVAL` | 同步间隔(分钟)              | `1` |
+|                   | `SYNCSTAR_PROXYURL` | 仅用于 GitHub API 请求的代理地址 | - |
+|                   | `SYNCSTAR_WEBHOOK_ENABLED` | 启用 GitHub Star Webhook | `false` |
+|                   | `SYNCSTAR_WEBHOOK_SECRET` | GitHub Webhook 签名密钥 | - |
 | **加密配置**          | `ENCRYPT_AESKEY` | AES 密钥(32位)           | - |
 |                   | `ENCRYPT_PRIVATEKEY` | RSA 私钥：PEM 文件路径、内联 PEM 或 base64(PEM) | `config/private.pem` |
 | **配额管理器**         | `QUOTAMANAGER_BASEURL` | 配额管理器服务基础URL        | - |
@@ -116,6 +119,14 @@ docker run -d \
 |                   | `LOG_MAXBACKUPS` | 备份文件数量                | `10` |
 |                   | `LOG_MAXAGE` | 日志保留天数                | `30` |
 |                   | `LOG_COMPRESS` | 压缩旧日志                 | `true` |
+
+启用 GitHub Star Webhook 后，在 GitHub 仓库的 Webhook 设置中使用以下 Payload URL，仅订阅 `Stars` 事件，并将 Secret 设置为 `SYNCSTAR_WEBHOOK_SECRET` 的相同值：
+
+```text
+https://<oidc-auth-host>/oidc-auth/api/v1/webhooks/github
+```
+
+生产环境建议通过 Secret 环境变量注入 Webhook Secret，不要将密钥直接提交到 values 文件。
 
 
 ## Kubernetes 部署

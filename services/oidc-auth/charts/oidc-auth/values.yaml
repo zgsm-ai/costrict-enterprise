@@ -91,6 +91,14 @@ syncStar:
   # Synchronization interval in minutes
   interval: 1  # minute
 
+  # Optional proxy used only for GitHub API requests. If empty, proxy environment variables are used.
+  proxyURL: ""
+
+  # GitHub repository webhook configuration for incremental star updates
+  webhook:
+    enabled: "false"
+    secret: ""
+
 # Database connection configuration
 database:
   # Database type: "mysql" or "postgres"

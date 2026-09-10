@@ -69,12 +69,19 @@ type DatabaseConfig struct {
 }
 
 type GithubStarConfig struct {
-	Enabled       bool          `json:"enabled" mapstructure:"enabled" validate:"required"`
-	PersonalToken string        `json:"personalToken" mapstructure:"personalToken" validate:"required"`
-	Owner         string        `json:"owner" mapstructure:"owner" validate:"required"`
-	Repo          string        `json:"repo" mapstructure:"repo" validate:"required"`
-	Interval      time.Duration `json:"interval" mapstructure:"interval" validate:"required"`
+	Enabled       bool                `json:"enabled" mapstructure:"enabled" validate:"required"`
+	PersonalToken string              `json:"personalToken" mapstructure:"personalToken" validate:"required"`
+	Owner         string              `json:"owner" mapstructure:"owner" validate:"required"`
+	Repo          string              `json:"repo" mapstructure:"repo" validate:"required"`
+	Interval      time.Duration       `json:"interval" mapstructure:"interval" validate:"required"`
+	ProxyURL      string              `json:"proxyURL" mapstructure:"proxyURL"`
+	Webhook       GithubWebhookConfig `json:"webhook" mapstructure:"webhook"`
 	HTTPClient    *http.Client
+}
+
+type GithubWebhookConfig struct {
+	Enabled bool   `json:"enabled" mapstructure:"enabled"`
+	Secret  string `json:"secret" mapstructure:"secret"`
 }
 
 type EncryptConfig struct {

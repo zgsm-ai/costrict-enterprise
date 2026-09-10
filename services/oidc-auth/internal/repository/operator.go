@@ -47,6 +47,8 @@ var allowedFields = map[string]map[string]bool{
 	},
 }
 
+const batchUpsertSize = 500
+
 func ValidateFieldName(modelName, fieldName string) error {
 	for _, char := range fieldName {
 		if !((char >= 'a' && char <= 'z') ||
@@ -316,11 +318,34 @@ func (d *Database) BatchUpsert(ctx context.Context, models any, uniqueField stri
 			DoUpdates: clause.AssignmentColumns(columns),
 		}
 
-		if err := tx.Clauses(conflictClause).Create(models).Error; err != nil {
-			return fmt.Errorf("upsert error: %w", err)
+		for start := 0; start < val.Len(); start += batchUpsertSize {
+			end := start + batchUpsertSize
+			if end > val.Len() {
+				end = val.Len()
+			}
+			batch := val.Slice(start, end).Interface()
+			if err := tx.Clauses(conflictClause).Create(batch).Error; err != nil {
+				return fmt.Errorf("upsert batch starting at index %d: %w", start, err)
+			}
 		}
 		return nil
 	})
+}
+
+// UpdateGithubStar updates only the synchronized repository marker for a GitHub user.
+func (d *Database) UpdateGithubStar(ctx context.Context, githubID, repository string, starred bool) (int64, error) {
+	query := d.db.WithContext(ctx).Model(&AuthUser{}).Where("github_id = ?", githubID)
+	value := repository
+	if !starred {
+		query = query.Where("github_star = ?", repository)
+		value = ""
+	}
+
+	result := query.UpdateColumn("github_star", value)
+	if result.Error != nil {
+		return 0, fmt.Errorf("failed to update GitHub star status: %w", result.Error)
+	}
+	return result.RowsAffected, nil
 }
 
 func (d *Database) AddSyncLock(ctx context.Context, models any) error {

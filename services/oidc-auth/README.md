@@ -108,6 +108,9 @@ Complete environment variable configuration for containerized deployment:
 |                             | `SYNCSTAR_OWNER` | Repository owner | `zgsm-ai` |
 |                             | `SYNCSTAR_REPO` | Repository name | `zgsm` |
 |                             | `SYNCSTAR_INTERVAL` | Sync interval (minutes) | `1` |
+|                             | `SYNCSTAR_PROXYURL` | Proxy URL used only for GitHub API requests | - |
+|                             | `SYNCSTAR_WEBHOOK_ENABLED` | Enable GitHub Star webhook | `false` |
+|                             | `SYNCSTAR_WEBHOOK_SECRET` | GitHub webhook signing secret | - |
 | **Encryption**              | `ENCRYPT_AESKEY` | AES key (32 characters) | - |
 |                             | `ENCRYPT_PRIVATEKEY` | RSA private key: PEM file path, inline PEM, or base64(PEM) | `config/private.pem` |
 | **Quota Manager**           | `QUOTAMANAGER_BASEURL` | QuotaManager service base URL | - |
@@ -117,6 +120,14 @@ Complete environment variable configuration for containerized deployment:
 |                             | `LOG_MAXBACKUPS` | Number of backup files | `10` |
 |                             | `LOG_MAXAGE` | Log retention days | `30` |
 |                             | `LOG_COMPRESS` | Compress old logs | `true` |
+
+When the GitHub Star webhook is enabled, configure the repository webhook with the following Payload URL, subscribe only to `Stars`, and use the same secret as `SYNCSTAR_WEBHOOK_SECRET`:
+
+```text
+https://<oidc-auth-host>/oidc-auth/api/v1/webhooks/github
+```
+
+In production, inject the webhook secret through a secret-backed environment variable instead of committing it to a values file.
 
 ## Kubernetes Deployment
 

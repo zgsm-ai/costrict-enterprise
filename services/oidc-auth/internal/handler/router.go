@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -11,12 +12,17 @@ import (
 )
 
 type Server struct {
-	ServerPort  string
-	BaseURL     string
-	WebBaseURL  string
-	HTTPClient  *http.Client
-	IsPrivate   bool
-	RedirectURL map[string]string
+	ServerPort           string
+	BaseURL              string
+	WebBaseURL           string
+	HTTPClient           *http.Client
+	IsPrivate            bool
+	RedirectURL          map[string]string
+	GitHubWebhookEnabled bool
+	GitHubWebhookSecret  string
+	GitHubOwner          string
+	GitHubRepo           string
+	updateGithubStar     func(context.Context, string, string, bool) (int64, error)
 }
 
 // webRedirectBase returns the origin used for post-login browser redirects
@@ -69,6 +75,9 @@ func (s *Server) SetupRouter(r *gin.Engine) {
 		webOauthServer.GET("invite-code", s.getUserInviteCodeHandler)
 	}
 	r.POST("/oidc-auth/api/v1/send/sms", s.SMSHandler)
+	if s.GitHubWebhookEnabled {
+		r.POST("/oidc-auth/api/v1/webhooks/github", s.githubWebhookHandler)
+	}
 	health := r.Group("/health")
 	{
 		health.GET("ready", readinessHandler)

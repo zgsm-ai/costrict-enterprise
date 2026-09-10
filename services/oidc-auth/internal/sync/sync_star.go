@@ -122,18 +122,19 @@ func (s *SyncStar) Stargazers() error {
 			log.Error(nil, "failed to get stargazers: %v", err)
 			return err
 		}
-		defer resp.Body.Close()
-
 		if resp.StatusCode != http.StatusOK {
+			resp.Body.Close()
 			log.Error(nil, "failed to get stargazers status: %s", resp.Status)
-			return err
+			return fmt.Errorf("failed to get stargazers status: %s", resp.Status)
 		}
 
 		var rawStargazers []StargazerEntry
 		if err := json.NewDecoder(resp.Body).Decode(&rawStargazers); err != nil {
+			resp.Body.Close()
 			log.Error(nil, "Failed to decode stargazers: %v", err)
 			return err
 		}
+		resp.Body.Close()
 		for _, entry := range rawStargazers {
 			dbTime := entry.StarredAt
 			starTimeUnixMillis := entry.StarredAt.UnixMilli()

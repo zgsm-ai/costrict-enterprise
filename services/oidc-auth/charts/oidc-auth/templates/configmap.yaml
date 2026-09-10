@@ -35,6 +35,10 @@ data:
       owner: {{ .Values.syncStar.owner | quote }}
       repo: {{ .Values.syncStar.repo | quote }}
       interval: {{ .Values.syncStar.interval }}  # minute
+      proxyURL: {{ .Values.syncStar.proxyURL | quote }}
+      webhook:
+        enabled: {{ .Values.syncStar.webhook.enabled | quote }}
+        secret: {{ .Values.syncStar.webhook.secret | quote }}
     database:
       type: {{ .Values.database.type | quote }}
       host: {{ .Values.database.host | quote }}

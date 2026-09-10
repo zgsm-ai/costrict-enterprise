@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"net/url"
 	"os"
 	"os/signal"
-	"sync"
+	"strings"
 	"syscall"
 
 	"github.com/spf13/cobra"
@@ -26,8 +27,8 @@ import (
 var (
 	cfgFile      string
 	globalConfig *config.AppConfig
-	initOnce     sync.Once
 	client       *http.Client
+	githubClient *http.Client
 )
 
 var rootCmd = &cobra.Command{
@@ -84,25 +85,42 @@ func initializeAllConfigurations(cfgFile string) (*config.AppConfig, error) {
 	return cfg, nil
 }
 
-func initHTTPClient(cfg *config.HTTPClientConfig) *http.Client {
-	initOnce.Do(func() {
-		transport := &http.Transport{
-			Proxy: http.ProxyFromEnvironment,
-			DialContext: (&net.Dialer{
-				Timeout:   cfg.DialTimeout,
-				KeepAlive: cfg.KeepAlive,
-			}).DialContext,
-			TLSHandshakeTimeout: cfg.TLSHandshakeTimeout,
+func newHTTPClient(cfg *config.HTTPClientConfig, proxyURL string) (*http.Client, error) {
+	if cfg == nil {
+		return nil, fmt.Errorf("HTTP client configuration is required")
+	}
 
-			ResponseHeaderTimeout: cfg.ResponseHeaderTimeout,
-
-			MaxIdleConns:        cfg.MaxIdleConns,
-			MaxIdleConnsPerHost: cfg.MaxIdleConnsPerHost,
-			IdleConnTimeout:     cfg.IdleConnTimeout,
+	proxy := http.ProxyFromEnvironment
+	if proxyURL != "" {
+		parsedProxy, err := url.Parse(proxyURL)
+		if err != nil || parsedProxy.Host == "" || !supportedProxyScheme(parsedProxy.Scheme) {
+			return nil, fmt.Errorf("invalid GitHub proxy URL")
 		}
-		client = &http.Client{Transport: transport, Timeout: cfg.Timeout}
-	})
-	return client
+		proxy = http.ProxyURL(parsedProxy)
+	}
+
+	transport := &http.Transport{
+		Proxy: proxy,
+		DialContext: (&net.Dialer{
+			Timeout:   cfg.DialTimeout,
+			KeepAlive: cfg.KeepAlive,
+		}).DialContext,
+		TLSHandshakeTimeout:   cfg.TLSHandshakeTimeout,
+		ResponseHeaderTimeout: cfg.ResponseHeaderTimeout,
+		MaxIdleConns:          cfg.MaxIdleConns,
+		MaxIdleConnsPerHost:   cfg.MaxIdleConnsPerHost,
+		IdleConnTimeout:       cfg.IdleConnTimeout,
+	}
+	return &http.Client{Transport: transport, Timeout: cfg.Timeout}, nil
+}
+
+func supportedProxyScheme(scheme string) bool {
+	switch strings.ToLower(scheme) {
+	case "http", "https", "socks5", "socks5h":
+		return true
+	default:
+		return false
+	}
 }
 
 var serveCmd = &cobra.Command{
@@ -114,7 +132,21 @@ var serveCmd = &cobra.Command{
 		if err != nil {
 			log.Fatal(nil, "Failed to initialize config: %v", err)
 		}
-		httpClient := initHTTPClient(globalConfig.Server.HTTP)
+		if globalConfig.GithubConfig.Webhook.Enabled &&
+			(globalConfig.GithubConfig.Webhook.Secret == "" || globalConfig.GithubConfig.Owner == "" || globalConfig.GithubConfig.Repo == "") {
+			log.Fatal(nil, "GitHub webhook owner, repo, and secret must be configured when the webhook is enabled")
+		}
+
+		client, err = newHTTPClient(globalConfig.Server.HTTP, "")
+		if err != nil {
+			log.Fatal(nil, "Failed to initialize HTTP client: %v", err)
+		}
+		githubClient, err = newHTTPClient(globalConfig.Server.HTTP, globalConfig.GithubConfig.ProxyURL)
+		if err != nil {
+			log.Fatal(nil, "Failed to initialize GitHub HTTP client: %v", err)
+		}
+
+		httpClient := client
 		smsc := service.GetSMSCfg(&globalConfig.SMS)
 		if smsc == nil {
 			log.Fatal(nil, "Failed to initialize SMS service")
@@ -149,20 +181,30 @@ var serveCmd = &cobra.Command{
 		ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 		defer cancel()
 
-		syncStar := github.SyncStar(globalConfig.GithubConfig)
-		syncStar.HTTPClient = initHTTPClient(nil)
+		syncStar := github.SyncStar{
+			Enabled:       globalConfig.GithubConfig.Enabled,
+			PersonalToken: globalConfig.GithubConfig.PersonalToken,
+			Owner:         globalConfig.GithubConfig.Owner,
+			Repo:          globalConfig.GithubConfig.Repo,
+			Interval:      globalConfig.GithubConfig.Interval,
+			HTTPClient:    githubClient,
+		}
 		github.Owner, github.Repo = syncStar.Owner, syncStar.Repo
 		go syncStar.StarSyncTimer(ctx)
 
 		go func() {
 			log.Info(nil, "Starting server...")
 			server := handler.Server{
-				ServerPort:  globalConfig.Server.ServerPort,
-				BaseURL:     globalConfig.Server.BaseURL,
-				WebBaseURL:  globalConfig.Server.WebBaseURL,
-				HTTPClient:  initHTTPClient(nil),
-				IsPrivate:   globalConfig.Server.IsPrivate,
-				RedirectURL: globalConfig.Redirect.Uris,
+				ServerPort:           globalConfig.Server.ServerPort,
+				BaseURL:              globalConfig.Server.BaseURL,
+				WebBaseURL:           globalConfig.Server.WebBaseURL,
+				HTTPClient:           client,
+				IsPrivate:            globalConfig.Server.IsPrivate,
+				RedirectURL:          globalConfig.Redirect.Uris,
+				GitHubWebhookEnabled: globalConfig.GithubConfig.Webhook.Enabled,
+				GitHubWebhookSecret:  globalConfig.GithubConfig.Webhook.Secret,
+				GitHubOwner:          globalConfig.GithubConfig.Owner,
+				GitHubRepo:           globalConfig.GithubConfig.Repo,
 			}
 			if err := server.StartServer(); err != nil {
 				log.Error(nil, "Server error: %v", err)
