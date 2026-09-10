@@ -175,6 +175,7 @@ func getVersionOverview(pkgVer *utils.PackageVersion) utils.VersionOverview {
 	ov.Description = pkgVer.Description
 	ov.Build = pkgVer.Build
 	ov.PackageType = pkgVer.PackageType
+	ov.ReleaseTime = pkgVer.ReleaseTime
 	ov.FileName = pkgVer.FileName
 	return ov
 }

@@ -9,7 +9,6 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/zgsm-ai/smc/cmd/common"
-	"github.com/zgsm-ai/smc/internal/env"
 	"github.com/zgsm-ai/smc/internal/utils"
 )
 
@@ -75,7 +74,7 @@ func activatePackage() error {
 		return err
 	}
 	u := utils.NewUpgrader(optActivatePackageName, utils.UpgradeConfig{
-		BaseUrl: env.BaseUrl + "/costrict",
+		BaseUrl: getUpgradeUrl(),
 	}, nil)
 	pkg, err := u.GetLocalVersion(&ver)
 	if err != nil {

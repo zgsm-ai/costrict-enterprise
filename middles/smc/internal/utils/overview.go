@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"sort"
 )
 
 type VersionOverview struct {
@@ -13,6 +14,7 @@ type VersionOverview struct {
 	PackageType PackageType   `json:"packageType"` //包类型: exec/conf
 	FileName    string        `json:"fileName"`    //被打包的文件的名字
 	Size        uint64        `json:"size"`        //包文件大小
+	ReleaseTime string        `json:"releaseTime"` //发布时间
 	Build       string        `json:"build"`       //构建信息：Tag/Branch信息 CommitID BuildTime
 	Description string        `json:"description"` //版本描述，含有更丰富的可读信息
 }
@@ -100,9 +102,6 @@ func (u *Upgrader) checkExistPackage(cacheFname string, pkg *PackageVersion) err
  *	    - dstDir/<os>/<arch>/<version>/ ← <base-url>/<package>/<os>/<arch>/<version>/<filename>
  */
 func (u *Upgrader) SyncPackage(dstDir string) error {
-	if err := os.MkdirAll(dstDir, 0755); err != nil {
-		return err
-	}
 	// 1. 下载 platforms.json
 	platformsUrl := fmt.Sprintf("%s/%s/platforms.json", u.BaseUrl, u.packageName)
 	platformsPath := filepath.Join(dstDir, "platforms.json")
@@ -134,19 +133,41 @@ func (u *Upgrader) SyncPackage(dstDir string) error {
 	return lastErr
 }
 
+/**
+ * Sync platform versions and update platform info to keep only last 3 versions
+ * @param {string} dstDir - Destination directory for platform packages
+ * @param {PlatformId} pi - Platform identifier (OS and Architecture)
+ * @returns {error} Returns error if sync fails, nil on success
+ * @description
+ * - Downloads platform.json from remote server
+ * - Sorts version list by version number (ascending)
+ * - Keeps only the last 3 (newest) versions in platformInfo
+ * - Saves updated platformInfo back to file
+ * - Downloads package files for the last 3 versions only
+ * - Skips versions that already exist locally
+ * @throws
+ * - Directory creation error (os.MkdirAll)
+ * - JSON file download error (GetFile)
+ * - JSON unmarshal error (json.Unmarshal)
+ * - Version sync error (syncVersion)
+ * - JSON marshal error (json.Marshal)
+ * - File write error (os.WriteFile)
+ * @example
+ * err := upgrader.syncPlatform("/cache/packages", PlatformId{Os: "linux", Arch: "amd64"})
+ * if err != nil {
+ *     log.Fatal(err)
+ * }
+ */
 func (u *Upgrader) syncPlatform(dstDir string, pi PlatformId) error {
 	platformDir := filepath.Join(dstDir, pi.Os, pi.Arch)
 	if err := os.MkdirAll(platformDir, 0755); err != nil {
 		return err
 	}
 
+	// 下载 platform.json
 	platformUrl := fmt.Sprintf("%s/%s/%s/%s/platform.json", u.BaseUrl, u.packageName, pi.Os, pi.Arch)
 	platformJsonPath := filepath.Join(platformDir, "platform.json")
-	if err := u.GetFile(platformUrl, nil, platformJsonPath); err != nil {
-		return err
-	}
-
-	platformBytes, err := os.ReadFile(platformJsonPath)
+	platformBytes, err := u.GetBytes(platformUrl, nil)
 	if err != nil {
 		return err
 	}
@@ -154,6 +175,24 @@ func (u *Upgrader) syncPlatform(dstDir string, pi PlatformId) error {
 	var platformInfo PlatformInfo
 	if err := json.Unmarshal(platformBytes, &platformInfo); err != nil {
 		return err
+	}
+
+	// 对版本列表排序，只保留最后三个版本
+	sort.Slice(platformInfo.Versions, func(i, j int) bool {
+		return CompareVersion(platformInfo.Versions[i].VersionId, platformInfo.Versions[j].VersionId) < 0
+	})
+	versionsCount := len(platformInfo.Versions)
+	if versionsCount > 3 {
+		platformInfo.Versions = platformInfo.Versions[versionsCount-3:]
+	}
+
+	// 更新 platform.json 文件，只保留最后三个版本版本信息
+	updatedBytes, err := json.MarshalIndent(platformInfo, "", "  ")
+	if err != nil {
+		return fmt.Errorf("marshal platform info error: %v", err)
+	}
+	if err := os.WriteFile(platformJsonPath, updatedBytes, 0644); err != nil {
+		return fmt.Errorf("write platform info error: %v", err)
 	}
 
 	var lastErr error
@@ -165,6 +204,7 @@ func (u *Upgrader) syncPlatform(dstDir string, pi PlatformId) error {
 			continue
 		}
 	}
+	u.cleanupOlderRepos(&platformInfo, platformDir)
 	return lastErr
 }
 
@@ -190,5 +230,67 @@ func (u *Upgrader) syncVersion(verDir string, verAddr VersionAddr) error {
 	if err := u.GetFile(u.BaseUrl+verAddr.AppUrl, nil, cacheFname); err != nil {
 		return err
 	}
+	return nil
+}
+
+/**
+ * Clean up older version directories that are not in platform info
+ * @param {*PlatformInfo} plat - Platform information containing current versions list
+ * @param {string} platDir - Platform directory path to clean up
+ * @returns {error} Returns error if directory operations fail, nil on success
+ * @description
+ * - Lists all subdirectories in platform directory
+ * - Parses each subdirectory name as version number
+ * - Compares with versions in platform info
+ * - Removes directories whose version is not in the active versions list
+ * @throws
+ * - Directory read error (os.ReadDir)
+ * - Version parse error (VersionNumber.Parse)
+ * - Directory removal error (os.RemoveAll)
+ * @example
+ * err := upgrader.cleanupOlderRepos(&platformInfo, "/cache/packages/linux/amd64")
+ * if err != nil {
+ *     log.Fatal(err)
+ * }
+ */
+func (u *Upgrader) cleanupOlderRepos(plat *PlatformInfo, platDir string) error {
+	// Create a set of valid versions for quick lookup
+	validVersions := make(map[string]bool)
+	for _, ver := range plat.Versions {
+		validVersions[ver.VersionId.String()] = true
+	}
+
+	// Read all entries in platform directory
+	entries, err := os.ReadDir(platDir)
+	if err != nil {
+		return fmt.Errorf("read platform directory '%s' error: %v", platDir, err)
+	}
+
+	// Check each subdirectory
+	for _, entry := range entries {
+		// Skip non-directories and platform.json file
+		if !entry.IsDir() || entry.Name() == "platform.json" {
+			continue
+		}
+
+		// Parse directory name as version number
+		var verNum VersionNumber
+		if err := verNum.Parse(entry.Name()); err != nil {
+			// Skip directories that are not valid version numbers
+			continue
+		}
+
+		// Check if version is in the valid versions list
+		if !validVersions[verNum.String()] {
+			// Remove the version directory
+			verDir := filepath.Join(platDir, entry.Name())
+			if err := os.RemoveAll(verDir); err != nil {
+				log.Printf("Remove directory '%s' error: %v", verDir, err)
+				continue
+			}
+			log.Printf("Cleaned up older version directory: %s", verDir)
+		}
+	}
+
 	return nil
 }

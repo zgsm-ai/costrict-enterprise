@@ -50,6 +50,7 @@ func makePackage() error {
 	if optFileName != "" {
 		pkgData.FileName = optFileName
 	}
+	pkgData.Build = optBuild
 	bytes, err := json.MarshalIndent(pkgData, "", "  ")
 	if err != nil {
 		return err
@@ -94,6 +95,7 @@ var optPackage string
 var optType string
 var optFileName string
 var optDescription string
+var optBuild string
 
 func init() {
 	packageCmd.AddCommand(packageBuildCmd)
@@ -113,6 +115,7 @@ func init() {
 	packageBuildCmd.Flags().StringVarP(&optFileName, "filename", "", "", "File installation name/path")
 	packageBuildCmd.Flags().StringVarP(&optDescription, "description", "d", "", "Package description")
 	packageBuildCmd.Flags().StringVarP(&optOutput, "output", "o", "", "Output .json file")
+	packageBuildCmd.Flags().StringVarP(&optBuild, "build", "", "", "Specify the git tag of the build package")
 	packageBuildCmd.MarkFlagRequired("from")
 	packageBuildCmd.MarkFlagRequired("key")
 }

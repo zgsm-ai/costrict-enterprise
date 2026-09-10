@@ -5,7 +5,6 @@ import (
 	"path/filepath"
 
 	"github.com/spf13/cobra"
-	"github.com/zgsm-ai/smc/internal/env"
 	"github.com/zgsm-ai/smc/internal/utils"
 )
 
@@ -47,7 +46,7 @@ func init() {
  */
 func syncPackage(packageName, targetDir string) error {
 	u := utils.NewUpgrader(packageName, utils.UpgradeConfig{
-		BaseUrl: env.BaseUrl + "/costrict",
+		BaseUrl: getUpgradeUrl(),
 	}, nil)
 	defer u.Close()
 
