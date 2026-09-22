@@ -117,12 +117,12 @@
                     <div
                         class="content-version__item-price flex items-center justify-between text-3xl mt-3"
                     >
-                        <div class="flex items-center">
+                        <div class="price-summary flex items-center">
                             <span class="price-unit ml-[-8px]">￥</span>
                             <span class="price">{{ plan.price }}</span>
                             <span
                                 v-if="plan.isFirstPurchase"
-                                class="text-xs ml-2 mt-2 original-price__tips"
+                                class="first-recharge-tip text-xs ml-2 mt-2 original-price__tips"
                                 >{{ t('subscriptionSection.firstRechargeDiscount') }}</span
                             >
                             <span
@@ -143,12 +143,19 @@
                     <div
                         class="content-version__item-btn h-10 text-center leading-10 mt-5 rounded-sm"
                         :class="{
-                            'btn-purchase': plan.buttonType === 'purchase',
+                            'btn-purchase':
+                                plan.buttonType === 'purchase' && !isCreditsServiceEnded,
                             'btn-download': plan.buttonType !== 'purchase',
+                            'btn-disabled': plan.buttonType === 'purchase' && isCreditsServiceEnded,
                         }"
-                        @click="plan.clickEvent"
+                        :aria-disabled="plan.buttonType === 'purchase' && isCreditsServiceEnded"
+                        @click="handlePlanClick(plan)"
                     >
-                        {{ plan.buttonText }}
+                        {{
+                            plan.buttonType === 'purchase' && isCreditsServiceEnded
+                                ? t('pricingPlans.purchaseUnavailable')
+                                : plan.buttonText
+                        }}
                     </div>
                     <ul class="content-version__item-features text-xs mt-4">
                         <li
@@ -226,6 +233,8 @@ import { formatAmount, withDefaultRender } from '../hook/useTableRender';
 import { useRouter } from 'vue-router';
 import newOrderIcon from '@/assets/price/new_order_icon.webp';
 import { getQuotaTypes } from '@/api/mods/quota.mod';
+import { useCreditsServiceCutoff } from '@/composables/useCreditsServiceCutoff';
+import type { PricingPlan } from '../interface';
 
 // 国际化
 const { t } = useI18n();
@@ -236,6 +245,7 @@ const showInvoiceModal = ref(false);
 const currentOrder = ref<{ order_id: string; amount: number } | null>(null);
 
 const router = useRouter();
+const { isCreditsServiceEnded } = useCreditsServiceCutoff();
 
 const SURVEY_URL = 'https://v.wjx.cn/vm/t7BdP0M.aspx';
 const SURVEY_DETAIL_URL = 'https://mp.weixin.qq.com/s/kX8zt50Yu01a4NB6zwbn-g';
@@ -420,6 +430,14 @@ const toBillingDocs = () => {
 
 const toActivityPage = () => {
     router.push('/?tab=activity');
+};
+
+const handlePlanClick = (plan: PricingPlan) => {
+    if (plan.buttonType === 'purchase' && isCreditsServiceEnded.value) {
+        return;
+    }
+
+    plan.clickEvent();
 };
 
 const toSurvey = () => {
@@ -609,6 +627,30 @@ const handleInvoiceSubmitted = () => {
             z-index: 0;
             padding: 24px 20px;
 
+            &-price {
+                min-height: 64px;
+                column-gap: 8px;
+                row-gap: 4px;
+                flex-wrap: wrap;
+                align-content: center;
+
+                .price-summary {
+                    flex: 0 0 auto;
+                    white-space: nowrap;
+                }
+
+                .first-recharge-tip,
+                .content-version__item-credits {
+                    white-space: nowrap;
+                }
+
+                .content-version__item-credits {
+                    flex: 0 0 auto;
+                    margin-left: auto;
+                    text-align: right;
+                }
+            }
+
             &-btn {
                 background: rgba(255, 255, 255, 0.2);
                 cursor: pointer;
@@ -633,6 +675,12 @@ const handleInvoiceSubmitted = () => {
 
                 &.btn-purchase {
                     background: linear-gradient(91deg, #005eff -9%, #00ffb7 104%);
+                }
+
+                &.btn-disabled {
+                    cursor: not-allowed;
+                    color: rgba(255, 255, 255, 0.55);
+                    background: rgba(255, 255, 255, 0.12);
                 }
             }
 

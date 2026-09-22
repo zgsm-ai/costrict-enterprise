@@ -298,6 +298,7 @@
         "freeCodeReview": "免费代码审查，无限使用",
         "advancedModelAvailable": "高级模型可用",
         "creditFeatureWithoutBonus": "{total} Credits（约等于{estimated}次请求）",
+        "purchaseUnavailable": "当前不可购买",
         "moreStableAdvancedServices": "更稳定的高级服务"
     },
     "subscriptionSection": {

@@ -6,6 +6,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useMessage, type MenuOption } from 'naive-ui';
 import { useMaintenanceStore } from '@/store/maintenance';
+import { useCreditsServiceCutoff } from '@/composables/useCreditsServiceCutoff';
 import MenuIcons from '../components/menu-icons.vue';
 import newIcons from '@/assets/new.svg';
 
@@ -18,6 +19,7 @@ export function useMenu() {
     const message = useMessage();
     const route = useRoute();
     const router = useRouter();
+    const { isCreditsServiceEnded } = useCreditsServiceCutoff();
 
     // 菜单相关数据
     const activeMenuKey = ref<MenuKey>('profile');
@@ -38,13 +40,19 @@ export function useMenu() {
         activity: false,
     });
 
-    // 从URL参数初始化菜单状态
-    const initMenuFromRoute = () => {
-        const tab = route.query.tab as string;
-        const availableTabs =
+    const getAvailableTabs = () => {
+        const tabs =
             locale.value === 'zh'
                 ? ['profile', 'subscription', 'usage', 'usage-consumption', 'activity']
                 : ['profile', 'usage', 'usage-consumption', 'activity'];
+
+        return isCreditsServiceEnded.value ? tabs.filter((tab) => tab !== 'activity') : tabs;
+    };
+
+    // 从URL参数初始化菜单状态
+    const initMenuFromRoute = () => {
+        const tab = route.query.tab as string;
+        const availableTabs = getAvailableTabs();
 
         if (tab && availableTabs.includes(tab)) {
             activeMenuKey.value = tab as MenuKey;
@@ -55,10 +63,7 @@ export function useMenu() {
     watch(
         () => route.query.tab,
         (newTab) => {
-            const availableTabs =
-                locale.value === 'zh'
-                    ? ['profile', 'subscription', 'usage', 'usage-consumption', 'activity']
-                    : ['profile', 'usage', 'usage-consumption', 'activity'];
+            const availableTabs = getAvailableTabs();
 
             if (newTab && availableTabs.includes(newTab as string)) {
                 activeMenuKey.value = newTab as MenuKey;
@@ -87,6 +92,27 @@ export function useMenu() {
         { immediate: true },
     );
 
+    watch(
+        isCreditsServiceEnded,
+        (hasEnded) => {
+            if (
+                !hasEnded ||
+                (activeMenuKey.value !== 'activity' && route.query.tab !== 'activity')
+            ) {
+                return;
+            }
+
+            const filteredQuery = Object.fromEntries(
+                Object.entries(route.query).filter(([param]) => param !== 'state'),
+            );
+            router.replace({
+                query: { ...filteredQuery, tab: 'profile' },
+            });
+            activeMenuKey.value = 'profile';
+        },
+        { immediate: true },
+    );
+
     // 渲染菜单图标
     const renderMenuIcon = (name: MenuKey) => {
         return () => h(MenuIcons, { name });
@@ -94,7 +120,7 @@ export function useMenu() {
 
     // 菜单选项
     const menuOptions: ComputedRef<MenuOption[]> = computed(() => {
-        const baseOptions = [
+        const baseOptions: MenuOption[] = [
             {
                 label: t('homePage.menu.profile'),
                 key: 'profile',
@@ -105,7 +131,10 @@ export function useMenu() {
                 key: 'usage',
                 icon: renderMenuIcon('usage'),
             },
-            {
+        ];
+
+        if (!isCreditsServiceEnded.value) {
+            baseOptions.push({
                 label: () =>
                     h('div', { class: 'menu-label-with-new-icon flex' }, [
                         h('span', t('homePage.menu.activity')),
@@ -117,8 +146,8 @@ export function useMenu() {
                     ]),
                 key: 'activity',
                 icon: renderMenuIcon('activity'),
-            },
-        ];
+            });
+        }
 
         // 只有在中文版时才显示订阅菜单项
         if (locale.value === 'zh') {

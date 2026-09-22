@@ -15,6 +15,7 @@ import {
 import type { PricingPlan } from '../interface';
 import { postCreateOrder, getQuotaTypeById } from '@/api/mods/quota.mod';
 import type { PostCreateOrderReq, PostCreateOrderRes } from '@/api/bos/quota.bo';
+import { useCreditsServiceCutoff } from '@/composables/useCreditsServiceCutoff';
 
 export function useSubscribe(
     // 支付相关回调函数
@@ -26,6 +27,7 @@ export function useSubscribe(
     // 国际化函数
     const { t } = useI18n();
     const route = useRoute();
+    const { isCreditsServiceEnded } = useCreditsServiceCutoff();
 
     // 表单引用
     const formRef = ref<FormInst | null>(null);
@@ -192,6 +194,10 @@ export function useSubscribe(
 
     // 继续支付流程
     const proceedToPayment = async () => {
+        if (isCreditsServiceEnded.value) {
+            return;
+        }
+
         try {
             // 设置购买状态为加载中
             isPurchasing.value = true;
@@ -237,6 +243,10 @@ export function useSubscribe(
 
     // 购买处理逻辑
     const handlePurchaseWithModal = () => {
+        if (isCreditsServiceEnded.value) {
+            return;
+        }
+
         // 如果正在购买中，直接返回
         if (isPurchasing.value) {
             return;
@@ -259,6 +269,11 @@ export function useSubscribe(
 
     // 确认同意协议并继续支付流程
     const handleConfirmAgreementAndProceed = () => {
+        if (isCreditsServiceEnded.value) {
+            showAgreementModal.value = false;
+            return;
+        }
+
         handleConfirmAgreement();
         proceedToPayment();
     };
@@ -294,6 +309,7 @@ export function useSubscribe(
         // 购买相关
         orderInfo,
         isPurchasing,
+        isCreditsServiceEnded,
         proceedToPayment,
         handlePurchaseWithModal,
         handleConfirmAgreementAndProceed,

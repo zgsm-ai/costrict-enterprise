@@ -297,6 +297,7 @@
         "freeCodeCompletion": "Free code completion, limited uses.",
         "freeCodeReview": "Free code review, unlimited use",
         "advancedModelAvailable": "Premium models available",
+        "purchaseUnavailable": "Currently unavailable",
         "moreStableAdvancedServices": "More Stable, Advanced Services"
     },
     "subscriptionSection": {
