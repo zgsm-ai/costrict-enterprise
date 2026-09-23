@@ -251,6 +251,7 @@
             "description": "Officially gifted Credits, validity period varies depending on the situation",
             "buttonText": "Download and Use",
             "features": {
+                "clientOnly": "Only the client is free",
                 "newUserCredits": "New users get 200 Credits (approximately equal to 200 requests)",
                 "freeCodeCompletion": "Free code completion, limited usage count",
                 "freeCodeReview": "Free CodeReview, limited usage count",
@@ -297,9 +298,19 @@
         "freeCodeCompletion": "Free code completion, limited uses.",
         "freeCodeReview": "Free code review, unlimited use",
         "advancedModelAvailable": "Premium models available",
+        "purchaseUnavailable": "Currently unavailable",
         "moreStableAdvancedServices": "More Stable, Advanced Services"
     },
     "subscriptionSection": {
+        "notice": {
+            "title": "Notice of Changes to CoStrict Credits Recharge Services",
+            "greeting": "Dear CoStrict users,",
+            "thanks": "Thank you for your continued support of CoStrict.",
+            "body": "As part of a strategic business adjustment, CoStrict will focus further on enterprise products and services and discontinue Credits recharge services for individual users. {cutoff}. Credits purchased or obtained before then will remain valid under their original validity periods and usage rules. This change only affects Credits recharge services and does not affect normal use of CoStrict. After recharge services end, you can continue using CoStrict by configuring a supported {apiLink}. For enterprise purchases, private deployments, or related services, please contact us through {enterpriseLink}. For further questions, please contact CoStrict assistant Koukou via WeCom at the bottom of the page. Thank you for your understanding and continued support.",
+            "cutoff": "Credits recharge is expected to end at 23:59 on September 23, 2026 (Beijing time)",
+            "apiLink": "third-party model API key",
+            "enterpriseLink": "Enterprise Consultation"
+        },
         "subscriptionTitle": "Subscription Information",
         "billingDescription": "Package & Billing Description >>",
         "trafficLabel": "Traffic",

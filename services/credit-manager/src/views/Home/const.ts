@@ -73,20 +73,8 @@ export const getPricingPlans = (t: (key: string) => string): PricingPlan[] => [
         showTrafficLabel: false,
         features: [
             {
-                text: t('pricingPlans.personalFree.features.newUserCredits'),
+                text: t('pricingPlans.personalFree.features.clientOnly'),
                 available: true,
-            },
-            {
-                text: t('pricingPlans.personalFree.features.freeCodeCompletion'),
-                available: true,
-            },
-            {
-                text: t('pricingPlans.personalFree.features.freeCodeReview'),
-                available: true,
-            },
-            {
-                text: t('pricingPlans.personalFree.features.advancedModelUnavailable'),
-                available: false,
             },
         ],
         clickEvent() {
@@ -111,21 +99,9 @@ export const generatePricingPlansFromAPI = (
         buttonType: 'download',
         showTrafficLabel: false,
         features: [
-            // {
-            //     text: t('pricingPlans.personalFree.features.newUserCredits'),
-            //     available: true,
-            // },
             {
-                text: t('pricingPlans.personalFree.features.freeCodeCompletion'),
+                text: t('pricingPlans.personalFree.features.clientOnly'),
                 available: true,
-            },
-            {
-                text: t('pricingPlans.personalFree.features.freeCodeReview'),
-                available: true,
-            },
-            {
-                text: t('pricingPlans.personalFree.features.advancedModelUnavailable'),
-                available: false,
             },
         ],
         clickEvent() {

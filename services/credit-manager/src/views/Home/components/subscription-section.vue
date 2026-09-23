@@ -86,9 +86,38 @@
                 >{{ t('subscriptionSection.billingDescription') }}</span
             >
         </div>
-        <div class="mt-4">
-            🎯<span class="subscription-tips">{{ t('homePageUi.tips') }}</span>
-        </div>
+        <section
+            class="subscription-notice"
+            aria-labelledby="subscription-notice-title"
+        >
+            <h2 id="subscription-notice-title">
+                {{ t('subscriptionSection.notice.title') }}
+            </h2>
+            <p>{{ t('subscriptionSection.notice.greeting') }}</p>
+            <p>{{ t('subscriptionSection.notice.thanks') }}</p>
+            <I18nT
+                keypath="subscriptionSection.notice.body"
+                tag="p"
+            >
+                <template #cutoff>
+                    <strong>{{ t('subscriptionSection.notice.cutoff') }}</strong>
+                </template>
+                <template #apiLink>
+                    <a
+                        href="https://docs.costrict.ai/plugin/guide/api-integration"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >{{ t('subscriptionSection.notice.apiLink') }}</a>
+                </template>
+                <template #enterpriseLink>
+                    <a
+                        href="https://costrict.ai/enterprise#enterprise-lead"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >{{ t('subscriptionSection.notice.enterpriseLink') }}</a>
+                </template>
+            </I18nT>
+        </section>
         <div class="subscription-content mt-4">
             <div
                 v-if="quotaTypesLoaded"
@@ -117,12 +146,12 @@
                     <div
                         class="content-version__item-price flex items-center justify-between text-3xl mt-3"
                     >
-                        <div class="flex items-center">
+                        <div class="price-summary flex items-center">
                             <span class="price-unit ml-[-8px]">￥</span>
                             <span class="price">{{ plan.price }}</span>
                             <span
                                 v-if="plan.isFirstPurchase"
-                                class="text-xs ml-2 mt-2 original-price__tips"
+                                class="first-recharge-tip text-xs ml-2 mt-2 original-price__tips"
                                 >{{ t('subscriptionSection.firstRechargeDiscount') }}</span
                             >
                             <span
@@ -143,12 +172,19 @@
                     <div
                         class="content-version__item-btn h-10 text-center leading-10 mt-5 rounded-sm"
                         :class="{
-                            'btn-purchase': plan.buttonType === 'purchase',
+                            'btn-purchase':
+                                plan.buttonType === 'purchase' && !isCreditsServiceEnded,
                             'btn-download': plan.buttonType !== 'purchase',
+                            'btn-disabled': plan.buttonType === 'purchase' && isCreditsServiceEnded,
                         }"
-                        @click="plan.clickEvent"
+                        :aria-disabled="plan.buttonType === 'purchase' && isCreditsServiceEnded"
+                        @click="handlePlanClick(plan)"
                     >
-                        {{ plan.buttonText }}
+                        {{
+                            plan.buttonType === 'purchase' && isCreditsServiceEnded
+                                ? t('pricingPlans.purchaseUnavailable')
+                                : plan.buttonText
+                        }}
                     </div>
                     <ul class="content-version__item-features text-xs mt-4">
                         <li
@@ -172,13 +208,6 @@
                             </div>
                         </li>
                     </ul>
-                    <div
-                        v-if="index === 0"
-                        class="free-activity-tip text-xs mt-4 cursor-pointer"
-                        @click="toActivityPage"
-                    >
-                        {{ t('subscriptionSection.freeActivityTip') }}
-                    </div>
                 </div>
             </div>
         </div>
@@ -221,11 +250,13 @@ import { formatDate } from '@/utils/date';
 import CommonCard from '@/components/common-card.vue';
 import InvoiceModal from './invoice-modal.vue';
 import type { Order, QuotaTypeWithMarketingRules } from '@/api/bos/quota.bo';
-import { useI18n } from 'vue-i18n';
+import { I18nT, useI18n } from 'vue-i18n';
 import { formatAmount, withDefaultRender } from '../hook/useTableRender';
 import { useRouter } from 'vue-router';
 import newOrderIcon from '@/assets/price/new_order_icon.webp';
 import { getQuotaTypes } from '@/api/mods/quota.mod';
+import { useCreditsServiceCutoff } from '@/composables/useCreditsServiceCutoff';
+import type { PricingPlan } from '../interface';
 
 // 国际化
 const { t } = useI18n();
@@ -236,6 +267,7 @@ const showInvoiceModal = ref(false);
 const currentOrder = ref<{ order_id: string; amount: number } | null>(null);
 
 const router = useRouter();
+const { isCreditsServiceEnded } = useCreditsServiceCutoff();
 
 const SURVEY_URL = 'https://v.wjx.cn/vm/t7BdP0M.aspx';
 const SURVEY_DETAIL_URL = 'https://mp.weixin.qq.com/s/kX8zt50Yu01a4NB6zwbn-g';
@@ -418,8 +450,12 @@ const toBillingDocs = () => {
     window.open('https://docs.costrict.ai/billing/purchase');
 };
 
-const toActivityPage = () => {
-    router.push('/?tab=activity');
+const handlePlanClick = (plan: PricingPlan) => {
+    if (plan.buttonType === 'purchase' && isCreditsServiceEnded.value) {
+        return;
+    }
+
+    plan.clickEvent();
 };
 
 const toSurvey = () => {
@@ -455,6 +491,58 @@ const handleInvoiceSubmitted = () => {
 <style scoped lang="less">
 .subscription-section {
     color: white;
+    .subscription-notice {
+        position: relative;
+        margin-top: 24px;
+        padding: 24px;
+        border: 1px solid #263445;
+        border-radius: 8px;
+        background: #0b111a;
+        color: #b8c4d2;
+        font-size: 14px;
+        line-height: 1.9;
+        overflow-wrap: anywhere;
+
+        h2 {
+            margin: 0 0 20px;
+            color: #f0f4f8;
+            font-size: 20px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        p {
+            margin: 0 0 12px;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+
+        strong {
+            color: #f0f4f8;
+        }
+
+        a {
+            color: #73c0ff;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+
+            &:hover {
+                color: #a8d9ff;
+            }
+
+            &:focus-visible {
+                outline: 2px solid currentColor;
+                outline-offset: 3px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            padding: 16px;
+        }
+    }
+
     .subscription-title {
         .billing-btn {
             background: linear-gradient(95deg, #2a7fff 5%, #ffffff 100%);
@@ -585,12 +673,6 @@ const handleInvoiceSubmitted = () => {
         }
     }
 
-    .subscription-tips {
-        background: linear-gradient(91deg, #00ffb7 0%, #ffffff 101%, #c5dbff 150%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
     .content-version {
         @media (max-width: 1200px) {
             grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -608,6 +690,30 @@ const handleInvoiceSubmitted = () => {
             border-radius: 10px;
             z-index: 0;
             padding: 24px 20px;
+
+            &-price {
+                min-height: 64px;
+                column-gap: 8px;
+                row-gap: 4px;
+                flex-wrap: wrap;
+                align-content: center;
+
+                .price-summary {
+                    flex: 0 0 auto;
+                    white-space: nowrap;
+                }
+
+                .first-recharge-tip,
+                .content-version__item-credits {
+                    white-space: nowrap;
+                }
+
+                .content-version__item-credits {
+                    flex: 0 0 auto;
+                    margin-left: auto;
+                    text-align: right;
+                }
+            }
 
             &-btn {
                 background: rgba(255, 255, 255, 0.2);
@@ -634,6 +740,12 @@ const handleInvoiceSubmitted = () => {
                 &.btn-purchase {
                     background: linear-gradient(91deg, #005eff -9%, #00ffb7 104%);
                 }
+
+                &.btn-disabled {
+                    cursor: not-allowed;
+                    color: rgba(255, 255, 255, 0.55);
+                    background: rgba(255, 255, 255, 0.12);
+                }
             }
 
             .original-price {
@@ -654,9 +766,6 @@ const handleInvoiceSubmitted = () => {
                 background-clip: text;
             }
 
-            .free-activity-tip {
-                color: #2a7fff;
-            }
         }
 
         &__item::before {

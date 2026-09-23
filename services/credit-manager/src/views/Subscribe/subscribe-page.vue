@@ -123,12 +123,18 @@
                 type="primary"
                 size="large"
                 class="purchase-btn"
-                :disabled="!selectedPaymentMethod || quantityError || isPurchasing"
+                :disabled="
+                    !selectedPaymentMethod || quantityError || isPurchasing || isCreditsServiceEnded
+                "
                 :loading="isPurchasing"
                 @click="handlePurchaseWithModal"
                 block
             >
-                {{ $t('subscribePage.purchase') }}
+                {{
+                    isCreditsServiceEnded
+                        ? $t('pricingPlans.purchaseUnavailable')
+                        : $t('subscribePage.purchase')
+                }}
             </n-button>
         </div>
 
@@ -269,6 +275,7 @@ const {
     // 购买相关
     orderInfo,
     isPurchasing,
+    isCreditsServiceEnded,
     handlePurchaseWithModal,
     handleConfirmAgreementAndProceed,
 } = useSubscribe({

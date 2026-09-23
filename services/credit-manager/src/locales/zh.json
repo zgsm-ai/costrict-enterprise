@@ -251,6 +251,7 @@
             "description": "官方赠送的 Credit，有效期视情况而定",
             "buttonText": "下载使用",
             "features": {
+                "clientOnly": "仅客户端免费",
                 "newUserCredits": "新用户获赠 400 Credits（约等于400次请求）",
                 "freeCodeCompletion": "免费代码补全，有限使用次数",
                 "freeCodeReview": "免费 CodeReview，有限使用次数",
@@ -298,9 +299,19 @@
         "freeCodeReview": "免费代码审查，无限使用",
         "advancedModelAvailable": "高级模型可用",
         "creditFeatureWithoutBonus": "{total} Credits（约等于{estimated}次请求）",
+        "purchaseUnavailable": "当前不可购买",
         "moreStableAdvancedServices": "更稳定的高级服务"
     },
     "subscriptionSection": {
+        "notice": {
+            "title": "关于 CoStrict 额度充值服务调整的通知",
+            "greeting": "亲爱的 CoStrict 用户：",
+            "thanks": "感谢大家一直以来对 CoStrict 的支持。",
+            "body": "因业务战略调整，CoStrict 未来将进一步聚焦企业级产品与服务，并将停止面向个人用户提供 Credits 充值服务。{cutoff}，在此之前已购买或通过获得的 Credits 不受影响，您仍可按照购买时约定的有效期及使用规则正常使用。本次调整仅涉及 Credits 充值服务，不影响 CoStrict 产品的正常使用。Credits充值服务下线后，您仍可以通过配置支持的 {apiLink} 继续使用CoStrict的相关功能。如您是企业客户，并有产品采购、私有化部署或相关服务需求，欢迎通过 {enterpriseLink} 与我们联系。如有进一步疑问，可联系页面下方CoStrict小助手蔻蔻的企业微信咨询。感谢您的理解与一直以来的支持。",
+            "cutoff": "Credits充值功能预计将于2026年9月23日23:59下线",
+            "apiLink": "第三方模型 API Key",
+            "enterpriseLink": "企业版咨询"
+        },
         "subscriptionTitle": "订阅信息",
         "billingDescription": "套餐&计费说明 >>",
         "trafficLabel": "流量包",
