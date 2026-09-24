@@ -302,6 +302,7 @@
         "moreStableAdvancedServices": "More Stable, Advanced Services"
     },
     "subscriptionSection": {
+        "orderDebugNotice": "Debug mode: This feature is only for verifying whether the backend order API has been retired, not as a purchase backdoor. It only skips the frontend purchase cutoff; the backend still decides whether an order can be created.",
         "notice": {
             "title": "Notice of Changes to CoStrict Credits Recharge Services",
             "greeting": "Dear CoStrict users,",

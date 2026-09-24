@@ -161,6 +161,10 @@ export const generatePricingPlansFromAPI = (
                     path: '/subscribe',
                     query: {
                         type: quotaType.id,
+                        // 显式携带调试参数，供订单页验证后台接口是否下架。
+                        ...(router.currentRoute.value.query.preview === 'enabled'
+                            ? { preview: 'enabled' }
+                            : {}),
                     },
                 });
             },

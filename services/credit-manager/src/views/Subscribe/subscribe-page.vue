@@ -11,6 +11,13 @@
         </div>
 
         <div class="subscribe-content">
+            <p
+                v-if="isCreditsOrderDebug"
+                class="mb-4 text-amber-400"
+                role="status"
+            >
+                {{ $t('subscriptionSection.orderDebugNotice') }}
+            </p>
             <!-- 流量套餐标题和数量选择器 -->
             <div class="mb-1">
                 <div class="package-info flex items-center flex-wrap">
@@ -276,6 +283,7 @@ const {
     orderInfo,
     isPurchasing,
     isCreditsServiceEnded,
+    isCreditsOrderDebug,
     handlePurchaseWithModal,
     handleConfirmAgreementAndProceed,
 } = useSubscribe({

@@ -118,6 +118,13 @@
                 </template>
             </I18nT>
         </section>
+        <p
+            v-if="isCreditsOrderDebug"
+            class="mt-4 text-amber-400"
+            role="status"
+        >
+            {{ t('subscriptionSection.orderDebugNotice') }}
+        </p>
         <div class="subscription-content mt-4">
             <div
                 v-if="quotaTypesLoaded"
@@ -267,7 +274,7 @@ const showInvoiceModal = ref(false);
 const currentOrder = ref<{ order_id: string; amount: number } | null>(null);
 
 const router = useRouter();
-const { isCreditsServiceEnded } = useCreditsServiceCutoff();
+const { isCreditsServiceEnded, isCreditsOrderDebug } = useCreditsServiceCutoff();
 
 const SURVEY_URL = 'https://v.wjx.cn/vm/t7BdP0M.aspx';
 const SURVEY_DETAIL_URL = 'https://mp.weixin.qq.com/s/kX8zt50Yu01a4NB6zwbn-g';

@@ -303,6 +303,7 @@
         "moreStableAdvancedServices": "更稳定的高级服务"
     },
     "subscriptionSection": {
+        "orderDebugNotice": "调试模式：此功能仅用于验证后台订单接口是否下架，不作为购买后门。仅跳过前端购买时间限制，能否下单仍由后台接口决定。",
         "notice": {
             "title": "关于 CoStrict 额度充值服务调整的通知",
             "greeting": "亲爱的 CoStrict 用户：",

@@ -27,7 +27,7 @@ export function useSubscribe(
     // 国际化函数
     const { t } = useI18n();
     const route = useRoute();
-    const { isCreditsServiceEnded } = useCreditsServiceCutoff();
+    const { isCreditsServiceEnded, isCreditsOrderDebug } = useCreditsServiceCutoff();
 
     // 表单引用
     const formRef = ref<FormInst | null>(null);
@@ -310,6 +310,7 @@ export function useSubscribe(
         orderInfo,
         isPurchasing,
         isCreditsServiceEnded,
+        isCreditsOrderDebug,
         proceedToPayment,
         handlePurchaseWithModal,
         handleConfirmAgreementAndProceed,

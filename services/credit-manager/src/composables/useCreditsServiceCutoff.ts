@@ -12,8 +12,13 @@ export const useCreditsServiceCutoff = () => {
     const currentTime = ref(Date.now());
     let cutoffTimer: number | undefined;
 
+    // 仅用于调试验证后台订单接口是否下架，不作为购买后门。
+    // 此参数仅跳过前端截止时间限制，订单是否允许创建仍由后台校验。
+    const isCreditsOrderDebug = computed(() => route.query.preview === 'enabled');
     const isCreditsServiceEnded = computed(
-        () => route.query.preview === 'disabled' || hasCreditsServiceEnded(currentTime.value),
+        () =>
+            route.query.preview === 'disabled' ||
+            (!isCreditsOrderDebug.value && hasCreditsServiceEnded(currentTime.value)),
     );
 
     onMounted(() => {
@@ -34,5 +39,5 @@ export const useCreditsServiceCutoff = () => {
         }
     });
 
-    return { isCreditsServiceEnded };
+    return { isCreditsServiceEnded, isCreditsOrderDebug };
 };
