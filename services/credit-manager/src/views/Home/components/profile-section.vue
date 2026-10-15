@@ -1,108 +1,81 @@
 <template>
     <div class="profile-section">
         <div class="info-item">
-            <div class="item-user-name">
+            <div class="profile-field">
                 <div class="label">{{ t('homePage.userNameLabel') }}</div>
                 <span :class="{ 'ml-1': !isZh }">{{ userName || '-' }}</span>
             </div>
-            <div class="item-phone">
-                <div class="label">{{ t('homePage.phoneLabel') }}</div>
-                <span :class="{ 'ml-1': !isZh }">{{ phoneNumber || '-' }}</span>
-            </div>
-            <div
-                class="item-account"
-                v-if="!isPrivate"
-            >
-                <div class="label">
-                    {{ t('homePage.githubAccount') }}
-                </div>
-                <span :class="{ 'ml-1': !isZh }">{{ githubName || '-' }}</span>
-            </div>
-            <div class="item-userId max-w-[100%]">
+            <div class="profile-field max-w-[100%]">
                 <div class="label whitespace-nowrap">{{ t('homePage.userIdLabel') }}</div>
                 <span
+                    v-hover="userId"
                     class="truncate flex-1"
                     :class="{ 'ml-1': !isZh }"
-                    v-hover="userId"
                     >{{ userId || '-' }}</span
                 >
-                <n-icon
+                <NIcon
                     v-if="userId"
                     size="14"
-                    style="margin-left: 8px; cursor: pointer"
+                    class="copy-icon"
                     color="#197DFF"
-                    @click="handleCopyUserId"
+                    @click="emit('copy-user-id', userId)"
                 >
-                    <copy-outline />
-                </n-icon>
+                    <CopyOutline />
+                </NIcon>
             </div>
-
-            <div class="item-invite-code flex items-center">
-                <div class="label opacity-70">
-                    {{ t('homePage.inviteCodeLabel') }}
-                </div>
-                <span :class="{ 'ml-1': !isZh }">{{ inviteCode || '-' }}</span>
-                <n-icon
-                    v-if="inviteCode"
-                    size="14"
-                    style="margin-left: 8px; cursor: pointer"
-                    color="#197DFF"
-                    @click="handleCopyInviteCode"
+            <div class="profile-field max-w-[100%]">
+                <div class="label whitespace-nowrap">{{ t('homePage.universalIdLabel') }}</div>
+                <span
+                    v-hover="universalId"
+                    class="truncate flex-1"
+                    :class="{ 'ml-1': !isZh }"
+                    >{{ universalId || '-' }}</span
                 >
-                    <copy-outline />
-                </n-icon>
+                <NIcon
+                    v-if="universalId"
+                    size="14"
+                    class="copy-icon"
+                    color="#197DFF"
+                    @click="emit('copy-universal-id', universalId)"
+                >
+                    <CopyOutline />
+                </NIcon>
+            </div>
+            <div class="profile-field">
+                <div class="label">{{ t('homePage.employeeNumberLabel') }}</div>
+                <span :class="{ 'ml-1': !isZh }">{{ employeeNumber || '-' }}</span>
             </div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-/**
- * @file profile-section.vue
- * @description 个人信息组件 - 显示用户基本信息
- */
 import { useI18n } from 'vue-i18n';
 import { NIcon } from 'naive-ui';
 import { CopyOutline } from '@vicons/ionicons5';
 
 const { t } = useI18n();
 
-// Props 定义
-const props = withDefaults(
-    defineProps<{
-        userName?: string;
-        phoneNumber?: string;
-        githubName?: string;
-        userId: string;
-        inviteCode: string;
-        isPrivate: boolean;
-        isZh: boolean;
-    }>(),
-    {
-        userName: undefined,
-        phoneNumber: undefined,
-        githubName: undefined,
-        userId: '',
-        inviteCode: '',
-        isPrivate: false,
-        isZh: false,
-    },
-);
+interface Props {
+    userName?: string;
+    userId?: string;
+    universalId?: string;
+    employeeNumber?: string;
+    isZh?: boolean;
+}
 
-// Emits 定义
+withDefaults(defineProps<Props>(), {
+    userName: '',
+    userId: '',
+    universalId: '',
+    employeeNumber: '',
+    isZh: false,
+});
+
 const emit = defineEmits<{
     'copy-user-id': [value: string];
-    'copy-invite-code': [value: string];
+    'copy-universal-id': [value: string];
 }>();
-
-// 事件处理函数
-const handleCopyUserId = () => {
-    emit('copy-user-id', props.userId);
-};
-
-const handleCopyInviteCode = () => {
-    emit('copy-invite-code', props.inviteCode);
-};
 </script>
 
 <style scoped lang="less">
@@ -113,51 +86,22 @@ const handleCopyInviteCode = () => {
         flex-wrap: wrap;
         column-gap: 40px;
         row-gap: 10px;
+    }
 
-        .item-user-name,
-        .item-phone {
-            display: flex;
-            align-items: center;
+    .profile-field {
+        display: flex;
+        align-items: center;
+        min-width: 0;
 
-            .label {
-                opacity: 0.7;
-            }
-
-            span {
-                font-weight: 600;
-            }
+        .label {
+            opacity: 0.7;
         }
+    }
 
-        .item-account {
-            display: flex;
-            align-items: center;
-
-            .label {
-                opacity: 0.7;
-            }
-
-            span {
-                font-weight: 600;
-            }
-        }
-
-        .item-userId {
-            display: flex;
-            align-items: center;
-
-            .label {
-                opacity: 0.7;
-            }
-        }
-
-        .item-invite-code {
-            display: flex;
-            align-items: center;
-
-            .label {
-                opacity: 0.7;
-            }
-        }
+    .copy-icon {
+        margin-left: 8px;
+        cursor: pointer;
+        flex-shrink: 0;
     }
 }
 </style>

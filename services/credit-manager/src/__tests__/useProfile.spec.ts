@@ -24,7 +24,6 @@ vi.mock('naive-ui', () => ({
 // Mock API calls
 vi.mock('@/api/mods/quota.mod', () => ({
     getUserQuota: vi.fn(),
-    getInviteCode: vi.fn(),
 }));
 
 // Mock copy utility
@@ -39,12 +38,11 @@ vi.mock('@/services/auth', () => ({
     },
 }));
 
-import { getUserQuota, getInviteCode } from '@/api/mods/quota.mod';
+import { getUserQuota } from '@/api/mods/quota.mod';
 import { copyToClipboard } from '@/utils/copy';
 import { authService } from '@/services/auth';
 
 const mockedGetUserQuota = vi.mocked(getUserQuota);
-const mockedGetInviteCode = vi.mocked(getInviteCode);
 const mockedCopyToClipboard = vi.mocked(copyToClipboard);
 const mockedLogout = vi.mocked(authService.logout);
 
@@ -71,7 +69,8 @@ describe('useProfile', () => {
             expect(profile.usedQuota.value).toBe(0);
             expect(profile.totalQuota.value).toBe(0);
             expect(profile.columnsData.value).toEqual([]);
-            expect(profile.inviteCode.value).toBe('');
+            expect(profile.universalId.value).toBe('');
+            expect(profile.employeeNumber.value).toBe('');
         });
     });
 
@@ -120,29 +119,6 @@ describe('useProfile', () => {
         });
     });
 
-    describe('fetchInviteCode', () => {
-        it('should fetch and update invite code', async () => {
-            mockedGetInviteCode.mockResolvedValue({
-                data: { invite_code: 'INVITE123' },
-            } as any);
-
-            const profile = useProfile();
-            await profile.fetchInviteCode();
-
-            expect(mockedGetInviteCode).toHaveBeenCalledTimes(1);
-            expect(profile.inviteCode.value).toBe('INVITE123');
-        });
-
-        it('should use default value when invite code is missing', async () => {
-            mockedGetInviteCode.mockResolvedValue({ data: {} } as any);
-
-            const profile = useProfile();
-            await profile.fetchInviteCode();
-
-            expect(profile.inviteCode.value).toBe('');
-        });
-    });
-
     describe('copyCode', () => {
         it('should copy user ID with success handler', async () => {
             mockedCopyToClipboard.mockResolvedValue(true);
@@ -157,15 +133,15 @@ describe('useProfile', () => {
         });
     });
 
-    describe('copyInviteCode', () => {
-        it('should copy invite code with success handler', async () => {
+    describe('copyUniversalId', () => {
+        it('should copy quota ID with success handler', async () => {
             mockedCopyToClipboard.mockResolvedValue(true);
 
             const profile = useProfile();
-            profile.inviteCode.value = 'INVITE123';
-            profile.copyInviteCode();
+            profile.universalId.value = 'quota-123';
+            profile.copyUniversalId();
 
-            expect(mockedCopyToClipboard).toHaveBeenCalledWith('INVITE123', {
+            expect(mockedCopyToClipboard).toHaveBeenCalledWith('quota-123', {
                 success: mockSuccess,
                 error: mockError,
             });

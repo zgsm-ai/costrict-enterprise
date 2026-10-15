@@ -6,7 +6,7 @@ import { useRouter } from 'vue-router';
 import { useMessage } from 'naive-ui';
 import { useUserStore } from '@/store/user';
 import { storeToRefs } from 'pinia';
-import { getUserQuota, getInviteCode } from '@/api/mods/quota.mod';
+import { getUserQuota } from '@/api/mods/quota.mod';
 import type { QuotaList } from '@/api/bos/quota.bo';
 import { copyToClipboard } from '@/utils/copy';
 import { authService } from '@/services/auth';
@@ -15,7 +15,7 @@ export function useProfile() {
     const router = useRouter();
     const message = useMessage();
     const userStore = useUserStore();
-    const { githubName, userName, phoneNumber, userId, isPrivate, isTokenInitialized } =
+    const { userName, userId, universalId, employeeNumber, isTokenInitialized } =
         storeToRefs(userStore);
 
     // 配额相关状态
@@ -23,7 +23,6 @@ export function useProfile() {
     const totalQuota = ref<number>(0);
     const columnsData = ref<QuotaList[]>([]);
     const isStar = ref<string | undefined>();
-    const inviteCode = ref('');
 
     // 计算属性
     const transferData = computed(() =>
@@ -44,15 +43,6 @@ export function useProfile() {
         isStar.value = data.is_star;
     };
 
-    // 获取邀请码
-    const fetchInviteCode = async () => {
-        const {
-            data: { invite_code = '' },
-        } = await getInviteCode();
-
-        inviteCode.value = invite_code;
-    };
-
     // 复制用户ID
     const copyCode = () => {
         copyToClipboard(userId.value, {
@@ -61,9 +51,9 @@ export function useProfile() {
         });
     };
 
-    // 复制邀请码
-    const copyInviteCode = () => {
-        copyToClipboard(inviteCode.value, {
+    // 复制配额 ID
+    const copyUniversalId = () => {
+        copyToClipboard(universalId.value, {
             success: message.success,
             error: message.error,
         });
@@ -97,12 +87,10 @@ export function useProfile() {
         totalQuota,
         columnsData,
         isStar,
-        inviteCode,
-        githubName,
         userName,
-        phoneNumber,
         userId,
-        isPrivate,
+        universalId,
+        employeeNumber,
         isTokenInitialized,
 
         // 计算属性
@@ -110,9 +98,8 @@ export function useProfile() {
 
         // 方法
         fetchUserQuota,
-        fetchInviteCode,
         copyCode,
-        copyInviteCode,
+        copyUniversalId,
         logout,
         toCredits,
         transferInCallBack,

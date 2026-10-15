@@ -39,6 +39,40 @@ describe('Cookie authentication', () => {
         expect(tokenManager.clearToken).not.toHaveBeenCalled();
     });
 
+    it('hydrates profile from JWT and clears stale fields when the Cookie changes', async () => {
+        const payload = btoa(
+            JSON.stringify({
+                display_name: 'Alice',
+                sub: 'user-1',
+                universal_id: 'quota-1',
+                employee_number: 'E001',
+            }),
+        );
+        vi.mocked(tokenManager.getToken).mockReturnValue(`header.${payload}.signature`);
+        const service = new AuthService();
+        await service.authenticate();
+        expect(useUserStore()).toMatchObject({
+            userName: 'Alice',
+            userId: 'user-1',
+            universalId: 'quota-1',
+            employeeNumber: 'E001',
+        });
+        vi.mocked(tokenManager.getToken).mockReturnValue(
+            `header.${btoa(JSON.stringify({ sub: 'user-2' }))}.signature`,
+        );
+        await service.authenticate();
+        expect(useUserStore()).toMatchObject({
+            userName: '',
+            userId: 'user-2',
+            universalId: '',
+            employeeNumber: '',
+        });
+        vi.mocked(tokenManager.getToken).mockReturnValue(undefined);
+        await service.authenticate();
+        expect(useUserStore().userId).toBe('');
+        expect(tokenManager.clearToken).not.toHaveBeenCalled();
+    });
+
     it('only clears Cookie and profile on explicit logout', async () => {
         useUserStore().$patch({ userName: 'previous user', isTokenInitialized: true });
         await new AuthService().logout();

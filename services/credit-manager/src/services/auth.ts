@@ -1,5 +1,6 @@
 import { tokenManager } from '@/utils/token';
 import { useUserStore } from '@/store/user';
+import { readJwtProfile } from '@/utils/jwtProfile';
 
 export interface AuthResult {
     success: boolean;
@@ -10,8 +11,10 @@ export class AuthService {
     async authenticate(): Promise<AuthResult> {
         const userStore = useUserStore();
         // 登录态只由共享 Cookie 是否存在决定，不兑换 state，也不请求用户信息。
-        const success = !!tokenManager.getToken();
+        const token = tokenManager.getToken();
+        const success = !!token;
         userStore.$patch({
+            ...readJwtProfile(token),
             isTokenInitialized: success,
             isAuthenticating: false,
             authError: null,

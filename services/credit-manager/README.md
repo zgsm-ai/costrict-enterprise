@@ -9,7 +9,9 @@ The backend management system for CoStrict
 保持兼容，`state` 不再用于兑换凭证，也不清理原地址；认证过程不请求 token、用户信息或 session 接口。
 未登录显示登录页，点击登录进入 `/login-service/api/v1/web/login?return_to=...`，
 登录完成回到原始完整地址。业务接口返回 401 时只提示“账号认证异常”，不删除 Cookie 或跳转登录。
-原用户信息接口不再自动加载，因此个人资料字段在没有其他数据来源时显示占位符。
+基本信息从 Cookie 的 JWT 载荷读取：用户名 `display_name`、用户 ID `sub`、
+配额 ID `universal_id`、工号 `employee_number`（缺失时显示 `-`）。不展示或请求邀请码。
+载荷解码仅用于展示，不替代服务端认证；无法解码时显示占位符，不删除 Cookie。
 
 部署时将 `/login-service` 代理到 loginservice（开发环境使用 `PROXY_TARGET_LOGIN`，
 默认 `http://127.0.0.1:8080`），也可通过构建变量 `VITE_LOGIN_SERVICE_BASE_URL` 指定登录服务 origin。

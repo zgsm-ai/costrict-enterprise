@@ -77,6 +77,8 @@
         "phoneLabel": "手机号：",
         "githubAccount": "GitHub账号：",
         "userIdLabel": "用户ID：",
+        "universalIdLabel": "配额ID：",
+        "employeeNumberLabel": "工号：",
         "inviteCodeLabel": "邀请码：",
         "usageTitle": "用量概览",
         "creditTransfer": "Credit转出&转入",

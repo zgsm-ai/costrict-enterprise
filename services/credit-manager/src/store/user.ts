@@ -13,6 +13,7 @@ export const useUserStore = defineStore('counter', {
     state: () => ({
         phoneNumber: '',
         userId: '',
+        universalId: '',
         githubName: '',
         employeeNumber: '',
         userName: '',

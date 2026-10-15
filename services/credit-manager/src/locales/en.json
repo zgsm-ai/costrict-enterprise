@@ -77,6 +77,8 @@
         "phoneLabel": "Phone Number:",
         "githubAccount": "Github Account:",
         "userIdLabel": "User ID:",
+        "universalIdLabel": "Quota ID:",
+        "employeeNumberLabel": "Employee Number:",
         "inviteCodeLabel": "Invitation code:",
         "usageTitle": "Usage",
         "creditTransfer": "Credit transfer",

@@ -60,14 +60,12 @@
                             <template #default>
                                 <profile-section
                                     :user-name="userName"
-                                    :phone-number="phoneNumber"
-                                    :github-name="githubName"
                                     :user-id="userId"
-                                    :invite-code="inviteCode"
-                                    :is-private="isPrivate"
+                                    :universal-id="universalId"
+                                    :employee-number="employeeNumber"
                                     :is-zh="isZh"
                                     @copy-user-id="copyCode"
-                                    @copy-invite-code="copyInviteCode"
+                                    @copy-universal-id="copyUniversalId"
                                 />
                             </template>
                         </common-card>
@@ -333,18 +331,15 @@ const {
     totalQuota,
     columnsData,
     isStar,
-    inviteCode,
-    githubName,
     userName,
-    phoneNumber,
     userId,
-    isPrivate,
+    universalId,
+    employeeNumber,
     isTokenInitialized,
     transferData,
     fetchUserQuota,
-    fetchInviteCode,
     copyCode,
-    copyInviteCode,
+    copyUniversalId,
     logout,
     toCredits,
     transferInCallBack,
@@ -426,7 +421,7 @@ const loadMenuData = async (menuKey: MenuKey) => {
     try {
         switch (menuKey) {
             case 'profile':
-                await Promise.all([fetchUserQuota(), fetchInviteCode()]);
+                await fetchUserQuota();
                 break;
             case 'subscription':
                 // 只有在中文环境下才加载订阅数据
