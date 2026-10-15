@@ -295,7 +295,7 @@ import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import OperationCard from './operation-card.vue';
 import { createOperationGuide, createQaContent } from './const';
-import { getLoginUrl } from '@/api/mods/quota.mod';
+import { getLoginServiceUrl } from '@/utils/login';
 import { useMetaTags } from '@/composables/useMetaTags';
 import { ref as refVue } from 'vue';
 import type { SocialMetaConfig } from '@/config/meta';
@@ -336,17 +336,12 @@ const inviteCode = ref('');
 const isInvite = ref(false);
 const loginUrl = ref('');
 
-const fetchLoginUrl = async () => {
-    try {
-        const {
-            data: { url },
-        } = await getLoginUrl({
-            inviter_code: inviteCode.value,
-        });
-        loginUrl.value = url;
-    } catch (error) {
-        console.error('获取登录链接失败:', error);
+const updateLoginUrl = (): void => {
+    const returnTo = new URL('/credit/manager', window.location.origin);
+    if (inviteCode.value) {
+        returnTo.searchParams.set('inviteCode', inviteCode.value);
     }
+    loginUrl.value = getLoginServiceUrl(returnTo.href);
 };
 
 // 从 URL 获取参数
@@ -357,7 +352,7 @@ onMounted(() => {
     isInvite.value = invite === 'true';
     inviteCode.value = code;
 
-    fetchLoginUrl();
+    updateLoginUrl();
 });
 
 const copyCode = () => {

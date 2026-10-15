@@ -125,7 +125,7 @@
         },
         "request": {
             "requestFailed": "请求失败",
-            "unauthorized": "请重新登录",
+            "unauthorized": "账号认证异常",
             "requestTimeout": "请求超时",
             "networkConnectionError": "网络连接错误",
             "networkError": "网络错误"

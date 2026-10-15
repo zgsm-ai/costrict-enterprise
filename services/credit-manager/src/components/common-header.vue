@@ -41,7 +41,7 @@
                     <div class="user-menu-options">
                         <!-- 未登录状态 -->
                         <div
-                            v-if="!userName"
+                            v-if="!isTokenInitialized"
                             class="option-item"
                             @click="toLogin"
                         >
@@ -175,7 +175,7 @@ const handleLogout = async () => {
 
 const userStore = useUserStore();
 
-const { userName } = storeToRefs(userStore);
+const { userName, isTokenInitialized } = storeToRefs(userStore);
 </script>
 
 <style scoped lang="less">

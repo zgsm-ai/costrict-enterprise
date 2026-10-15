@@ -125,7 +125,7 @@
         },
         "request": {
             "requestFailed": "Request failed",
-            "unauthorized": "Please re-login.",
+            "unauthorized": "Account authentication error.",
             "requestTimeout": "Request timed out",
             "networkConnectionError": "Network connection error",
             "networkError": "Network error"

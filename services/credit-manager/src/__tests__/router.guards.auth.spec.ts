@@ -1,122 +1,81 @@
-// src/__tests__/router.guards.auth.spec.ts
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import type { Router, RouteLocationNormalized } from 'vue-router';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { createMemoryHistory, createRouter } from 'vue-router';
 import { setupAuthGuard } from '@/router/guards/auth';
 import { authService } from '@/services/auth';
-import { PUBLIC_ROUTES } from '@/router';
+import { getLoginReturnTo, getLoginServiceUrl } from '@/utils/login';
 
-vi.mock('@/services/auth', () => ({
-    authService: {
-        isAuthenticated: vi.fn(),
-        authenticate: vi.fn(),
-    },
-}));
+vi.mock('@/services/auth', () => ({ authService: { isAuthenticated: vi.fn() } }));
+vi.mock('@/router', () => ({ PUBLIC_ROUTES: ['/credit-reward-plan'] }));
 
-vi.mock('@/router', () => ({
-    PUBLIC_ROUTES: ['/credit-reward-plan', '/credit-md-preview'],
-}));
-
-vi.mock('@/utils/token', () => ({
-    tokenManager: {
-        cleanUrlState: vi.fn(),
-    },
-}));
-
-function makeRoute(path: string, query: Record<string, string> = {}): RouteLocationNormalized {
-    const search = Object.keys(query).length
-        ? '?' + new URLSearchParams(query).toString()
-        : '';
-    return {
-        path,
-        fullPath: path + search,
-        query,
-        hash: '',
-        name: undefined,
-        params: {},
-        matched: [],
-        meta: {},
-        redirectedFrom: undefined,
-    } as unknown as RouteLocationNormalized;
+function makeRouter() {
+    const component = { template: '<div />' };
+    const router = createRouter({
+        history: createMemoryHistory('/credit/manager'),
+        routes: ['/', '/login', '/credits', '/credit-reward-plan'].map((path) => ({
+            path,
+            component,
+        })),
+    });
+    setupAuthGuard(router);
+    return router;
 }
 
-function makeRouter(): Router {
-    const guards: ((to: any, from: any, next: any) => void)[] = [];
-    const afterGuards: ((to: any) => void)[] = [];
-    return {
-        beforeEach: vi.fn((fn) => guards.push(fn)),
-        afterEach: vi.fn((fn) => afterGuards.push(fn)),
-        replace: vi.fn(),
-        _guards: guards,
-        _afterGuards: afterGuards,
-    } as unknown as Router;
-}
-
-async function runGuard(
-    router: Router,
-    to: RouteLocationNormalized,
-    from: RouteLocationNormalized = makeRoute('/')
-) {
-    const next = vi.fn();
-    await (router as any)._guards[0](to, from, next);
-    return next;
-}
-
-const flushPromises = () => new Promise(resolve => setTimeout(resolve, 0));
-
-describe('setupAuthGuard - auth_redirect', () => {
-    let router: Router;
-
+describe('Cookie route guard and login return URL', () => {
     beforeEach(() => {
-        router = makeRouter();
-        setupAuthGuard(router);
-        localStorage.clear();
-        vi.clearAllMocks();
+        vi.resetAllMocks();
+        sessionStorage.clear();
+        vi.stubEnv('BASE_URL', '/credit/manager');
+        window.history.replaceState({}, '', '/credit/manager?state=legacy-state&tab=usage#details');
     });
 
-    it('认证失败时，将目标 fullPath 写入 localStorage["auth_redirect"]', async () => {
+    it('preserves the original complete entry URL for loginservice when Cookie is missing', async () => {
         vi.mocked(authService.isAuthenticated).mockResolvedValue(false);
-        vi.mocked(authService.authenticate).mockResolvedValue({ success: false });
-
-        await runGuard(router, makeRoute('/credits'));
-        await flushPromises();
-
-        expect(localStorage.getItem('auth_redirect')).toBe('/credits');
+        const original = window.location.href;
+        const router = makeRouter();
+        await router.push('/?state=legacy-state&tab=usage#details');
+        expect(router.currentRoute.value.path).toBe('/login');
+        expect(getLoginReturnTo()).toBe(original);
+        const login = new URL(getLoginServiceUrl());
+        expect(login.pathname).toBe('/login-service/api/v1/web/login');
+        expect(login.searchParams.get('return_to')).toBe(original);
     });
 
-    it('认证失败时，带 query 的 fullPath 完整写入', async () => {
-        vi.mocked(authService.isAuthenticated).mockResolvedValue(false);
-        vi.mocked(authService.authenticate).mockResolvedValue({ success: false });
-
-        await runGuard(router, makeRoute('/credits', { tab: 'history' }));
-        await flushPromises();
-
-        expect(localStorage.getItem('auth_redirect')).toBe('/credits?tab=history');
-    });
-
-    it('访问 /login 时不写入 auth_redirect', async () => {
-        vi.mocked(authService.isAuthenticated).mockResolvedValue(false);
-
-        await runGuard(router, makeRoute('/login'));
-        await flushPromises();
-
-        expect(localStorage.getItem('auth_redirect')).toBeNull();
-    });
-
-    it('访问公开路由时不写入 auth_redirect', async () => {
-        vi.mocked(authService.isAuthenticated).mockResolvedValue(false);
-
-        await runGuard(router, makeRoute('/credit-reward-plan'));
-        await flushPromises();
-
-        expect(localStorage.getItem('auth_redirect')).toBeNull();
-    });
-
-    it('已登录时不写入 auth_redirect', async () => {
+    it('leaves state and tab intact when Cookie exists', async () => {
         vi.mocked(authService.isAuthenticated).mockResolvedValue(true);
+        const router = makeRouter();
+        await router.push('/?state=legacy-state&tab=usage');
+        expect(router.currentRoute.value.fullPath).toBe('/?state=legacy-state&tab=usage');
+        expect(sessionStorage.length).toBe(0);
+    });
 
-        await runGuard(router, makeRoute('/credits'));
-        await flushPromises();
+    it('remembers the target of an in-app navigation after Cookie disappears', async () => {
+        vi.mocked(authService.isAuthenticated).mockResolvedValue(true);
+        const router = makeRouter();
+        await router.push('/');
+        vi.mocked(authService.isAuthenticated).mockResolvedValue(false);
+        await router.push('/credits?tab=history');
+        expect(getLoginReturnTo()).toBe(
+            `${window.location.origin}/credit/manager/credits?tab=history`,
+        );
+    });
 
-        expect(localStorage.getItem('auth_redirect')).toBeNull();
+    it('allows public and login routes without Cookie', async () => {
+        vi.mocked(authService.isAuthenticated).mockResolvedValue(false);
+        const router = makeRouter();
+        await router.push('/credit-reward-plan');
+        expect(router.currentRoute.value.path).toBe('/credit-reward-plan');
+        await router.push('/login');
+        expect(router.currentRoute.value.path).toBe('/login');
+        expect(sessionStorage.length).toBe(0);
+    });
+
+    it('rejects return URLs outside this application', () => {
+        for (const url of [
+            'https://other.example/credit/manager',
+            `${window.location.origin}/other`,
+        ]) {
+            sessionStorage.setItem('login_service_return_to', url);
+            expect(getLoginReturnTo()).toBe(`${window.location.origin}/credit/manager`);
+        }
     });
 });

@@ -47,6 +47,11 @@ export default defineConfig(({ command, mode }) => {
                     changeOrigin: true,
                     secure: false,
                 },
+                '/login-service': {
+                    target: proxyTarget('PROXY_TARGET_LOGIN', 'http://127.0.0.1:8080'),
+                    changeOrigin: true,
+                    secure: false,
+                },
                 '/oidc-auth': {
                     target: proxyTarget('PROXY_TARGET_OIDC', 'https://zgsmtest.cn:30443/'),
                     changeOrigin: true,

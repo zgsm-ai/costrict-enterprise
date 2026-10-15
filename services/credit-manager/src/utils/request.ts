@@ -7,7 +7,6 @@ import axios, {
 import type { MessageApi } from 'naive-ui';
 import { getT } from './i18n';
 import { getToken } from './token';
-import router from '@/router';
 
 let messageInstance: MessageApi | null = null;
 
@@ -23,7 +22,11 @@ service.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
         const token = getToken();
 
-        config.headers.Authorization = `Bearer ${token}`;
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        } else {
+            config.headers.delete('Authorization');
+        }
 
         return config;
     },
@@ -65,10 +68,6 @@ service.interceptors.response.use(
             switch (error.response.status) {
                 case 401:
                     messageText = t('common.request.unauthorized');
-                    // 跳转到登录页
-                    if (router.currentRoute.value.path !== '/login') {
-                        router.push('/login');
-                    }
                     break;
             }
         } else if (error.message.includes('timeout')) {
