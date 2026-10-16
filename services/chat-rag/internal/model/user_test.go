@@ -44,7 +44,7 @@ func TestNewUserInfo(t *testing.T) {
 			want: &UserInfo{
 				UUID:       "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
 				Phone:      "13800138000",
-				Name:       "johndoe",
+				Name:       "John Doe",
 				GithubID:   "12345",
 				GithubName: "johndoe",
 			},
@@ -63,7 +63,7 @@ func TestNewUserInfo(t *testing.T) {
 			want: &UserInfo{
 				UUID:           "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
 				Phone:          "13800138001",
-				Name:           "john1001",
+				Name:           "",
 				EmployeeNumber: "1001",
 			},
 			expectError: false,
@@ -71,7 +71,7 @@ func TestNewUserInfo(t *testing.T) {
 		{
 			name:        "Invalid token format",
 			token:       "invalid.token.here",
-			want:        nil,
+			want:        &UserInfo{},
 			expectError: true,
 		},
 		{
@@ -79,7 +79,7 @@ func TestNewUserInfo(t *testing.T) {
 			token: createTestToken(jwt.MapClaims{
 				"name": "John Doe",
 			}),
-			want:        nil,
+			want:        &UserInfo{UUID: "00000000-0000-0000-0000-000000000000", Name: "John Doe"},
 			expectError: true,
 		},
 		{
@@ -87,7 +87,7 @@ func TestNewUserInfo(t *testing.T) {
 			token: createTestToken(jwt.MapClaims{
 				"universal_id": "invalid-uuid",
 			}),
-			want:        nil,
+			want:        &UserInfo{UUID: "00000000-0000-0000-0000-000000000000"},
 			expectError: true,
 		},
 	}
@@ -96,6 +96,33 @@ func TestNewUserInfo(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got := NewUserInfo(tt.token)
 			assert.Equal(t, tt.want, got)
+		})
+	}
+}
+
+func TestUserNameClaimPriority(t *testing.T) {
+	tests := []struct {
+		name   string
+		claims jwt.MapClaims
+		want   string
+	}{
+		{"name first", jwt.MapClaims{"name": "Alice", "display_name": "Display", "phone": "+8613800138000"}, "Alice"},
+		{"display name fallback", jwt.MapClaims{"name": "", "display_name": "Display", "phone": "+8613800138000"}, "Display"},
+		{"phone fallback", jwt.MapClaims{"name": "", "display_name": "", "phone": "+8613800138000"}, "13800138000"},
+		{"missing claims", jwt.MapClaims{}, ""},
+		{"non-string names", jwt.MapClaims{"name": 123, "display_name": false, "phone": "13800138000"}, "13800138000"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.claims["universal_id"] = "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
+			tt.claims["properties"] = map[string]interface{}{
+				"oauth_GitHub_username": "old-github",
+				"oauth_Custom_username": "old-custom",
+				"oauth_Custom_id":       "1001",
+				"oauth_Custom_email":    "+8613900139000",
+			}
+			got := NewUserInfo(createTestToken(tt.claims))
+			assert.Equal(t, tt.want, got.Name)
 		})
 	}
 }

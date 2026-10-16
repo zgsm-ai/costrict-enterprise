@@ -60,6 +60,8 @@ type DepartmentInfo struct {
 
 // JWTClaims defines the JWT claims structure
 type JWTClaims struct {
+	Name        string                 `json:"name"`
+	DisplayName string                 `json:"display_name"`
 	Phone       string                 `json:"phone"`
 	UniversalID string                 `json:"universal_id"`
 	Email       string                 `json:"email,omitempty"`
@@ -70,12 +72,12 @@ type JWTClaims struct {
 
 // CustomProperties defines the custom properties structure
 type CustomProperties struct {
-	GithubID       string `json:"oauth_GitHub_id,omitempty"`
-	GithubName     string `json:"oauth_GitHub_username,omitempty"`
-	CustomName     string `json:"oauth_Custom_username,omitempty"`
-	EmployeeNumber string `json:"oauth_Custom_id,omitempty"`
-	CustomPhone    string `json:"oauth_Custom_email,omitempty"`
-	Vip            int       `json:"vip,omitempty"`
+	GithubID       string     `json:"oauth_GitHub_id,omitempty"`
+	GithubName     string     `json:"oauth_GitHub_username,omitempty"`
+	CustomName     string     `json:"oauth_Custom_username,omitempty"`
+	EmployeeNumber string     `json:"oauth_Custom_id,omitempty"`
+	CustomPhone    string     `json:"oauth_Custom_email,omitempty"`
+	Vip            int        `json:"vip,omitempty"`
 	VipExpire      *time.Time `json:"vip_expire,omitempty"`
 }
 
@@ -117,6 +119,12 @@ func parseJWT(tokenString string) (*JWTClaims, error) {
 func mapClaimsToJWTClaims(claims jwt.MapClaims) (*JWTClaims, error) {
 	var jwtClaims JWTClaims
 
+	if name, ok := claims["name"].(string); ok {
+		jwtClaims.Name = name
+	}
+	if displayName, ok := claims["display_name"].(string); ok {
+		jwtClaims.DisplayName = displayName
+	}
 	if phone, ok := claims["phone"].(string); ok {
 		jwtClaims.Phone = phone
 	}
@@ -201,7 +209,7 @@ func buildUserInfo(claims *JWTClaims, props CustomProperties, id string) *UserIn
 	}
 
 	applyCustomProperties(user, props)
-	determineUserName(user, props)
+	determineUserName(user, claims)
 
 	return user
 }
@@ -213,15 +221,15 @@ func applyCustomProperties(user *UserInfo, props CustomProperties) {
 	}
 }
 
-// determineUserName determines the final user name
-func determineUserName(user *UserInfo, props CustomProperties) {
+// determineUserName selects the first non-empty top-level name, display_name, or phone claim.
+func determineUserName(user *UserInfo, claims *JWTClaims) {
 	switch {
-	case props.GithubName != "":
-		user.Name = props.GithubName
-	case props.CustomName != "":
-		user.Name = props.CustomName + props.EmployeeNumber
-	case user.Name == "":
-		user.Name = user.Phone
+	case claims.Name != "":
+		user.Name = claims.Name
+	case claims.DisplayName != "":
+		user.Name = claims.DisplayName
+	default:
+		user.Name = normalizePhone(claims.Phone)
 	}
 }
 
