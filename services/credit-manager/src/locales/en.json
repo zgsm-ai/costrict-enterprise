@@ -78,6 +78,7 @@
         "githubAccount": "Github Account:",
         "userIdLabel": "User ID:",
         "universalIdLabel": "Quota ID:",
+        "quotaIdDeprecatedCopy": "Copied. Quota IDs are deprecated. Copy your User ID to transfer quota in or out.",
         "employeeNumberLabel": "Employee Number:",
         "inviteCodeLabel": "Invitation code:",
         "usageTitle": "Usage",

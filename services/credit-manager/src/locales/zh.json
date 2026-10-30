@@ -78,6 +78,7 @@
         "githubAccount": "GitHub账号：",
         "userIdLabel": "用户ID：",
         "universalIdLabel": "配额ID：",
+        "quotaIdDeprecatedCopy": "复制成功。配额ID已弃用，可复制用户ID用于转入转出配额。",
         "employeeNumberLabel": "工号：",
         "inviteCodeLabel": "邀请码：",
         "usageTitle": "用量概览",

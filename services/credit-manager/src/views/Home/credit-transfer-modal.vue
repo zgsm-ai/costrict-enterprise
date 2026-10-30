@@ -368,7 +368,7 @@ const rowClassName = (row: QuotaTransferInQuotaList) => {
     return row.is_expired ? 'is-expired' : '';
 };
 
-const uuidValidatorWithMessage = (_: FormItemRule, value: string) => {
+const receiverIdValidatorWithMessage = (_: FormItemRule, value: string) => {
     if (!value) {
         return new Error(t('creditTransferModal.validationReceiverIdRequired'));
     }
@@ -376,7 +376,9 @@ const uuidValidatorWithMessage = (_: FormItemRule, value: string) => {
     const uuidRegex =
         /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
 
-    if (!uuidRegex.test(value.trim())) {
+    const receiverId = value.trim();
+
+    if (!receiverId.startsWith('usr_') && !uuidRegex.test(receiverId)) {
         return new Error(t('creditTransferModal.invalidUUID'));
     }
 
@@ -386,7 +388,7 @@ const uuidValidatorWithMessage = (_: FormItemRule, value: string) => {
 const rules = {
     receiverId: [
         {
-            validator: uuidValidatorWithMessage,
+            validator: receiverIdValidatorWithMessage,
             trigger: ['input', 'blur'],
         },
     ],
@@ -415,8 +417,11 @@ const handleSubmit = () => {
                     };
                 });
 
+            const receiverId = formModel.value.receiverId.trim();
             const params = {
-                receiver_id: formModel.value.receiverId.trim(),
+                ...(receiverId.startsWith('usr_')
+                    ? { receiver_subject_id: receiverId }
+                    : { receiver_id: receiverId }),
                 quota_list: quota_list,
             };
 

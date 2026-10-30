@@ -31,8 +31,9 @@ export function useUsageStatistics() {
             if (selectedTimeRange.value && selectedTimeRange.value !== 'custom') {
                 params.time_range = selectedTimeRange.value;
             } else if (selectedTimeRange.value === 'custom' && customDateRangeFormatted.value) {
-                params.start_time = `${customDateRangeFormatted.value[0]} 00:00:00`;
-                params.end_time = `${customDateRangeFormatted.value[1]} 00:00:00`;
+                // 日期按业务时区（北京时间）解释，提交带时区的 RFC3339 时间。
+                params.start_time = `${customDateRangeFormatted.value[0]}T00:00:00+08:00`;
+                params.end_time = `${customDateRangeFormatted.value[1]}T00:00:00+08:00`;
             }
 
             const { data } = await getUsageStatistics(params);

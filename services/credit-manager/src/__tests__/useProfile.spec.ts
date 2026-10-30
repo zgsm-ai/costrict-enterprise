@@ -31,6 +31,10 @@ vi.mock('@/utils/copy', () => ({
     copyToClipboard: vi.fn(),
 }));
 
+vi.mock('@/utils/i18n', () => ({
+    getT: () => (key: string) => key,
+}));
+
 // Mock auth service
 vi.mock('@/services/auth', () => ({
     authService: {
@@ -142,8 +146,15 @@ describe('useProfile', () => {
             profile.copyUniversalId();
 
             expect(mockedCopyToClipboard).toHaveBeenCalledWith('quota-123', {
-                success: mockSuccess,
+                success: expect.any(Function),
                 error: mockError,
+            });
+
+            const handlers = mockedCopyToClipboard.mock.calls[0][1];
+            expect(mockSuccess).not.toHaveBeenCalled();
+            handlers?.success?.('Copied');
+            expect(mockSuccess).toHaveBeenCalledWith('homePage.quotaIdDeprecatedCopy', {
+                duration: 5000,
             });
         });
     });

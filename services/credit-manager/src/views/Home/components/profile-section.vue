@@ -24,10 +24,12 @@
                 </NIcon>
             </div>
             <div class="profile-field max-w-[100%]">
-                <div class="label whitespace-nowrap">{{ t('homePage.universalIdLabel') }}</div>
+                <div class="label whitespace-nowrap line-through">
+                    {{ t('homePage.universalIdLabel') }}
+                </div>
                 <span
                     v-hover="universalId"
-                    class="truncate flex-1"
+                    class="truncate flex-1 line-through"
                     :class="{ 'ml-1': !isZh }"
                     >{{ universalId || '-' }}</span
                 >

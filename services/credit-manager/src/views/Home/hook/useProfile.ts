@@ -9,6 +9,7 @@ import { storeToRefs } from 'pinia';
 import { getUserQuota } from '@/api/mods/quota.mod';
 import type { QuotaList } from '@/api/bos/quota.bo';
 import { copyToClipboard } from '@/utils/copy';
+import { getT } from '@/utils/i18n';
 import { authService } from '@/services/auth';
 
 export function useProfile() {
@@ -54,7 +55,9 @@ export function useProfile() {
     // 复制配额 ID
     const copyUniversalId = () => {
         copyToClipboard(universalId.value, {
-            success: message.success,
+            success: () => {
+                message.success(getT()('homePage.quotaIdDeprecatedCopy'), { duration: 5000 });
+            },
             error: message.error,
         });
     };

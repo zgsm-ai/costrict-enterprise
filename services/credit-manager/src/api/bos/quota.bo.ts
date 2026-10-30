@@ -75,7 +75,8 @@ export interface GetQuotaAuditRecordsRes {
 }
 
 export interface PostQuotaTransferOutReq {
-    receiver_id: string;
+    receiver_id?: string;
+    receiver_subject_id?: string;
     quota_list: Array<QuotaList>;
 }
 
