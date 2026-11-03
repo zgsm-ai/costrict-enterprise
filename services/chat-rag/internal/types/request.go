@@ -49,6 +49,7 @@ const (
 	HeaderRequestId     = "x-request-id"
 	HeaderCaller        = "x-caller"
 	HeaderTaskId        = "zgsm-task-id"
+	HeaderSessionId     = "X-Session-Id"
 	HeaderClientId      = "zgsm-client-id"
 	HeaderClientIde     = "x-costrict-idea"
 	HeaderClientOS      = "X-Stainless-OS"

@@ -49,8 +49,9 @@ type RequestParams struct {
 
 // ChatLog represents a single chat completion log entry
 type ChatLog struct {
-	Identity  Identity  `json:"identity"`
-	Timestamp time.Time `json:"timestamp"`
+	WorkspaceInfo WorkspaceInfo `json:"workspace-info"`
+	Identity      Identity      `json:"identity"`
+	Timestamp     time.Time     `json:"timestamp"`
 	// Agent information
 	Agent string `json:"agent,omitempty"`
 	// Token statistics

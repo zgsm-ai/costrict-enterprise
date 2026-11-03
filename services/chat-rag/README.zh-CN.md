@@ -502,3 +502,29 @@ CGO_ENABLED=0 GOOS=linux go build -o chat-rag .
 <div align="center">
   <b>⭐ 如果这个项目对你有帮助，请给我们一个星标！</b>
 </div>
+
+## S3 日志归档
+
+`log.storageType: s3` 使用 AWS SDK Go v2。配置示例（保留部署中的原 bucket、endpoint 和凭证）：
+
+```yaml
+log:
+  storageType: s3
+  s3:
+    endpoint: "s3.example.com:9000" # host[:port]，不带协议和路径
+    bucket: "existing-bucket"
+    accessKey: "<access-key>"
+    secretKey: "<secret-key>"
+    region: "us-east-1"
+    useSSL: true
+    skipSSLVerify: false
+    skipBucketCheck: true
+    forcePathStyle: true
+    disableRequestChecksum: true
+```
+
+新增 `forcePathStyle` 和 `disableRequestChecksum` 均默认 true，可显式设为 false。
+前者使用 `/bucket/key` 请求地址，不改变桶内对象 key；后者仅在接口要求时计算请求校验和，避免兼容服务错误处理 CRC trailer，不关闭请求签名或 TLS 验证。
+`skipSSLVerify` 默认 false，仅 HTTPS 下生效；`skipBucketCheck` 默认 false，默认检查桶，仅不存在时尝试创建。桶已预建且凭证权限有限时可跳过检查。
+`region` 为空时使用 `us-east-1`，非该区域的服务需填写实际区域。
+对象目录、文件名、JSON 正文及末尾换行、Content-Type、返回的对象路径和无引号 ETag 保持不变，不添加 prefix。

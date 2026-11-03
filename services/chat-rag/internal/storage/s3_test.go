@@ -7,8 +7,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/minio/minio-go/v7"
-	"github.com/minio/minio-go/v7/pkg/credentials"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
 
 // Compile-time check: S3Storage must satisfy StorageBackend.
@@ -20,7 +20,7 @@ var _ StorageBackend = (*S3Storage)(nil)
 
 func TestS3Storage_CloseReturnsNil(t *testing.T) {
 	// Close is a documented no-op; it must return nil even when the underlying
-	// minio client is absent (struct constructed directly, not via NewS3Storage).
+	// S3 client is absent (struct constructed directly, not via NewS3Storage).
 	s := &S3Storage{bucket: "test-bucket"}
 	if err := s.Close(); err != nil {
 		t.Errorf("Close() returned unexpected error: %v", err)
@@ -113,22 +113,13 @@ func TestS3Storage_Integration_WriteAndVerify(t *testing.T) {
 		t.Fatalf("Write(%q) returned error: %v", key, err)
 	}
 
-	// Read back via a raw minio client to verify the object was actually stored.
-	readClient, err := minio.New(endpoint, &minio.Options{
-		Creds:  credentials.NewStaticV4(accessKey, secretKey, ""),
-		Secure: false,
-	})
-	if err != nil {
-		t.Fatalf("failed to create verification client: %v", err)
-	}
-
-	obj, err := readClient.GetObject(context.Background(), bucket, key, minio.GetObjectOptions{})
+	obj, err := s.client.GetObject(context.Background(), &s3.GetObjectInput{Bucket: aws.String(bucket), Key: aws.String(key)})
 	if err != nil {
 		t.Fatalf("GetObject(%q) returned error: %v", key, err)
 	}
-	defer obj.Close()
+	defer obj.Body.Close()
 
-	got, err := io.ReadAll(obj)
+	got, err := io.ReadAll(obj.Body)
 	if err != nil {
 		t.Fatalf("failed to read object body: %v", err)
 	}
@@ -138,5 +129,5 @@ func TestS3Storage_Integration_WriteAndVerify(t *testing.T) {
 	}
 
 	// Cleanup: remove the test object (best-effort).
-	_ = readClient.RemoveObject(context.Background(), bucket, key, minio.RemoveObjectOptions{})
+	_, _ = s.client.DeleteObject(context.Background(), &s3.DeleteObjectInput{Bucket: aws.String(bucket), Key: aws.String(key)})
 }

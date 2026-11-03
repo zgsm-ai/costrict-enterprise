@@ -69,11 +69,12 @@ type Label struct {
 
 // MetricsReport 表示完整的指标上报数据
 type MetricsReport struct {
-	RequestID       string          `json:"request_id"`
-	UserID          string          `json:"user_id,omitempty"`
-	RequestMetrics  RequestMetrics  `json:"request_metrics"`
-	ResponseMetrics ResponseMetrics `json:"response_metrics"`
-	Label           Label           `json:"label"`
+	WorkspaceInfo   model.WorkspaceInfo `json:"workspace-info"`
+	RequestID       string              `json:"request_id"`
+	UserID          string              `json:"user_id,omitempty"`
+	RequestMetrics  RequestMetrics      `json:"request_metrics"`
+	ResponseMetrics ResponseMetrics     `json:"response_metrics"`
+	Label           Label               `json:"label"`
 }
 
 // ReportMetrics 上报聊天指标,errors 为了防止并发问题,单独处理。
@@ -99,6 +100,7 @@ func (mr *ChatMetricsReporter) convertChatLogToReport(chatLog *model.ChatLog, wr
 		label.LocalLogPath = writeInfo.FilePath
 	}
 	report := &MetricsReport{
+		WorkspaceInfo:   chatLog.WorkspaceInfo,
 		RequestID:       chatLog.Identity.RequestID,
 		RequestMetrics:  mr.buildRequestMetrics(chatLog),
 		ResponseMetrics: mr.buildResponseMetrics(chatLog, errors),

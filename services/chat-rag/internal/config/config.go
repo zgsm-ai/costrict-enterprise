@@ -105,6 +105,9 @@ type LogS3Config struct {
 	SkipSSLVerify   bool   `mapstructure:"skipSSLVerify" yaml:"skipSSLVerify"`
 	Region          string `mapstructure:"region" yaml:"region"`
 	SkipBucketCheck bool   `mapstructure:"skipBucketCheck" yaml:"skipBucketCheck"`
+	// Nil defaults to true, while explicit false remains supported.
+	ForcePathStyle         *bool `mapstructure:"forcePathStyle" yaml:"forcePathStyle"`
+	DisableRequestChecksum *bool `mapstructure:"disableRequestChecksum" yaml:"disableRequestChecksum"`
 }
 
 // Error log mode values for LogConfig.ErrorLogMode.

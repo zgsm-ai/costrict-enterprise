@@ -150,9 +150,15 @@ func (l *ChatCompletionLogic) newChatLog(startTime time.Time) *model.ChatLog {
 		modelName = l.request.Model
 	}
 
+	var headers http.Header
+	if l.headers != nil {
+		headers = *l.headers
+	}
+
 	return &model.ChatLog{
-		Identity:  *l.identity,
-		Timestamp: startTime,
+		WorkspaceInfo: model.NewWorkspaceInfo(headers),
+		Identity:      *l.identity,
+		Timestamp:     startTime,
 		Params: model.RequestParams{
 			Model:     modelName,
 			LlmParams: l.request.LLMRequestParams,

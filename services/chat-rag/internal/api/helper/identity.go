@@ -2,6 +2,7 @@ package helper
 
 import (
 	"net/url"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/zgsm-ai/chat-rag/internal/logger"
@@ -32,7 +33,7 @@ func GetIdentityFromHeaders(c *gin.Context) *model.Identity {
 
 	return &model.Identity{
 		RequestID:     c.GetHeader(types.HeaderRequestId),
-		TaskID:        c.GetHeader(types.HeaderTaskId),
+		TaskID:        getTaskID(c),
 		ClientID:      c.GetHeader(types.HeaderClientId),
 		ClientIDE:     clientIDE,
 		ClientVersion: c.GetHeader(types.HeaderClientVersion),
@@ -55,4 +56,13 @@ func getHeaderWithDefault(c *gin.Context, headerKey, defaultValue string) string
 		return value
 	}
 	return defaultValue
+}
+
+// getTaskID preserves the legacy task header and treats the agent session ID
+// as the task ID when no explicit task ID is provided. Logs and metrics share it.
+func getTaskID(c *gin.Context) string {
+	if taskID := strings.TrimSpace(c.GetHeader(types.HeaderTaskId)); taskID != "" {
+		return taskID
+	}
+	return strings.TrimSpace(c.GetHeader(types.HeaderSessionId))
 }

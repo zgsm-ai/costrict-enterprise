@@ -4,105 +4,106 @@ import (
 	"bytes"
 	"context"
 	"crypto/tls"
+	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
+	"strings"
 
-	"github.com/minio/minio-go/v7"
-	"github.com/minio/minio-go/v7/pkg/credentials"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/credentials"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/aws-sdk-go-v2/service/s3/types"
+	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// S3Config holds the configuration required to connect to an S3-compatible
-// object storage service (e.g., AWS S3, MinIO, Ceph RGW).
+// S3Config configures log archival without changing object keys.
 type S3Config struct {
-	Endpoint      string // Host and optional port, e.g. "s3.amazonaws.com" or "minio:9000"
-	Bucket        string // Target bucket name; created automatically if it does not exist
-	AccessKey     string
-	SecretKey     string
-	UseSSL        bool // Whether to use HTTPS for the connection
-	SkipSSLVerify bool
-	Region        string // Bucket region, e.g. "us-east-1"; may be empty for MinIO
-	// SkipBucketCheck disables the BucketExists / MakeBucket calls during init.
-	// Useful when the credentials lack s3:ListBucket / s3:CreateBucket but the
-	// bucket is already provisioned out-of-band. Defaults to false (check enabled).
+	Endpoint        string // host[:port]; protocol is selected by UseSSL
+	Bucket          string
+	AccessKey       string
+	SecretKey       string
+	UseSSL          bool
+	SkipSSLVerify   bool
+	Region          string // Empty uses us-east-1 for S3-compatible services.
 	SkipBucketCheck bool
+	// Nil means true; pointers distinguish omitted values from explicit false.
+	ForcePathStyle         *bool
+	DisableRequestChecksum *bool
 }
 
-// S3Storage implements StorageBackend by writing objects to an S3-compatible
-// object storage service via the minio-go v7 SDK.
-// A single minio.Client is created at construction time and reused for all
-// writes. The target bucket is auto-created during initialization if it does
-// not already exist.
 type S3Storage struct {
-	client *minio.Client
+	client *s3.Client
 	bucket string
 }
 
-// NewS3Storage creates an S3Storage backed by the given S3Config.
-// It initialises the minio client, checks whether the target bucket exists,
-// and creates it when absent. Any error during client creation or bucket
-// setup is returned immediately.
+func enabledByDefault(value *bool) bool { return value == nil || *value }
+
+// NewS3Storage checks the bucket and creates it only when it is missing,
+// unless SkipBucketCheck is enabled.
 func NewS3Storage(cfg S3Config) (*S3Storage, error) {
-	opts := &minio.Options{
-		Creds:  credentials.NewStaticV4(cfg.AccessKey, cfg.SecretKey, ""),
-		Secure: cfg.UseSSL,
-		Region: cfg.Region,
+	scheme := "http"
+	if cfg.UseSSL {
+		scheme = "https"
 	}
-	// only  userSSL can skip
+	endpoint, err := url.Parse(scheme + "://" + cfg.Endpoint)
+	if err != nil || endpoint.Hostname() == "" || endpoint.User != nil || endpoint.Path != "" || endpoint.RawQuery != "" || endpoint.Fragment != "" {
+		return nil, fmt.Errorf("s3 storage: endpoint must be host[:port]")
+	}
+	region := cfg.Region
+	if region == "" {
+		region = "us-east-1"
+	}
+	awsCfg := aws.Config{
+		Region:      region,
+		Credentials: credentials.NewStaticCredentialsProvider(cfg.AccessKey, cfg.SecretKey, ""),
+	}
 	if cfg.UseSSL && cfg.SkipSSLVerify {
-		opts.Transport = &http.Transport{
-			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: true,
-			},
+		transport := http.DefaultTransport.(*http.Transport).Clone()
+		transport.TLSClientConfig = &tls.Config{InsecureSkipVerify: true} // Explicit configuration for private/self-signed services.
+		awsCfg.HTTPClient = &http.Client{Transport: transport}
+	}
+	client := s3.NewFromConfig(awsCfg, func(o *s3.Options) {
+		o.BaseEndpoint = aws.String(endpoint.String())
+		o.UsePathStyle = enabledByDefault(cfg.ForcePathStyle)
+		if enabledByDefault(cfg.DisableRequestChecksum) {
+			o.RequestChecksumCalculation = aws.RequestChecksumCalculationWhenRequired
+		} else {
+			o.RequestChecksumCalculation = aws.RequestChecksumCalculationWhenSupported
 		}
-	}
-
-	client, err := minio.New(cfg.Endpoint, opts)
-	if err != nil {
-		return nil, fmt.Errorf("s3 storage: failed to create client: %w", err)
-	}
-
+	})
 	if !cfg.SkipBucketCheck {
 		ctx := context.Background()
-
-		exists, err := client.BucketExists(ctx, cfg.Bucket)
+		_, err := client.HeadBucket(ctx, &s3.HeadBucketInput{Bucket: aws.String(cfg.Bucket)})
 		if err != nil {
-			return nil, fmt.Errorf("s3 storage: failed to check bucket existence: %w", err)
-		}
-		if !exists {
-			err = client.MakeBucket(ctx, cfg.Bucket, minio.MakeBucketOptions{
-				Region: cfg.Region,
-			})
-			if err != nil {
+			var responseErr *smithyhttp.ResponseError
+			if !errors.As(err, &responseErr) || responseErr.HTTPStatusCode() != http.StatusNotFound {
+				return nil, fmt.Errorf("s3 storage: failed to check bucket existence: %w", err)
+			}
+			input := &s3.CreateBucketInput{Bucket: aws.String(cfg.Bucket)}
+			if region != "us-east-1" {
+				input.CreateBucketConfiguration = &types.CreateBucketConfiguration{LocationConstraint: types.BucketLocationConstraint(region)}
+			}
+			if _, err := client.CreateBucket(ctx, input); err != nil {
 				return nil, fmt.Errorf("s3 storage: failed to create bucket %q: %w", cfg.Bucket, err)
 			}
 		}
 	}
-
-	return &S3Storage{
-		client: client,
-		bucket: cfg.Bucket,
-	}, nil
+	return &S3Storage{client: client, bucket: cfg.Bucket}, nil
 }
 
-// Write persists data as an object with the given key in the configured bucket.
-// The object is stored with content type "application/json".
-// ChatLog JSON payloads are typically 1-50 KB so single-part upload is sufficient.
+// Write preserves the caller's key and bytes, including trailing newlines.
 func (s *S3Storage) Write(key string, data []byte) (*WriteInfo, error) {
-	reader := bytes.NewReader(data)
-	info, err := s.client.PutObject(context.Background(), s.bucket, key, reader, int64(len(data)), minio.PutObjectOptions{
-		ContentType: "application/json",
+	info, err := s.client.PutObject(context.Background(), &s3.PutObjectInput{
+		Bucket: aws.String(s.bucket), Key: aws.String(key),
+		Body: bytes.NewReader(data), ContentLength: aws.Int64(int64(len(data))),
+		ContentType: aws.String("application/json"),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("s3 storage: failed to write object %q: %w", key, err)
 	}
-	return &WriteInfo{
-		FilePath: info.Key,
-		ETag:     info.ETag,
-	}, nil
+	// MinIO returned unquoted ETags; preserve that contract for metrics consumers.
+	return &WriteInfo{FilePath: key, ETag: strings.Trim(aws.ToString(info.ETag), "\"")}, nil
 }
 
-// Close is a no-op for S3Storage because the minio-go client does not hold
-// persistent connections or resources that require explicit teardown.
-func (s *S3Storage) Close() error {
-	return nil
-}
+func (s *S3Storage) Close() error { return nil }
