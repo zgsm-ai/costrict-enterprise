@@ -1,7 +1,10 @@
 <template>
     <div class="profile-section">
         <div class="info-item">
-            <div class="profile-field">
+            <div
+                v-if="!onlyUserId"
+                class="profile-field"
+            >
                 <div class="label">{{ t('homePage.userNameLabel') }}</div>
                 <span :class="{ 'ml-1': !isZh }">{{ userName || '-' }}</span>
             </div>
@@ -23,7 +26,10 @@
                     <CopyOutline />
                 </NIcon>
             </div>
-            <div class="profile-field max-w-[100%]">
+            <div
+                v-if="!onlyUserId"
+                class="profile-field max-w-[100%]"
+            >
                 <div class="label whitespace-nowrap line-through">
                     {{ t('homePage.universalIdLabel') }}
                 </div>
@@ -43,7 +49,10 @@
                     <CopyOutline />
                 </NIcon>
             </div>
-            <div class="profile-field">
+            <div
+                v-if="!onlyUserId"
+                class="profile-field"
+            >
                 <div class="label">{{ t('homePage.employeeNumberLabel') }}</div>
                 <span :class="{ 'ml-1': !isZh }">{{ employeeNumber || '-' }}</span>
             </div>
@@ -64,6 +73,7 @@ interface Props {
     universalId?: string;
     employeeNumber?: string;
     isZh?: boolean;
+    onlyUserId?: boolean;
 }
 
 withDefaults(defineProps<Props>(), {
@@ -72,6 +82,7 @@ withDefaults(defineProps<Props>(), {
     universalId: '',
     employeeNumber: '',
     isZh: false,
+    onlyUserId: false,
 });
 
 const emit = defineEmits<{

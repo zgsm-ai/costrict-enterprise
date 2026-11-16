@@ -41,7 +41,9 @@ const toLogin = (): void => {
     isLoggingIn.value = true;
     try {
         if (import.meta.env.MODE === 'mock') {
-            tokenManager.setToken('mock_access_token_12345');
+            tokenManager.setToken(
+                'eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJ1c2VyLW1vY2stMDAxIiwiZGlzcGxheV9uYW1lIjoiTW9jayBVc2VyIiwidW5pdmVyc2FsX2lkIjoicXVvdGEtbW9jay0wMDEiLCJlbXBsb3llZV9udW1iZXIiOiJFMDAxIn0.',
+            );
             window.location.assign(getLoginReturnTo());
             return;
         }

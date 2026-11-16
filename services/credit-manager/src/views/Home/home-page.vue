@@ -56,7 +56,10 @@
                             />
                         </div> -->
                         <!-- 基本信息 -->
-                        <common-card :title="t('homePage.basicInfo')">
+                        <common-card
+                            class="mb-7"
+                            :title="t('homePage.basicInfo')"
+                        >
                             <template #default>
                                 <profile-section
                                     :user-name="userName"
@@ -114,6 +117,16 @@
                         <div class="info-title text-white text-xl mb-9">
                             {{ t('homePageUi.usageStatistics') }}
                         </div>
+                        <common-card :title="t('homePage.basicInfo')">
+                            <template #default>
+                                <profile-section
+                                    :user-id="userId"
+                                    :is-zh="isZh"
+                                    :only-user-id="true"
+                                    @copy-user-id="copyCode"
+                                />
+                            </template>
+                        </common-card>
                         <common-card :title="t('homePage.usageTitle')">
                             <template #header-extra>
                                 <span
