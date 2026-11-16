@@ -14,7 +14,7 @@ func TestNewChatLogWorkspaceInfo(t *testing.T) {
 	logic.headers.Set("zgsm-task-id", "legacy")
 	logic.headers.Set("X-Project-Id", "project")
 	log := logic.newChatLog(time.Now())
-	if log.WorkspaceInfo.TaskID != "session" || log.WorkspaceInfo.ProjectID != "project" || log.Identity.TaskID != "legacy" {
+	if log.WorkspaceInfo.TaskID != "legacy" || log.WorkspaceInfo.SessionID != "session" || log.WorkspaceInfo.ProjectID != "project" || log.Identity.TaskID != "legacy" {
 		t.Fatalf("unexpected log identity: %+v / %+v", log.Identity, log.WorkspaceInfo)
 	}
 	logic.headers.Set("X-Project-Id", "changed")

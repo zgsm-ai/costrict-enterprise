@@ -1,6 +1,12 @@
 name: Build
 
 on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Image version tag (for example v1.6.10-beta.1)"
+        required: true
+        type: string
   push:
     tags:
       - 'v*.*.*'
@@ -30,31 +36,23 @@ jobs:
 
       - name: Get version
         id: version
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
         run: |
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-            CURRENT_VERSION=${GITHUB_REF#refs/tags/}
-            echo "Triggered by tag: $CURRENT_VERSION"
-            echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
+            VERSION="$INPUT_VERSION"
+          elif [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            VERSION="${GITHUB_REF#refs/tags/}"
           else
-            echo "Triggered by branch push, calculating new version..."
-            LATEST_TAG=$(git tag -l "v*.*.*" | sort -V | tail -n1)
-            
-            if [ -z "$LATEST_TAG" ]; then
-              NEW_VERSION="v1.0.0"
-            else
-              echo "Latest tag: $LATEST_TAG"
-              VERSION_PART=$(echo $LATEST_TAG | sed 's/v//')
-              MAJOR=$(echo $VERSION_PART | cut -d. -f1)
-              MINOR=$(echo $VERSION_PART | cut -d. -f2)
-              PATCH=$(echo $VERSION_PART | cut -d. -f3)
-              
-              PATCH=$((PATCH + 1))
-              NEW_VERSION="v${MAJOR}.${MINOR}.${PATCH}"
-            fi
-            
-            echo "New version: $NEW_VERSION"
-            echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+            echo "Unsupported build event: $GITHUB_EVENT_NAME"
+            exit 1
           fi
+          if [[ ! "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ || ${#VERSION} -gt 128 ]]; then
+            echo "Invalid image version: $VERSION"
+            exit 1
+          fi
+          echo "Build version: $VERSION"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Set up Docker Buildx
         id: buildx
@@ -133,39 +131,44 @@ jobs:
 
       - name: Get version
         id: version
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
         run: |
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-            CURRENT_VERSION=${GITHUB_REF#refs/tags/}
-            echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
+            VERSION="$INPUT_VERSION"
+          elif [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            VERSION="${GITHUB_REF#refs/tags/}"
           else
-            LATEST_TAG=$(git tag -l "v*.*.*" | sort -V | tail -n1)
-            if [ -z "$LATEST_TAG" ]; then
-              NEW_VERSION="v1.0.0"
-            else
-              VERSION_PART=$(echo $LATEST_TAG | sed 's/v//')
-              MAJOR=$(echo $VERSION_PART | cut -d. -f1)
-              MINOR=$(echo $VERSION_PART | cut -d. -f2)
-              PATCH=$(echo $VERSION_PART | cut -d. -f3)
-              PATCH=$((PATCH + 1))
-              NEW_VERSION="v${MAJOR}.${MINOR}.${PATCH}"
-            fi
-            echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+            echo "Unsupported build event: $GITHUB_EVENT_NAME"
+            exit 1
           fi
+          if [[ ! "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ || ${#VERSION} -gt 128 ]]; then
+            echo "Invalid image version: $VERSION"
+            exit 1
+          fi
+          echo "Build version: $VERSION"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Create manifest list and push to Docker Hub
         working-directory: /tmp/digests
         run: |
+          TAGS=(-t "${{ secrets.DOCKERHUB_REPOSITORY }}/chat-rag:${{ steps.version.outputs.version }}")
+          if [[ "${{ steps.version.outputs.version }}" != *-* ]]; then
+            TAGS+=(-t "${{ secrets.DOCKERHUB_REPOSITORY }}/chat-rag:latest")
+          fi
           docker buildx imagetools create \
-            -t ${{ secrets.DOCKERHUB_REPOSITORY }}/chat-rag:${{ steps.version.outputs.version }} \
-            -t ${{ secrets.DOCKERHUB_REPOSITORY }}/chat-rag:latest \
+            "${TAGS[@]}" \
             $(printf '${{ secrets.DOCKERHUB_REPOSITORY }}/chat-rag@sha256:%s ' *)
 
       - name: Create manifest list and push to GHCR
         working-directory: /tmp/digests
         run: |
+          TAGS=(-t "ghcr.io/${{ github.repository }}:${{ steps.version.outputs.version }}")
+          if [[ "${{ steps.version.outputs.version }}" != *-* ]]; then
+            TAGS+=(-t "ghcr.io/${{ github.repository }}:latest")
+          fi
           docker buildx imagetools create \
-            -t ghcr.io/${{ github.repository }}:${{ steps.version.outputs.version }} \
-            -t ghcr.io/${{ github.repository }}:latest \
+            "${TAGS[@]}" \
             $(printf 'ghcr.io/${{ github.repository }}@sha256:%s ' *)
 
       - name: Inspect image

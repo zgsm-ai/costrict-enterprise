@@ -48,7 +48,7 @@ func TestWorkspaceInfoReportPayload(t *testing.T) {
 		if err := json.Unmarshal(logged["workspace-info"], &want); err != nil {
 			t.Fatal(err)
 		}
-		if len(got) != 17 || !reflect.DeepEqual(got, want) {
+		if len(got) != 16 || !reflect.DeepEqual(got, want) {
 			t.Fatalf("report workspace-info = %#v, log = %#v", got, want)
 		}
 	}
